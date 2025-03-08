@@ -1,7 +1,7 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { DatePipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -34,7 +34,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
 import {
@@ -65,9 +64,7 @@ import { Subject, debounceTime, takeUntil } from 'rxjs';
         MatSelectModule,
         MatOptionModule,
         MatDatepickerModule,
-        TextFieldModule,
-        FuseFindByKeyPipe,
-        DatePipe,
+        TextFieldModule
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {
