@@ -80,9 +80,28 @@
                             ></mat-icon>
                             <span class="ml-2 mr-1">Invite</span>
                         </button>
+                        <!-- bulk Action -->
+                        <button
+                            class="ml-4"
+                            mat-flat-button
+                            [color]="'primary'"
+                            (click)="bulkActions()"
+                            [disabled]="(!this.indeterminate && !this.selectAllContacts)"
+                        >
+                            <mat-icon
+                                [svgIcon]="'heroicons_outline:bars-3'"
+                            ></mat-icon>
+                            <span class="ml-2 mr-1">Bulk Actions</span>
+                        </button>
                     </div>
                 </div>
-
+            <div class="mt-4 flex">
+                <mat-checkbox 
+                [checked]="selectAllContacts" 
+                (change)="update($event.checked)"
+                [indeterminate]="indeterminate"
+                ></mat-checkbox>
+            </div>
                 <!-- Contacts list -->
                 <div class="relative">
                     @if (contacts$ | async; as contacts) {
@@ -105,49 +124,42 @@
                                     </div>
                                 }
                                 <!-- Contact -->
-                                <a
-                                    class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8"
-                                    [ngClass]="{
-                                        'dark:hover:bg-hover':
-                                            !selectedContact ||
-                                            selectedContact.id !== contact.id,
-                                        'dark:bg-hover':
-                                            selectedContact &&
-                                            selectedContact.id === contact.id,
-                                    }"
-                                    [routerLink]="['./', contact.id]"
-                                >
-                                    <div
-                                        class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full"
-                                    >
-                                        @if (contact.avatar) {
-                                            <img
-                                                class="h-full w-full object-cover"
-                                                [src]="contact.avatar"
-                                                alt="Contact avatar"
-                                            />
-                                        }
-                                        @if (!contact.avatar) {
+                                <!--Checkbox for select All -->
+                                <div class="flex">
+                                    <mat-checkbox 
+                                    [checked]="contact.isBulkSelect"
+                                    (change)="update($event.checked,contact)"
+                                    ></mat-checkbox>
+                                    
+                                    <a class="z-20 flex w-full cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{
+                                                                        'dark:hover:bg-hover':
+                                                                            !selectedContact ||
+                                                                            selectedContact.id !== contact.id,
+                                                                        'dark:bg-hover':
+                                                                            selectedContact &&
+                                                                            selectedContact.id === contact.id,
+                                                                    }" [routerLink]="['./', contact.id]">
+                                        <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
+                                            @if (contact.avatar) {
+                                            <img class="h-full w-full object-cover" [src]="contact.avatar" alt="Contact avatar" />
+                                            }
+                                            @if (!contact.avatar) {
                                             <div
-                                                class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                                            >
+                                                class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                                 {{ contact.name.charAt(0) }}
                                             </div>
-                                        }
-                                    </div>
-                                    <div class="ml-4 min-w-0">
-                                        <div
-                                            class="truncate font-medium leading-5"
-                                        >
-                                            {{ contact.name }}
+                                            }
                                         </div>
-                                        <div
-                                            class="text-secondary truncate leading-5"
-                                        >
-                                            {{ contact.title }}
+                                        <div class="ml-4 min-w-0">
+                                            <div class="truncate font-medium leading-5">
+                                                {{ contact.name }}
+                                            </div>
+                                            <div class="text-secondary truncate leading-5">
+                                                {{ contact.title }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
                             }
                         } @else {
                             <div

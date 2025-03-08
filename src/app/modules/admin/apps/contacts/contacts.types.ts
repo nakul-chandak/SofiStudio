@@ -18,6 +18,7 @@ export interface Contact {
     address?: string | null;
     notes?: string | null;
     tags: string[];
+    isBulkSelect:boolean;
 }
 
 export interface Country {

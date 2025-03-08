@@ -15,6 +15,7 @@ import {
     UntypedFormControl,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -58,6 +59,7 @@ import {
         RouterLink,
         AsyncPipe,
         I18nPluralPipe,
+        MatCheckboxModule
     ],
 })
 export class ContactsListComponent implements OnInit, OnDestroy {
@@ -72,7 +74,8 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: Contact;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    indeterminate = false;
+    selectAllContacts=false;
     /**
      * Constructor
      */
@@ -227,5 +230,36 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    /**
+     * Modify contacts
+     */
+    bulkActions() {
+
+    }
+
+    /**
+     * Select all and partially select
+     * @param completed 
+     * @param contact 
+     */
+    update(completed: boolean, contact?: Contact) {
+        if (contact === undefined) {
+            this.indeterminate = false;
+        this.contacts$.subscribe((contacts:Contact[]) =>{
+            contacts.forEach(x=>(x.isBulkSelect = completed));
+            this.selectAllContacts =completed;
+        });
+        
+     }
+     else {
+        contact.isBulkSelect = completed;
+        this.contacts$.subscribe((contacts:Contact[]) =>{
+            this.selectAllContacts = contacts?.every(x=>(x.isBulkSelect))?? true;
+           this.indeterminate = contacts?.some(x=>(x.isBulkSelect)) && !contacts?.every(x=>(x.isBulkSelect));
+           
+        });
+      }
     }
 }
