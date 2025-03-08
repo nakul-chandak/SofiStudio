@@ -1,0 +1,29 @@
+<div class="flex w-full flex-col">
+        <!-- Header -->
+        <div
+            class="relative h-40 w-full px-8 sm:px-12 ng-star-inserted"
+        >
+            <div
+                class="mx-auto flex w-full max-w-3xl items-center justify-end pt-6"
+            >
+                <a
+                    mat-icon-button
+                    [matTooltip]="'Close'"
+                    [routerLink]="['../']"
+                >
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x-mark'"
+                    ></mat-icon>
+                </a>
+            </div>
+        </div>
+
+        <mat-list role="list">
+            @for (contact of contacts; track contact) {
+            <mat-list-item role="listitem">{{contact.name}}</mat-list-item>
+            }
+          </mat-list>
+
+        
+</div>
