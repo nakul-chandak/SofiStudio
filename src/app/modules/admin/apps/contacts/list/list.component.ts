@@ -236,7 +236,15 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Modify contacts
      */
     bulkActions() {
-
+        this.contacts$.subscribe((contacts:Contact[]) =>{
+            const selectedConacts = contacts.filter((contact) =>contact.isBulkSelect);
+            this._router.navigate(['./bulk-update'], {
+                relativeTo: this._activatedRoute,
+                state:selectedConacts
+            });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**

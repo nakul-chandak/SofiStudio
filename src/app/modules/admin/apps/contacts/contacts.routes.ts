@@ -10,6 +10,7 @@ import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.servic
 import { ContactsDetailsComponent } from 'app/modules/admin/apps/contacts/details/details.component';
 import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
 import { catchError, throwError } from 'rxjs';
+import { BulkUpdateComponent } from './bulk-update/bulk-update.component';
 
 /**
  * Contact resolver
@@ -51,7 +52,7 @@ const contactResolver = (
  * @param nextState
  */
 const canDeactivateContactsDetails = (
-    component: ContactsDetailsComponent,
+    component: ContactsDetailsComponent | BulkUpdateComponent,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot
@@ -97,6 +98,12 @@ export default [
                 },
                 children: [
                     {
+                        path:'bulk-update',
+                        component:BulkUpdateComponent,
+                        resolve:{ },
+                        canDeactivate: [canDeactivateContactsDetails],
+                    },
+                    {
                         path: ':id',
                         component: ContactsDetailsComponent,
                         resolve: {
@@ -105,9 +112,11 @@ export default [
                                 inject(ContactsService).getCountries(),
                         },
                         canDeactivate: [canDeactivateContactsDetails],
-                    },
+                    }
                 ],
             },
+            
         ],
     },
+    
 ] as Routes;
