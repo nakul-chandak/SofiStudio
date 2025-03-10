@@ -29,7 +29,8 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { environment } from '../../../../environments/environment';
 import { ModelAuthToken } from '../model/modelAuthToken';
-import { map } from 'lodash';
+import { UserService } from './user.service';
+import { user } from 'app/mock-api/common/user/data';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -39,6 +40,7 @@ export class AuthService {
     public configuration = new Configuration();
     private _authenticated: boolean = false;
     private httpClient = inject(HttpClient);
+    private _userService = inject(UserService);
 
     set accessToken(token: string) {
         localStorage.setItem('accessToken', token);
@@ -165,8 +167,18 @@ export class AuthService {
     .pipe(
         switchMap((response: any) => {
             this.accessToken = response.access_token;
+            const user = {
+                id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
+                name: 'Nakul Chandak',
+                email: 'nakul.chandak@aianddigital.com',
+                avatar: 'images/avatars/brian-hughes.jpg',
+                status: 'online',
+            };
             // Set the authenticated flag to true
                 this._authenticated = true;
+
+                this._userService.user = user;
+
             return of(response);
         }));
     }
@@ -383,4 +395,18 @@ export class AuthService {
             // If the access token exists, and it didn't expire, sign in using it
             //return this.signInUsingToken();
         }
+
+        /**
+     * Sign out
+     */
+    signOut(): Observable<any> {
+        // Remove the access token from the local storage
+        localStorage.removeItem('accessToken');
+
+        // Set the authenticated flag to false
+        this._authenticated = false;
+
+        // Return the observable
+        return of(true);
+    }
 }
