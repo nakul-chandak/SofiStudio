@@ -14,7 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { UserService } from 'app/core/user/user.service';
+import { UserService } from 'app/shared/api/services/user.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -95,12 +95,12 @@ export class UserComponent implements OnInit, OnDestroy {
         }
 
         // Update the user
-        this._userService
-            .update({
-                ...this.user,
-                status,
-            })
-            .subscribe();
+        // this._userService
+        //     .update({
+        //         ...this.user,
+        //         status,
+        //     })
+        //     .subscribe();
     }
 
     /**
