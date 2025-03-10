@@ -1,10 +1,15 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
     UntypedFormBuilder,
-    UntypedFormGroup,
+    ValidationErrors,
+    ValidatorFn,
     Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +21,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { AuthService } from 'app/core/auth/auth.service';
+//import { AuthService } from 'app/core/auth/auth.service';
+import { ModelAuthSignup } from 'app/shared/api/model/models'
+import { AuthService } from 'app/shared/api/services/api'
 
 @Component({
     selector: 'auth-sign-up',
@@ -35,6 +42,7 @@ import { AuthService } from 'app/core/auth/auth.service';
         MatCheckboxModule,
         MatProgressSpinnerModule,
     ],
+    providers: [AuthService]
 })
 export class AuthSignUpComponent implements OnInit {
     @ViewChild('signUpNgForm') signUpNgForm: NgForm;
@@ -43,8 +51,15 @@ export class AuthSignUpComponent implements OnInit {
         type: 'success',
         message: '',
     };
-    signUpForm: UntypedFormGroup;
+    signUpForm: FormGroup;
     showAlert: boolean = false;
+
+    modelAuthSignup: ModelAuthSignup = {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: ''
+    };
 
     /**
      * Constructor
@@ -52,8 +67,36 @@ export class AuthSignUpComponent implements OnInit {
     constructor(
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
-        private _router: Router
-    ) {}
+        private _router: Router,
+        public formBuilder: FormBuilder
+    ) {
+        this.signUpForm = this.formBuilder.group({
+            name: new FormControl('', Validators.compose([Validators.required])),
+            email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30), this.validateSamePassword, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
+            confirmpassword: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30), this.validateSamePassword, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
+            company: new FormControl(''),
+            agreements: new FormControl('', Validators.compose([Validators.requiredTrue])),
+        }
+        );
+    }
+
+    private validateSamePassword(control: AbstractControl): ValidationErrors | null {
+        const password = control.parent?.get('password');
+        const confirmPassword = control.parent?.get('confirmpassword');
+        if (password?.value == confirmPassword?.value) {
+            if (password?.value !== undefined && password?.value !== '' && !control.parent?.get('password').hasError('pattern')) {
+                control.parent?.get('password').setErrors(null);
+            }
+            if (confirmPassword?.value !== undefined && confirmPassword?.value !== '' && !control.parent?.get('password').hasError('pattern')) {
+                control.parent?.get('confirmpassword').setErrors(null);
+            }
+            return null;
+        }
+        else {
+            return { 'passwordNotMatch': true };
+        }
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -63,14 +106,7 @@ export class AuthSignUpComponent implements OnInit {
      * On init
      */
     ngOnInit(): void {
-        // Create the form
-        this.signUpForm = this._formBuilder.group({
-            name: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required],
-            company: [''],
-            agreements: ['', Validators.requiredTrue],
-        });
+        // Create the form        
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -92,28 +128,56 @@ export class AuthSignUpComponent implements OnInit {
         // Hide the alert
         this.showAlert = false;
 
+        this.modelAuthSignup.email = this.signUpForm.controls.email.value;
+        this.modelAuthSignup.name = this.signUpForm.controls.name.value;
+        this.modelAuthSignup.password = this.signUpForm.controls.password.value;
+        this.modelAuthSignup.passwordConfirm = this.signUpForm.controls.confirmpassword.value;
+
         // Sign up
-        this._authService.signUp(this.signUpForm.value).subscribe(
-            (response) => {
+        this._authService.authSignupAuthSignupPost(this.modelAuthSignup).subscribe({
+            next: (response) => {
                 // Navigate to the confirmation required page
                 this._router.navigateByUrl('/confirmation-required');
-            },
-            (response) => {
+            }, error: (_error) => {
                 // Re-enable the form
                 this.signUpForm.enable();
 
                 // Reset the form
                 this.signUpNgForm.resetForm();
 
+                var message = 'Something went wrong, please try again.';
+
+                if(_error.status === 409 || _error.status === 500){
+                    message = _error?.error['detail'];
+                }
+
                 // Set the alert
                 this.alert = {
                     type: 'error',
-                    message: 'Something went wrong, please try again.',
+                    message: message,
                 };
 
                 // Show the alert
                 this.showAlert = true;
+
             }
-        );
+            //});
+            // (response) => {
+            //     // Re-enable the form
+            //     this.signUpForm.enable();
+
+            //     // Reset the form
+            //     this.signUpNgForm.resetForm();
+
+            //     // Set the alert
+            //     this.alert = {
+            //         type: 'error',
+            //         message: 'Something went wrong, please try again.',
+            //     };
+
+            //     // Show the alert
+            //     this.showAlert = true;
+            // }
+        });
     }
 }
