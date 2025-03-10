@@ -42,8 +42,7 @@ import { AuthService } from 'app/shared/api/services/api'
         MatIconModule,
         MatCheckboxModule,
         MatProgressSpinnerModule,
-    ],
-    providers: [AuthService]
+    ]
 })
 export class AuthSignUpComponent implements OnInit {
     @ViewChild('signUpNgForm') signUpNgForm: NgForm;

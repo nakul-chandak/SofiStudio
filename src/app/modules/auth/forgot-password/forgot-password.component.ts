@@ -32,8 +32,7 @@ import { ModelAuthPasswordResetRequest } from 'app/shared/api/model/models'
         MatButtonModule,
         MatProgressSpinnerModule,
         RouterLink,
-    ],
-    providers: [AuthService]
+    ]
 })
 export class AuthForgotPasswordComponent implements OnInit {
     @ViewChild('forgotPasswordNgForm') forgotPasswordNgForm: NgForm;

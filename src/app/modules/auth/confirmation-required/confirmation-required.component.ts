@@ -13,8 +13,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
     imports: [
         RouterLink,
         FuseAlertComponent,
-    ],
-    providers: [AuthService]
+    ]
 })
 export class AuthConfirmationRequiredComponent implements OnInit {
     verificationCode: string;
