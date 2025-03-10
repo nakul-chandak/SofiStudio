@@ -12,3 +12,4 @@ export * from './modelUserRevokeAccess';
 export * from './modelUserUpdateRoles';
 export * from './modelUserUpdateUser';
 export * from './validationError';
+export * from './modelAuthToken';
