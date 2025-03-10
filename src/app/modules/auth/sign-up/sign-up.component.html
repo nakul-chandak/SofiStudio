@@ -69,7 +69,7 @@
                     @if (signUpForm.get('password').hasError('required')) {
                     <mat-error> Password is required </mat-error>
                     }
-                    @if (signUpForm.get('password').hasError('minlength')) {
+                    @else if (signUpForm.get('password').hasError('minlength')) {
                     <mat-error> Password must be at least 6 characters long. </mat-error>
                     }
                     @else if (signUpForm.get('password').hasError('pattern')) {
@@ -101,8 +101,8 @@
                     @else if (signUpForm.get('confirmpassword').hasError('minlength')) {
                     <mat-error> Confirm Password must be at least 6 characters long. </mat-error>
                     }
-                    @else if (signUpForm.get('confirmpassword').hasError('passwordNotMatch')) {
-                    <mat-error> Password not matched. </mat-error>
+                    @else if (signUpForm.get('confirmpassword').hasError('mustMatch')) {
+                    <mat-error> Passwords must match </mat-error>
                     }@else if (signUpForm.get('confirmpassword').hasError('pattern')) {
                     <mat-error> Password must contain at least one lowercase letter, one uppercase letter, and one
                         number. </mat-error>

@@ -21,6 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
+import { FuseValidators } from '@fuse/validators';
 //import { AuthService } from 'app/core/auth/auth.service';
 import { ModelAuthSignup } from 'app/shared/api/model/models'
 import { AuthService } from 'app/shared/api/services/api'
@@ -73,11 +74,17 @@ export class AuthSignUpComponent implements OnInit {
         this.signUpForm = this.formBuilder.group({
             name: new FormControl('', Validators.compose([Validators.required])),
             email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30), this.validateSamePassword, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
-            confirmpassword: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30), this.validateSamePassword, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
+            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30),  Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
+            confirmpassword: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30),  Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')])),
             company: new FormControl(''),
             agreements: new FormControl('', Validators.compose([Validators.requiredTrue])),
-        }
+        },
+                    {
+                        validators: FuseValidators.mustMatch(
+                            'password',
+                            'confirmpassword'
+                        ),
+                    }
         );
     }
 
