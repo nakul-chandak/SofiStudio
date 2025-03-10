@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  *//* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { inject, Inject, Injectable, Optional }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
-import { Observable }                                        from 'rxjs';
+import { Observable, of, switchMap, throwError }                                        from 'rxjs';
 
 import { HTTPValidationError } from '../model/hTTPValidationError';
 import { ModelAuthPasswordReset } from '../model/modelAuthPasswordReset';
@@ -27,23 +27,25 @@ import { ModelCommonResponse } from '../model/modelCommonResponse';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
+import { environment } from '../../../../environments/environment';
+import { ModelAuthToken } from '../model/modelAuthToken';
+import { map } from 'lodash';
 
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    protected basePath = 'https://sofi-md-api-h2e4a7fmc2a8hsdx.centralus-01.azurewebsites.net';
+    protected basePath = environment.BASE_API_PATH;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
+    private _authenticated: boolean = false;
+    private httpClient = inject(HttpClient);
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
-        if (basePath) {
-            this.basePath = basePath;
-        }
-        if (configuration) {
-            this.configuration = configuration;
-            this.basePath = basePath || configuration.basePath || this.basePath;
-        }
+    set accessToken(token: string) {
+        localStorage.setItem('accessToken', token);
+    }
+
+    get accessToken(): string {
+        return localStorage.getItem('accessToken') ?? '';
     }
 
     /**
@@ -73,13 +75,17 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: 'body', reportProgress?: boolean): Observable<ModelAuthToken>;
+    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: ModelAuthToken, reportProgress?: boolean): Observable<HttpResponse<ModelAuthToken>>;
+    public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelAuthToken>>;
     public authSigninAuthSigninPostForm(grantType: string, username: string, password: string, scope: string, clientId: string, clientSecret: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
-        if (grantType === null || grantType === undefined) {
-            throw new Error('Required parameter grantType was null or undefined when calling authSigninAuthSigninPost.');
+           if (this._authenticated) {
+                    return throwError('User is already logged in.');
+                };
+
+        if (grantType === null || grantType === undefined || grantType === "") {
+            grantType="password"
         }
 
         if (username === null || username === undefined) {
@@ -148,16 +154,23 @@ export class AuthService {
             formParams = formParams.append('client_secret', <any>clientSecret) as any || formParams;
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/auth/signin`,
+        return this.httpClient.request<ModelAuthToken>('post',`${this.basePath}/auth/signin`,
             {
                 body: convertFormParamsToString ? formParams.toString() : formParams,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
                 reportProgress: reportProgress
-            }
-        );
+            })
+    .pipe(
+        switchMap((response: any) => {
+            this.accessToken = response.access_token;
+            // Set the authenticated flag to true
+                this._authenticated = true;
+            return of(response);
+        }));
     }
+    
 
     /**
      * Auth Signup
@@ -347,4 +360,27 @@ export class AuthService {
         );
     }
 
+     /**
+         * Check the authentication status
+         */
+        check(): Observable<boolean> {
+            // Check if the user is logged in
+            if (this._authenticated) {
+                return of(true);
+            }
+    
+            // Check the access token availability
+            if (!this.accessToken) {
+                return of(false);
+            }
+    
+            return of(false);
+            // Check the access token expire date
+            // if (AuthUtils.isTokenExpired(this.accessToken)) {
+            //     return of(false);
+            // }
+    
+            // If the access token exists, and it didn't expire, sign in using it
+            //return this.signInUsingToken();
+        }
 }
