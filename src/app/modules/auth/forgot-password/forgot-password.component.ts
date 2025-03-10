@@ -14,8 +14,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { AuthService } from 'app/core/auth/auth.service';
+import { AuthService } from 'app/shared/api/services/api'
 import { finalize } from 'rxjs';
+import { ModelAuthPasswordResetRequest } from 'app/shared/api/model/models'
 
 @Component({
     selector: 'auth-forgot-password',
@@ -32,6 +33,7 @@ import { finalize } from 'rxjs';
         MatProgressSpinnerModule,
         RouterLink,
     ],
+    providers: [AuthService]
 })
 export class AuthForgotPasswordComponent implements OnInit {
     @ViewChild('forgotPasswordNgForm') forgotPasswordNgForm: NgForm;
@@ -42,6 +44,9 @@ export class AuthForgotPasswordComponent implements OnInit {
     };
     forgotPasswordForm: UntypedFormGroup;
     showAlert: boolean = false;
+    modelAuthPasswordResetRequest: ModelAuthPasswordResetRequest = {
+        email: ''
+    };
 
     /**
      * Constructor
@@ -49,7 +54,7 @@ export class AuthForgotPasswordComponent implements OnInit {
     constructor(
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -84,38 +89,44 @@ export class AuthForgotPasswordComponent implements OnInit {
         // Hide the alert
         this.showAlert = false;
 
+        this.modelAuthPasswordResetRequest.email = this.forgotPasswordForm.controls.email.value;
+
         // Forgot password
-        this._authService
-            .forgotPassword(this.forgotPasswordForm.get('email').value)
-            .pipe(
-                finalize(() => {
-                    // Re-enable the form
-                    this.forgotPasswordForm.enable();
+        this._authService.passwordResetRequestAuthPasswordResetRequestPost(this.modelAuthPasswordResetRequest)
+        .pipe(
+            finalize(() => {
+                // Re-enable the form
+                this.forgotPasswordForm.enable();
 
-                    // Reset the form
-                    this.forgotPasswordNgForm.resetForm();
+                // Reset the form
+                this.forgotPasswordNgForm.resetForm();
 
-                    // Show the alert
-                    this.showAlert = true;
-                })
-            )
-            .subscribe(
-                (response) => {
-                    // Set the alert
-                    this.alert = {
-                        type: 'success',
-                        message:
-                            "Password reset sent! You'll receive an email if you are registered on our system.",
-                    };
-                },
-                (response) => {
-                    // Set the alert
-                    this.alert = {
-                        type: 'error',
-                        message:
-                            'Email does not found! Are you sure you are already a member?',
-                    };
+                // Show the alert
+                this.showAlert = true;
+            })
+        )
+        .subscribe({
+            next: (response) => { 
+                // Set the alert
+                this.alert = {
+                    type: 'success',
+                    message:
+                        "Password reset sent! You'll receive an email if you are registered on our system.",
+                };
+
+            }, error: (_error) => {
+                var message = 'Something went wrong, please try again.';
+
+                if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                    message = _error?.error['detail'];
                 }
-            );
+
+                // Set the alert
+                this.alert = {
+                    type: 'error',
+                    message: message,
+                };
+            }
+        });
     }
 }
