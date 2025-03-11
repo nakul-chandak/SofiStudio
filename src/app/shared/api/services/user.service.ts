@@ -10,12 +10,14 @@
  * Do not edit the class manually.
  *//* tslint:disable:no-unused-variable member-ordering */
 
-import { inject, Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent }                           from '@angular/common/http';
-import { CustomHttpUrlEncodingCodec }                        from '../encoder';
+import { inject, Inject, Injectable, Optional } from '@angular/core';
+import {
+    HttpClient, HttpHeaders, HttpParams,
+    HttpResponse, HttpEvent
+} from '@angular/common/http';
+import { CustomHttpUrlEncodingCodec } from '../encoder';
 
-import { Observable, ReplaySubject }                                        from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, tap } from 'rxjs';
 
 import { HTTPValidationError } from '../model/hTTPValidationError';
 import { ModelCommonResponse } from '../model/modelCommonResponse';
@@ -24,9 +26,10 @@ import { ModelUserRevokeAccess } from '../model/modelUserRevokeAccess';
 import { ModelUserUpdateRoles } from '../model/modelUserUpdateRoles';
 import { ModelUserUpdateUser } from '../model/modelUserUpdateUser';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
 import { User } from 'app/core/user/user.types';
+import { Contact } from 'app/modules/admin/apps/contacts/contacts.types';
 
 
 @Injectable({ providedIn: 'root' })
@@ -34,22 +37,41 @@ export class UserService {
 
     private httpClient = inject(HttpClient);
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
-
-         /**
-         * Setter & getter for user
-         *
-         * @param value
+    private _contacts: BehaviorSubject<Contact[] | null> = new BehaviorSubject(
+        null
+    );
+    private _contact: BehaviorSubject<Contact | null> = new BehaviorSubject(
+        null
+    );
+    /**
+         * Getter for contact
          */
-         set user(value: User) {
-            // Store the value
-            this._user.next(value);
-        }
-    
-        get user$(): Observable<User> {
-            return this._user.asObservable();
-        }
-        
-    protected basePath = '/';
+    get contact$(): Observable<Contact> {
+        return this._contact.asObservable();
+    }
+
+    /**
+     * Getter for contacts
+     */
+    get contacts$(): Observable<Contact[]> {
+        return this._contacts.asObservable();
+    }
+
+    /**
+    * Setter & getter for user
+    *
+    * @param value
+    */
+    set user(value: User) {
+        // Store the value
+        this._user.next(value);
+    }
+
+    get user$(): Observable<User> {
+        return this._user.asObservable();
+    }
+
+    protected basePath = 'https://sofi-md-api-h2e4a7fmc2a8hsdx.centralus-01.azurewebsites.net';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -78,7 +100,7 @@ export class UserService {
     public approveAccessUserAdminApproveAccessPost(body: ModelUserApproveAccess, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
     public approveAccessUserAdminApproveAccessPost(body: ModelUserApproveAccess, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
     public approveAccessUserAdminApproveAccessPost(body: ModelUserApproveAccess, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public approveAccessUserAdminApproveAccessPost(body: ModelUserApproveAccess, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public approveAccessUserAdminApproveAccessPost(body: ModelUserApproveAccess, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling approveAccessUserAdminApproveAccessPost.');
@@ -112,7 +134,7 @@ export class UserService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/user/admin/approve-access`,
+        return this.httpClient.request<ModelCommonResponse>('post', `${this.basePath}/user/admin/approve-access`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -132,7 +154,7 @@ export class UserService {
     public listAllRolesUserAdminListAllRolesGet(observe?: 'body', reportProgress?: boolean): Observable<any>;
     public listAllRolesUserAdminListAllRolesGet(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public listAllRolesUserAdminListAllRolesGet(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public listAllRolesUserAdminListAllRolesGet(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public listAllRolesUserAdminListAllRolesGet(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -157,7 +179,7 @@ export class UserService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/user/admin/list-all-roles`,
+        return this.httpClient.request<any>('get', `${this.basePath}/user/admin/list-all-roles`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -176,7 +198,7 @@ export class UserService {
     public listAllUsersUserAdminListAllUsersGet(observe?: 'body', reportProgress?: boolean): Observable<any>;
     public listAllUsersUserAdminListAllUsersGet(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public listAllUsersUserAdminListAllUsersGet(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public listAllUsersUserAdminListAllUsersGet(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public listAllUsersUserAdminListAllUsersGet(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -201,14 +223,17 @@ export class UserService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/user/admin/list-all-users`,
+        return this.httpClient.request<any>('get', `${this.basePath}/user/admin/list-all-users`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe(tap((contacts) => {
+            this._contacts.next(contacts);
+        }));
+
     }
 
     /**
@@ -220,7 +245,7 @@ export class UserService {
     public refreshTokenUserRefreshGet(observe?: 'body', reportProgress?: boolean): Observable<any>;
     public refreshTokenUserRefreshGet(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public refreshTokenUserRefreshGet(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public refreshTokenUserRefreshGet(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public refreshTokenUserRefreshGet(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -245,7 +270,7 @@ export class UserService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/user/refresh`,
+        return this.httpClient.request<any>('get', `${this.basePath}/user/refresh`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -265,7 +290,7 @@ export class UserService {
     public revokeAccessUserAdminRevokeAccessPost(body: ModelUserRevokeAccess, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
     public revokeAccessUserAdminRevokeAccessPost(body: ModelUserRevokeAccess, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
     public revokeAccessUserAdminRevokeAccessPost(body: ModelUserRevokeAccess, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public revokeAccessUserAdminRevokeAccessPost(body: ModelUserRevokeAccess, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public revokeAccessUserAdminRevokeAccessPost(body: ModelUserRevokeAccess, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling revokeAccessUserAdminRevokeAccessPost.');
@@ -299,7 +324,7 @@ export class UserService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/user/admin/revoke-access`,
+        return this.httpClient.request<ModelCommonResponse>('post', `${this.basePath}/user/admin/revoke-access`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -320,7 +345,7 @@ export class UserService {
     public updateRolesUserAdminUpdateRolesPost(body: ModelUserUpdateRoles, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
     public updateRolesUserAdminUpdateRolesPost(body: ModelUserUpdateRoles, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
     public updateRolesUserAdminUpdateRolesPost(body: ModelUserUpdateRoles, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public updateRolesUserAdminUpdateRolesPost(body: ModelUserUpdateRoles, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public updateRolesUserAdminUpdateRolesPost(body: ModelUserUpdateRoles, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling updateRolesUserAdminUpdateRolesPost.');
@@ -354,7 +379,7 @@ export class UserService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/user/admin/update-roles`,
+        return this.httpClient.request<ModelCommonResponse>('post', `${this.basePath}/user/admin/update-roles`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -375,7 +400,7 @@ export class UserService {
     public updateUserUserUpdatePost(body: ModelUserUpdateUser, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
     public updateUserUserUpdatePost(body: ModelUserUpdateUser, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
     public updateUserUserUpdatePost(body: ModelUserUpdateUser, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public updateUserUserUpdatePost(body: ModelUserUpdateUser, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public updateUserUserUpdatePost(body: ModelUserUpdateUser, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling updateUserUserUpdatePost.');
@@ -409,7 +434,7 @@ export class UserService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/user/update`,
+        return this.httpClient.request<ModelCommonResponse>('post', `${this.basePath}/user/update`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -430,7 +455,7 @@ export class UserService {
     public uploadProfilePicUserUploadProfilePicPostForm(file: Blob, observe?: 'body', reportProgress?: boolean): Observable<any>;
     public uploadProfilePicUserUploadProfilePicPostForm(file: Blob, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public uploadProfilePicUserUploadProfilePicPostForm(file: Blob, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public uploadProfilePicUserUploadProfilePicPostForm(file: Blob, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public uploadProfilePicUserUploadProfilePicPostForm(file: Blob, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         if (file === null || file === undefined) {
             throw new Error('Required parameter file was null or undefined when calling uploadProfilePicUserUploadProfilePicPost.');
@@ -471,14 +496,14 @@ export class UserService {
         if (useForm) {
             formParams = new FormData();
         } else {
-            formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+            formParams = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         }
 
         if (file !== undefined) {
             formParams = formParams.append('file', <any>file) as any || formParams;
         }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/user/upload-profile-pic`,
+        return this.httpClient.request<any>('post', `${this.basePath}/user/upload-profile-pic`,
             {
                 body: convertFormParamsToString ? formParams.toString() : formParams,
                 withCredentials: this.configuration.withCredentials,
@@ -498,7 +523,7 @@ export class UserService {
     public userMeUserMeGet(observe?: 'body', reportProgress?: boolean): Observable<any>;
     public userMeUserMeGet(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public userMeUserMeGet(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public userMeUserMeGet(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public userMeUserMeGet(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -523,7 +548,7 @@ export class UserService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/user/me`,
+        return this.httpClient.request<any>('get', `${this.basePath}/user/me`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

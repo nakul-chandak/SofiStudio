@@ -19,6 +19,13 @@ export interface Contact {
     notes?: string | null;
     tags: string[];
     isBulkSelect:boolean;
+    _id: string;
+    email: string;
+    photo?: string | null; 
+    roles: string[];
+    verified:boolean;
+    approved:boolean;
+    revoked:boolean;
 }
 
 export interface Country {

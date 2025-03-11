@@ -28,6 +28,7 @@ import {
 } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
+import { UserService } from 'app/shared/api/services/api';
 import {
     Contact,
     Country,
@@ -40,6 +41,7 @@ import {
     switchMap,
     takeUntil,
 } from 'rxjs';
+import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
     selector: 'contacts-list',
@@ -59,12 +61,19 @@ import {
         RouterLink,
         AsyncPipe,
         I18nPluralPipe,
-        MatCheckboxModule
+        MatCheckboxModule,
+        FuseAlertComponent
     ],
 })
 export class ContactsListComponent implements OnInit, OnDestroy {
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
+
+    showAlert: boolean = false;
     contacts$: Observable<Contact[]>;
 
     contactsCount: number = 0;
@@ -75,7 +84,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     selectedContact: Contact;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     indeterminate = false;
-    selectAllContacts=false;
+    selectAllContacts = false;
     /**
      * Constructor
      */
@@ -85,8 +94,9 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         private _contactsService: ContactsService,
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
-    ) {}
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _userService: UserService
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -97,8 +107,8 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get the contacts
-        this.contacts$ = this._contactsService.contacts$;
-        this._contactsService.contacts$
+        this.contacts$ = this._userService.contacts$;
+        this._userService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contacts: Contact[]) => {
                 // Update the counts
@@ -109,7 +119,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
             });
 
         // Get the contact
-        this._contactsService.contact$
+        this._userService.contact$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contact: Contact) => {
                 // Update the selected contact
@@ -236,14 +246,14 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Modify contacts
      */
     bulkActions() {
-        this.contacts$.subscribe((contacts:Contact[]) =>{
-            const selectedConacts = contacts.filter((contact) =>contact.isBulkSelect);
+        this.contacts$.subscribe((contacts: Contact[]) => {
+            const selectedConacts = contacts.filter((contact) => contact.isBulkSelect);
             this._router.navigate(['./bulk-update'], {
                 relativeTo: this._activatedRoute,
-                state:selectedConacts
+                state: selectedConacts
             });
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
         });
     }
 
@@ -255,19 +265,19 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     update(completed: boolean, contact?: Contact) {
         if (contact === undefined) {
             this.indeterminate = false;
-        this.contacts$.subscribe((contacts:Contact[]) =>{
-            contacts.forEach(x=>(x.isBulkSelect = completed));
-            this.selectAllContacts =completed;
-        });
-        
-     }
-     else {
-        contact.isBulkSelect = completed;
-        this.contacts$.subscribe((contacts:Contact[]) =>{
-            this.selectAllContacts = contacts?.every(x=>(x.isBulkSelect))?? true;
-           this.indeterminate = contacts?.some(x=>(x.isBulkSelect)) && !contacts?.every(x=>(x.isBulkSelect));
-           
-        });
-      }
+            this.contacts$.subscribe((contacts: Contact[]) => {
+                contacts.forEach(x => (x.isBulkSelect = completed));
+                this.selectAllContacts = completed;
+            });
+
+        }
+        else {
+            contact.isBulkSelect = completed;
+            this.contacts$.subscribe((contacts: Contact[]) => {
+                this.selectAllContacts = contacts?.every(x => (x.isBulkSelect)) ?? true;
+                this.indeterminate = contacts?.some(x => (x.isBulkSelect)) && !contacts?.every(x => (x.isBulkSelect));
+
+            });
+        }
     }
 }
