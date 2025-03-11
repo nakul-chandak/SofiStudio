@@ -174,10 +174,12 @@ export class AuthService {
                 avatar: 'images/avatars/brian-hughes.jpg',
                 status: 'online',
             };
+            this._userService.user = user;
+
             // Set the authenticated flag to true
                 this._authenticated = true;
 
-                this._userService.user = user;
+              
 
             return of(response);
         }));
@@ -376,14 +378,34 @@ export class AuthService {
          * Check the authentication status
          */
         check(): Observable<boolean> {
+            
             // Check if the user is logged in
             if (this._authenticated) {
+                const user = {
+                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
+                    name: 'Nakul Chandak',
+                    email: 'nakul.chandak@aianddigital.com',
+                    avatar: 'images/avatars/brian-hughes.jpg',
+                    status: 'online',
+                };
+                this._userService.user = user;
+
                 return of(true);
             }
     
             // Check the access token availability
-            if (!this.accessToken) {
-                return of(false);
+            if (this.accessToken) {
+                const user = {
+                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
+                    name: 'Nakul Chandak',
+                    email: 'nakul.chandak@aianddigital.com',
+                    avatar: 'images/avatars/brian-hughes.jpg',
+                    status: 'online',
+                };
+                this._userService.user = user;
+                
+                this._authenticated = true;
+                return of(true);
             }
     
             return of(false);
