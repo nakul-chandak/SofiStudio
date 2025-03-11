@@ -98,16 +98,16 @@
                         <a class="z-20 flex w-full cursor-pointer items-center px-6 py-4 md:px-8" [ngClass]="{
                                                                         'dark:hover:bg-hover':
                                                                             !selectedContact ||
-                                                                            selectedContact.id !== contact.id,
+                                                                            selectedContact._id !== contact._id,
                                                                         'dark:bg-hover':
                                                                             selectedContact &&
-                                                                            selectedContact.id === contact.id,
-                                                                    }" [routerLink]="['./', contact.id]">
+                                                                            selectedContact._id === contact._id,
+                                                                    }" (click)="editContact(contact._id)" >
                             <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
-                                @if (contact.avatar) {
-                                <img class="h-full w-full object-cover" [src]="contact.avatar" alt="Contact avatar" />
+                                @if (contact.photo) {
+                                <img class="h-full w-full object-cover" [src]="contact.photo" alt="Contact avatar" />
                                 }
-                                @if (!contact.avatar) {
+                                @if (!contact.photo) {
                                 <div
                                     class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                     {{ contact.name.charAt(0) }}

@@ -17,7 +17,7 @@ import {
 } from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec } from '../encoder';
 
-import { BehaviorSubject, Observable, ReplaySubject, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, ReplaySubject, switchMap, take, tap, throwError } from 'rxjs';
 
 import { HTTPValidationError } from '../model/hTTPValidationError';
 import { ModelCommonResponse } from '../model/modelCommonResponse';
@@ -30,6 +30,7 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
 import { User } from 'app/core/user/user.types';
 import { Contact } from 'app/modules/admin/apps/contacts/contacts.types';
+import { environment } from 'environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
@@ -37,6 +38,7 @@ export class UserService {
 
     private httpClient = inject(HttpClient);
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
+    private _userEditMode: ReplaySubject<boolean> = new ReplaySubject<boolean>();
     private _contacts: BehaviorSubject<Contact[] | null> = new BehaviorSubject(
         null
     );
@@ -71,7 +73,15 @@ export class UserService {
         return this._user.asObservable();
     }
 
-    protected basePath = 'https://sofi-md-api-h2e4a7fmc2a8hsdx.centralus-01.azurewebsites.net';
+    set iseditUserMode(value:boolean) {
+        this._userEditMode.next(value);
+    }
+
+    get iseditUserMode$(): Observable<boolean> {
+        return this._userEditMode.asObservable();
+    }
+
+    protected basePath = environment.BASE_API_PATH;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -557,5 +567,34 @@ export class UserService {
             }
         );
     }
+
+     /**
+         * Get contact by id
+         */
+        getContactById(id: string): Observable<Contact> {
+            return this._contacts.pipe(
+                take(1),
+                map((contacts) => {
+                    // Find the contact
+                    const contact = contacts.find((item) => item._id === id) || null;
+    
+                    // Update the contact
+                    this._contact.next(contact);
+    
+                    // Return the contact
+                    return contact;
+                }),
+                switchMap((contact) => {
+                    if (!contact) {
+                        contact = <Contact> {_id:"00000000-0000-0000-0000-000000000000", name:"dummy user",photo:"",email:"" };
+                        // return throwError(
+                        //     'Could not found contact with id of ' + id + '!'
+                        // );
+                    }
+    
+                    return of(contact);
+                })
+            );
+        }
 
 }
