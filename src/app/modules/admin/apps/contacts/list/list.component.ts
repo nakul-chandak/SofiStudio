@@ -58,7 +58,6 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         ReactiveFormsModule,
         MatButtonModule,
         NgClass,
-        RouterLink,
         AsyncPipe,
         I18nPluralPipe,
         MatCheckboxModule,
@@ -220,16 +219,24 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Create contact
      */
     createContact(): void {
-        // Create the contact
-        this._contactsService.createContact().subscribe((newContact) => {
-            // Go to the new contact
-            this._router.navigate(['./', newContact.id], {
-                relativeTo: this._activatedRoute,
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
+        this._userService.iseditUserMode = true;
+        this._router.navigate(['./', ""], {
+            relativeTo: this._activatedRoute,
         });
+        // Create the contact
+        this._changeDetectorRef.markForCheck();
+    }
+
+       /**
+     * Create contact
+     */
+       editContact(id:string): void {
+        this._userService.iseditUserMode = false;
+        this._router.navigate(['./', id], {
+            relativeTo: this._activatedRoute,
+        });
+        // Create the contact
+        this._changeDetectorRef.markForCheck();
     }
 
     /**

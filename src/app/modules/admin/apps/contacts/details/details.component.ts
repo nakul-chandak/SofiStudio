@@ -42,8 +42,9 @@ import {
     Tag,
 } from 'app/modules/admin/apps/contacts/contacts.types';
 import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
+import { UserService } from 'app/shared/api/services/user.service';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { ModelAuthSignup } from 'app/shared/api/model/models'
+import { ModelAuthSignup, ModelUserRevokeAccess } from 'app/shared/api/model/models'
 import { AuthService } from 'app/shared/api/services/api'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
@@ -63,7 +64,6 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         MatFormFieldModule,
         MatInputModule,
         MatCheckboxModule,
-        NgClass,
         MatSelectModule,
         MatOptionModule,
         MatDatepickerModule,
@@ -76,6 +76,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
 
+    isNewContact = false;
     editMode: boolean = false;
     tags: Tag[];
     tagsEditMode: boolean = false;
@@ -108,6 +109,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _contactsListComponent: ContactsListComponent,
         private _contactsService: ContactsService,
+        private _userService: UserService,
         private _formBuilder: UntypedFormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _renderer2: Renderer2,
@@ -131,21 +133,18 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
         // Create the contact form
         this.contactForm = this._formBuilder.group({
-            id: [''],
+            _id: [''],
+            id:[''],
             avatar: [null],
             name: ['', [Validators.required]],
-            emails: this._formBuilder.array([]),
-            phoneNumbers: this._formBuilder.array([]),
-            title: [''],
-            company: [''],
-            birthday: [null],
-            address: [null],
-            notes: [null],
-            tags: [[]],
+            email: ['', [Validators.required,Validators.email]],
         });
 
+        this._userService.iseditUserMode$.pipe(takeUntil(this._unsubscribeAll)) .subscribe((value: boolean) => {
+            this.isNewContact = value;
+        });
         // Get the contacts
-        this._contactsService.contacts$
+        this._userService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contacts: Contact[]) => {
                 this.contacts = contacts;
@@ -155,88 +154,21 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             });
 
         // Get the contact
-        this._contactsService.contact$
+        this._userService.contact$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contact: Contact) => {
                 // Open the drawer in case it is closed
                 this._contactsListComponent.matDrawer.open();
-
+                    if(this.isNewContact) {
+                    contact = <Contact> {_id:"", name:"dummy user",photo:"",email:"",approved:false, revoked:false };
+                    }
                 // Get the contact
                 this.contact = contact;
-
-                // Clear the emails and phoneNumbers form arrays
-                (this.contactForm.get('emails') as UntypedFormArray).clear();
-                (
-                    this.contactForm.get('phoneNumbers') as UntypedFormArray
-                ).clear();
 
                 // Patch values to the form
                 this.contactForm.patchValue(contact);
 
-                // Setup the emails form array
-                const emailFormGroups = [];
-
-                if (contact.emails.length > 0) {
-                    // Iterate through them
-                    contact.emails.forEach((email) => {
-                        // Create an email form group
-                        emailFormGroups.push(
-                            this._formBuilder.group({
-                                email: [email.email],
-                                label: [email.label],
-                            })
-                        );
-                    });
-                } else {
-                    // Create an email form group
-                    emailFormGroups.push(
-                        this._formBuilder.group({
-                            email: [''],
-                            label: [''],
-                        })
-                    );
-                }
-
-                // Add the email form groups to the emails form array
-                emailFormGroups.forEach((emailFormGroup) => {
-                    (this.contactForm.get('emails') as UntypedFormArray).push(
-                        emailFormGroup
-                    );
-                });
-
-                // Setup the phone numbers form array
-                const phoneNumbersFormGroups = [];
-
-                if (contact.phoneNumbers.length > 0) {
-                    // Iterate through them
-                    contact.phoneNumbers.forEach((phoneNumber) => {
-                        // Create an email form group
-                        phoneNumbersFormGroups.push(
-                            this._formBuilder.group({
-                                country: [phoneNumber.country],
-                                phoneNumber: [phoneNumber.phoneNumber],
-                                label: [phoneNumber.label],
-                            })
-                        );
-                    });
-                } else {
-                    // Create a phone number form group
-                    phoneNumbersFormGroups.push(
-                        this._formBuilder.group({
-                            country: ['us'],
-                            phoneNumber: [''],
-                            label: [''],
-                        })
-                    );
-                }
-
-                // Add the phone numbers form groups to the phone numbers form array
-                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
-                    (
-                        this.contactForm.get('phoneNumbers') as UntypedFormArray
-                    ).push(phoneNumbersFormGroup);
-                });
-
+                
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
 
@@ -310,24 +242,16 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     /**
      * Update the contact
      */
-    updateContact(): void {
+    updateContact(revoked:boolean, approved:boolean): void {
         // Get the contact object
         const contact = this.contactForm.getRawValue();
 
-        // Go through the contact object and clear empty values
-        contact.emails = contact.emails.filter((email) => email.email);
-
-        contact.phoneNumbers = contact.phoneNumbers.filter(
-            (phoneNumber) => phoneNumber.phoneNumber
-        );
-
-        this.modelAuthSignup.email = contact.emails ? contact.emails[0].email : '';
+        this.modelAuthSignup.email = contact.email;
         this.modelAuthSignup.name = contact.name;
-
+        this.showAlert = false;
         // Create New contact on the server
         if (!this.contact._id && this.contact._id === '') {
             // Hide the alert
-            this.showAlert = false;
             this._authService
                 .authSignupAuthSignupPost(this.modelAuthSignup)
                 .subscribe({
@@ -364,6 +288,26 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.showAlert = true;
                     }
                 });
+                return;
+        }
+        else if(approved) {
+            const revokeData = <ModelUserRevokeAccess>{
+                userIdList:[this.contact._id],
+                revoke:true
+            };
+
+            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe((response)=>{
+                console.log(revokeData);
+                this.alert = {
+                    type: 'success',
+                    message: `Access has been revoked successfully.`,
+                };
+                // Show the alert
+                this.showAlert = true;
+            });
+        }
+        else if(revoked) {
+
         }
     }
 
