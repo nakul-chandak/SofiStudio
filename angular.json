@@ -39,7 +39,8 @@
                                 "glob": "_redirects",
                                 "input": "src",
                                 "output": "/"
-                            }
+                            },
+                            "src/staticwebapp.config.json"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/@fuse/styles"]
@@ -111,7 +112,8 @@
                             {
                                 "glob": "**/*",
                                 "input": "public"
-                            }
+                            },
+                             "src/staticwebapp.config.json"
                         ],
                         "styles": ["src/styles/styles.scss"],
                         "scripts": []
