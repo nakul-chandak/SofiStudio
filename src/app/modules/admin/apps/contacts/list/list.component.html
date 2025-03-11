@@ -118,20 +118,20 @@
                                         contacts[i - 1].name.charAt(0)
                                 ) {
                                     <div
-                                        class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8"
+                                        class="m-l-16 text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8"
                                     >
                                         {{ contact.name.charAt(0) }}
                                     </div>
                                 }
                                 <!-- Contact -->
                                 <!--Checkbox for select All -->
-                                <div class="flex">
+                                <div class="flex border-b">
                                     <mat-checkbox 
                                     [checked]="contact.isBulkSelect"
                                     (change)="update($event.checked,contact)"
                                     ></mat-checkbox>
                                     
-                                    <a class="z-20 flex w-full cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{
+                                    <a class="z-20 flex w-full cursor-pointer items-center px-6 py-4 md:px-8" [ngClass]="{
                                                                         'dark:hover:bg-hover':
                                                                             !selectedContact ||
                                                                             selectedContact.id !== contact.id,
