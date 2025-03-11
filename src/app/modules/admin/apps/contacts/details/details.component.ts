@@ -43,6 +43,9 @@ import {
 } from 'app/modules/admin/apps/contacts/contacts.types';
 import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { ModelAuthSignup } from 'app/shared/api/model/models'
+import { AuthService } from 'app/shared/api/services/api'
+import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
     selector: 'contacts-details',
@@ -64,7 +67,8 @@ import { Subject, debounceTime, takeUntil } from 'rxjs';
         MatSelectModule,
         MatOptionModule,
         MatDatepickerModule,
-        TextFieldModule
+        TextFieldModule,
+        FuseAlertComponent
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {
@@ -83,6 +87,19 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    modelAuthSignup: ModelAuthSignup = {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: ''
+    };
+
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
+    showAlert: boolean = false;
+
     /**
      * Constructor
      */
@@ -96,8 +113,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
-    ) {}
+        private _viewContainerRef: ViewContainerRef,
+        private _authService: AuthService,
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -107,6 +125,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+        this.showAlert = false;
         // Open the drawer
         this._contactsListComponent.matDrawer.open();
 
@@ -302,13 +321,50 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             (phoneNumber) => phoneNumber.phoneNumber
         );
 
-        // Update the contact on the server
-        this._contactsService
-            .updateContact(contact.id, contact)
-            .subscribe(() => {
-                // Toggle the edit mode off
-                this.toggleEditMode(false);
-            });
+        this.modelAuthSignup.email = contact.emails ? contact.emails[0].email : '';
+        this.modelAuthSignup.name = contact.name;
+
+        // Create New contact on the server
+        if (!this.contact._id && this.contact._id === '') {
+            // Hide the alert
+            this.showAlert = false;
+            this._authService
+                .authSignupAuthSignupPost(this.modelAuthSignup)
+                .subscribe({
+                    next: (response) => () => {
+                        // Toggle the edit mode off
+                        this.toggleEditMode(false);
+
+                        // Set the alert
+                        this.alert = {
+                            type: 'success',
+                            message: `A confirmation mail with instructions has been sent to your
+                                      email address. Follow those instructions to confirm your email
+                                      address and activate your account.`,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    }, error: (_error) => {
+                        this.toggleEditMode(false);
+
+                        var message = 'Something went wrong, please try again.';
+
+                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                            message = _error?.error['detail'];
+                        }
+
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: message,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    }
+                });
+        }
     }
 
     /**

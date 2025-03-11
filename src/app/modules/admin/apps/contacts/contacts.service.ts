@@ -134,13 +134,13 @@ export class ContactsService {
     createContact(): Observable<Contact> {
         return this.contacts$.pipe(
             take(1),
-            switchMap((contacts) =>
+            switchMap((dummycontacts) =>
                 this._httpClient
                     .post<Contact>('api/apps/contacts/contact', {})
                     .pipe(
                         map((newContact) => {
                             // Update the contacts with the new contact
-                            this._contacts.next([newContact, ...contacts]);
+                            this._contacts.next([newContact, ...dummycontacts]);
 
                             // Return the new contact
                             return newContact;

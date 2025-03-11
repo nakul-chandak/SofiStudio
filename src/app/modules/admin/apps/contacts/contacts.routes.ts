@@ -96,6 +96,7 @@ export default [
                 resolve: {
                     contacts: () => inject(UserService).listAllUsersUserAdminListAllUsersGet(),
                     countries: () => inject(ContactsService).getCountries(),
+                    dummycontacts: () => inject(ContactsService).getContacts(),
                 },
                 children: [
                     {

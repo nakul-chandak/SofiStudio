@@ -117,6 +117,13 @@ export class ContactsMockApi {
                     tags: [],
                     userVerificationStatus: 'Not verified',
                     userStatus: 'Inactive',
+                    _id: '',
+                    email: '',
+                    photo: null,
+                    roles: [],
+                    verified: false,
+                    approved: false,
+                    revoked: false,
                 };
 
                 // Unshift the new contact
