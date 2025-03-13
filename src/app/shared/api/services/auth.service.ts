@@ -167,20 +167,19 @@ export class AuthService {
     .pipe(
         switchMap((response: any) => {
             this.accessToken = response.access_token;
-            const user = {
-                id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
-                name: 'Nakul Chandak',
-                email: 'nakul.chandak@aianddigital.com',
-                avatar: 'images/avatars/brian-hughes.jpg',
-                status: 'online',
-            };
-            this._userService.user = user;
-
             // Set the authenticated flag to true
-                this._authenticated = true;
+            this._authenticated = true;
 
-              
-
+            this._userService.userMeUserMeGet().subscribe((user)=>{
+                const userData = {
+                    id: '',
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.photo,
+                    status: 'online',
+                };
+                this._userService.user = userData;
+            });
             return of(response);
         }));
     }
@@ -381,30 +380,14 @@ export class AuthService {
             
             // Check if the user is logged in
             if (this._authenticated) {
-                const user = {
-                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
-                    name: 'Nakul Chandak',
-                    email: 'nakul.chandak@aianddigital.com',
-                    avatar: 'images/avatars/brian-hughes.jpg',
-                    status: 'online',
-                };
-                this._userService.user = user;
-
+                this.setUserData();
                 return of(true);
             }
     
             // Check the access token availability
             if (this.accessToken) {
-                const user = {
-                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
-                    name: 'Nakul Chandak',
-                    email: 'nakul.chandak@aianddigital.com',
-                    avatar: 'images/avatars/brian-hughes.jpg',
-                    status: 'online',
-                };
-                this._userService.user = user;
-                
                 this._authenticated = true;
+                this.setUserData();
                 return of(true);
             }
     
@@ -430,5 +413,19 @@ export class AuthService {
 
         // Return the observable
         return of(true);
+    }
+
+    setUserData() {
+        this._userService.userMeUserMeGet().subscribe((user)=>{
+            const userData = {
+                id: '',
+                name: user.name,
+                email: user.email,
+                avatar: user.photo == null ? "":user.photo,
+                status: 'online',
+            };
+            this._userService.user = userData;
+           
+        });
     }
 }
