@@ -69,8 +69,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         MatOptionModule,
         MatDatepickerModule,
         TextFieldModule,
-        FuseAlertComponent,
-        JsonPipe
+        FuseAlertComponent
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {

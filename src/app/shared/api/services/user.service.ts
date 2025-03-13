@@ -32,7 +32,6 @@ import { User } from 'app/core/user/user.types';
 import { Contact } from 'app/modules/admin/apps/contacts/contacts.types';
 import { environment } from 'environments/environment';
 
-
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
@@ -581,7 +580,11 @@ export class UserService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe( switchMap((response: any) => {
+            
+
+            return of(response);
+        }));
     }
 
      /**
