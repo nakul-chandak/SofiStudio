@@ -37,7 +37,7 @@ export class UserService {
 
     private httpClient = inject(HttpClient);
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
-    private _userEditMode: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+    private _userEditMode: ReplaySubject<string> = new ReplaySubject<string>();
     private _contacts: BehaviorSubject<Contact[] | null> = new BehaviorSubject(
         null
     );
@@ -86,11 +86,11 @@ export class UserService {
         return this._user.asObservable();
     }
 
-    set iseditUserMode(value:boolean) {
+    set iseditUserMode(value:string) {
         this._userEditMode.next(value);
     }
 
-    get iseditUserMode$(): Observable<boolean> {
+    get iseditUserMode$(): Observable<string> {
         return this._userEditMode.asObservable();
     }
 

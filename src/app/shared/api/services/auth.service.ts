@@ -380,7 +380,7 @@ export class AuthService {
             
             // Check if the user is logged in
             if (this._authenticated) {
-                this.setUserData();
+                //this.setUserData();
                 return of(true);
             }
     
@@ -421,7 +421,7 @@ export class AuthService {
                 id: '',
                 name: user.name,
                 email: user.email,
-                avatar: user.photo == null ? "":user.photo,
+                avatar: !user.photo? "": user.photo,
                 status: 'online',
             };
             this._userService.user = userData;
