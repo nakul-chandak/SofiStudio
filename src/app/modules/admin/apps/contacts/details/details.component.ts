@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import {
     FormControl,
+    FormGroupDirective,
     FormsModule,
     ReactiveFormsModule,
     UntypedFormArray,
@@ -45,7 +46,7 @@ import {
 import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
 import { UserService } from 'app/shared/api/services/user.service';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { ModelAuthSignup, ModelUserApproveAccess, ModelUserRevokeAccess } from 'app/shared/api/model/models'
+import { ModelAuthSignup, ModelUserApproveAccess, ModelUserRevokeAccess, ModelUserUpdateRoles } from 'app/shared/api/model/models'
 import { AuthService } from 'app/shared/api/services/api'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
@@ -76,6 +77,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
+    @ViewChild(FormGroupDirective) formDirective;
 
     isNewContact = false;
     editMode: boolean = false;
@@ -136,18 +138,25 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         // Create the contact form
         this.contactForm = this._formBuilder.group({
             _id: [''],
-            id:[''],
             avatar: [null],
             name: ['', [Validators.required]],
             email: ['', [Validators.required,Validators.email]],
-            roles: this._formBuilder.array([])
+            roles: this._formBuilder.array([],Validators.required)
         });
 
-        this._userService.iseditUserMode$.pipe(takeUntil(this._unsubscribeAll)) .subscribe((value: boolean) => {
-            this.isNewContact = value;
+        this._userService.iseditUserMode$.pipe(takeUntil(this._unsubscribeAll)) .subscribe((value: string) => {
+            if(this.contact?._id !== value){
+                this.resetForm();
+            }
+            this.isNewContact = (value == "");
         });
 
         this.getRecords();
+    }
+
+    resetForm () {
+        this.contactForm.reset();
+        this.formDirective?.resetForm();
     }
 
     getRecords(){
@@ -241,6 +250,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
      * Close the drawer
      */
     closeDrawer(): Promise<MatDrawerToggleResult> {
+        this.resetForm();
         return this._contactsListComponent.matDrawer.close();
     }
 
@@ -350,6 +360,24 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 this.showAlert = true;
             });
         }
+    }
+
+    modifiyRoles () {
+        const contact = this.contactForm.getRawValue();
+        const updateUserRoles = <ModelUserUpdateRoles> {
+            user_id_list: [contact._id],
+            roles : contact.roles
+        };
+
+        this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles).subscribe((response)=>{
+            console.log(response);
+            this.alert = {
+                type: 'success',
+                message: `User roles  has been updated successfully.`,
+            };
+            // Show the alert
+            this.showAlert = true;
+        });
     }
 
     /**

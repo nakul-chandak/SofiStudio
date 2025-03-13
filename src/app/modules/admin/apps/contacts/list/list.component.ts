@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    inject,
     Inject,
     OnDestroy,
     OnInit,
@@ -106,7 +107,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         
-        this.getdata();
+        this.getConactData();
         // Get the countries
         this._contactsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -132,6 +133,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         // Subscribe to MatDrawer opened change
         this.matDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
+                this.ngOnInit();
                 // ct when drawer closed
                 this.selectedContact = null;
 
@@ -170,7 +172,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
             });
     }
 
-    getdata() {
+    getConactData() {
         // Get the contacts
         this.contacts$ = this._userService.contacts$;
             
@@ -224,7 +226,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Create contact
      */
     createContact(): void {
-        this._userService.iseditUserMode = true;
+        this._userService.iseditUserMode = "";
         this._router.navigate(['./', ""], {
             relativeTo: this._activatedRoute,
         });
@@ -236,7 +238,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Create contact
      */
        editContact(id:string): void {
-        this._userService.iseditUserMode = false;
+        this._userService.iseditUserMode = id;
         this._router.navigate(['./', id], {
             relativeTo: this._activatedRoute,
         });

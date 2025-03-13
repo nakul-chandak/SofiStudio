@@ -285,7 +285,7 @@
     <!-- Contact form -->
     <div class="relative flex flex-auto flex-col items-center px-6 sm:px-12">
         <div class="w-full max-w-3xl">
-            <form [formGroup]="contactForm">
+            <form [formGroup]="contactForm" #formDirective="ngForm">
                 <!-- Avatar -->
                 <div class="-mt-16 flex flex-auto items-end">
                     <div
@@ -455,6 +455,9 @@
                                     }
                         </ul>
                     </div>
+                    @if (contactForm.get('roles').hasError('required')) {
+                        <mat-error> Choose at list one role </mat-error>
+                        }
                 </div>
 
                 <!-- Phone numbers -->
@@ -710,6 +713,13 @@
                             || (contact.verified && !contact.approved && !contact.revoked))
                             ? 'Approve' : contact.approved ? 'Revoke' :'Save'}}
                     </button>
+                         }
+                    @if(!isNewContact && contact.approved && contact.verified) {
+                    <button class="ml-2" mat-flat-button [color]="'primary'" [disabled]="contactForm.invalid"
+                        [matTooltip]="'Save'" (click)="modifiyRoles()">
+                            Save
+                    </button>
+
                     }
                 </div>
             </form>
