@@ -45,6 +45,12 @@ export class UserService {
     private _contact: BehaviorSubject<Contact | null> = new BehaviorSubject(
         null
     );
+
+    private _roles: BehaviorSubject<Array<string> | null> = new BehaviorSubject(
+        null
+    );
+    
+
     /**
          * Getter for contact
          */
@@ -57,6 +63,14 @@ export class UserService {
      */
     get contacts$(): Observable<Contact[]> {
         return this._contacts.asObservable();
+    }
+
+    /**
+     *  Getter list of roles
+     */
+
+    get roles$():Observable<Array<string>> {
+        return this._roles.asObservable();
     }
 
     /**
@@ -196,7 +210,9 @@ export class UserService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe(tap((roles) => {
+            this._roles.next(roles);
+        }));
     }
 
     /**

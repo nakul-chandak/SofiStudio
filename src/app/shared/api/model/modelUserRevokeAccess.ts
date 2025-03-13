@@ -11,6 +11,6 @@
  */
 
 export interface ModelUserRevokeAccess { 
-    userIdList: Array<string>;
+    user_id_list: Array<string>;
     revoke: boolean;
 }

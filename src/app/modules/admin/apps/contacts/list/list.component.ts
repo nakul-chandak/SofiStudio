@@ -105,29 +105,8 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Get the contacts
-        this.contacts$ = this._userService.contacts$;
-        this._userService.contacts$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
-                // Update the counts
-                this.contactsCount = contacts.length;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the contact
-        this._userService.contact$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) => {
-                // Update the selected contact
-                this.selectedContact = contact;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
+        
+        this.getdata();
         // Get the countries
         this._contactsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -153,7 +132,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         // Subscribe to MatDrawer opened change
         this.matDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
-                // Remove the selected contact when drawer closed
+                // ct when drawer closed
                 this.selectedContact = null;
 
                 // Mark for check
@@ -188,6 +167,32 @@ export class ContactsListComponent implements OnInit, OnDestroy {
             )
             .subscribe(() => {
                 this.createContact();
+            });
+    }
+
+    getdata() {
+        // Get the contacts
+        this.contacts$ = this._userService.contacts$;
+            
+        this._userService.contacts$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((contacts: Contact[]) => {
+                // Update the counts
+                this.contactsCount = contacts.length;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        // Get the contact
+        this._userService.contact$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((contact: Contact) => {
+                // Update the selected contact
+                this.selectedContact = contact;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -235,7 +240,6 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         this._router.navigate(['./', id], {
             relativeTo: this._activatedRoute,
         });
-        // Create the contact
         this._changeDetectorRef.markForCheck();
     }
 
