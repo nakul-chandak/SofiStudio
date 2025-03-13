@@ -11,6 +11,6 @@
  */
 
 export interface ModelUserApproveAccess { 
-    userIdList: Array<string>;
+    user_id_list: Array<string>;
     roles: Array<string>;
 }
