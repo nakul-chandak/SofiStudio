@@ -8,6 +8,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:home',
         link : '/example'
+    },
+    {
+        id   : 'user',
+        title: 'Users',
+        type : 'basic',
+        icon : 'heroicons_outline:users',
+        link : '/apps/contacts'
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [
@@ -17,6 +24,13 @@ export const compactNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:home',
         link : '/example'
+    },
+    {
+        id   : 'user',
+        title: 'Users',
+        type : 'basic',
+        icon : 'heroicons_outline:users',
+        link : '/apps/contacts'
     }
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
@@ -26,6 +40,13 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:home',
         link : '/example'
+    },
+    {
+        id   : 'user',
+        title: 'Users',
+        type : 'basic',
+        icon : 'heroicons_outline:users',
+        link : '/apps/contacts'
     }
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
