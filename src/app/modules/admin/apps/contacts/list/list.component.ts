@@ -125,7 +125,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
                 takeUntil(this._unsubscribeAll),
                 switchMap((query) =>
                     // Search
-                    this._contactsService.searchContacts(query)
+                    this._userService.searchUsersUserAdminSearchUsersGet(query)
                 )
             )
             .subscribe();

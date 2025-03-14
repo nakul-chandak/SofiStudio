@@ -48,7 +48,7 @@ export class UserService {
     private _roles: BehaviorSubject<Array<string> | null> = new BehaviorSubject(
         null
     );
-    
+
 
     /**
          * Getter for contact
@@ -68,7 +68,7 @@ export class UserService {
      *  Getter list of roles
      */
 
-    get roles$():Observable<Array<string>> {
+    get roles$(): Observable<Array<string>> {
         return this._roles.asObservable();
     }
 
@@ -86,7 +86,7 @@ export class UserService {
         return this._user.asObservable();
     }
 
-    set iseditUserMode(value:string) {
+    set iseditUserMode(value: string) {
         this._userEditMode.next(value);
     }
 
@@ -580,40 +580,111 @@ export class UserService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        ).pipe( switchMap((response: any) => {
-            
+        ).pipe(switchMap((response: any) => {
+
 
             return of(response);
         }));
     }
 
-     /**
-         * Get contact by id
-         */
-        getContactById(id: string): Observable<Contact> {
-            return this._contacts.pipe(
-                take(1),
-                map((contacts) => {
-                    // Find the contact
-                    const contact = contacts.find((item) => item._id === id) || null;
-    
-                    // Update the contact
-                    this._contact.next(contact);
-    
-                    // Return the contact
-                    return contact;
-                }),
-                switchMap((contact) => {
-                    if (!contact) {
-                        contact = <Contact> {_id:"00000000-0000-0000-0000-000000000000", name:"dummy user",photo:"",email:"" };
-                        // return throwError(
-                        //     'Could not found contact with id of ' + id + '!'
-                        // );
-                    }
-    
-                    return of(contact);
-                })
-            );
+    /**
+     * Search Users
+     * 
+     * @param term 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public searchUsersUserAdminSearchUsersGet(term: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public searchUsersUserAdminSearchUsersGet(term: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public searchUsersUserAdminSearchUsersGet(term: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public searchUsersUserAdminSearchUsersGet(term: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
+
+        if (term === null || term === undefined) {
+            throw new Error('Required parameter term was null or undefined when calling searchUsersUserAdminSearchUsersGet.');
         }
+
+        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        if (term !== undefined && term !== null) {
+            queryParameters = queryParameters.set('term', <any>term);
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (OAuth2PasswordBearer) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        if (term === '') {
+            return this.httpClient.request<any>('get', `${this.basePath}/user/admin/list-all-users`,
+                {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                }
+            ).pipe(tap((contacts) => {
+                this._contacts.next(contacts);
+            }));
+        } else {
+
+            return this.httpClient.request<any>('get', `${this.basePath}/user/admin/search-users`,
+                {
+                    params: queryParameters,
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                }
+            ).pipe(tap((contacts) => {
+                this._contacts.next(contacts);
+            }));
+        }
+    }
+
+    /**
+        * Get contact by id
+        */
+    getContactById(id: string): Observable<Contact> {
+        return this._contacts.pipe(
+            take(1),
+            map((contacts) => {
+                // Find the contact
+                const contact = contacts.find((item) => item._id === id) || null;
+
+                // Update the contact
+                this._contact.next(contact);
+
+                // Return the contact
+                return contact;
+            }),
+            switchMap((contact) => {
+                if (!contact) {
+                    contact = <Contact>{ _id: "00000000-0000-0000-0000-000000000000", name: "dummy user", photo: "", email: "" };
+                    // return throwError(
+                    //     'Could not found contact with id of ' + id + '!'
+                    // );
+                }
+
+                return of(contact);
+            })
+        );
+    }
 
 }
