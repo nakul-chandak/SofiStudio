@@ -606,7 +606,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         }
 
         // Upload the avatar
-        this._contactsService.uploadAvatar(this.contact.id, file).subscribe();
+        this._userService.uploadProfilePicUserUploadProfilePicPostForm(file).subscribe();
     }
 
     /**
