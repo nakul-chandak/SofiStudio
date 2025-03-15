@@ -14,14 +14,14 @@
             <div
                 class="mt-8 text-4xl font-extrabold leading-tight tracking-tight"
             >
-                Sign in
+                Sign In
             </div>
             <div class="mt-0.5 flex items-baseline font-medium">
                 <div>Don't have an account?</div>
                 <a
                     class="ml-1 text-primary-500 hover:underline"
                     [routerLink]="['/sign-up']"
-                    >Sign up
+                    >Sign Up
                 </a>
             </div>
 
@@ -128,7 +128,7 @@
                     (click)="signIn()"
                 >
                     @if (!signInForm.disabled) {
-                        <span> Sign in </span>
+                        <span> Sign In </span>
                     }
                     @if (signInForm.disabled) {
                         <mat-progress-spinner

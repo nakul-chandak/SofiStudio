@@ -338,33 +338,92 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 revoke: true
             };
 
-            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe((response) => {
-                console.log(response);
-                this.alert = {
-                    type: 'success',
-                    message: `Access has been revoked successfully.`,
-                };
-                // Show the alert
-                this.showAlert = true;
+            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
+                .subscribe({
+                    next: (response) => {
+                        console.log(response);
 
-                this.modifiyRoles();
+                        // Toggle the edit mode off
+                        this.toggleEditMode(false);
 
-                this.contact.name = contact.name;
-                this.contact.email = contact.email;
-                this.contact.roles = contact.roles;
-            });
+                        this.alert = {
+                            type: 'success',
+                            message: `Access has been revoked successfully.`,
+                        };
+                        // Show the alert
+                        this.showAlert = true;
+
+                        this.modifiyRoles();
+
+                        this.contact.name = contact.name;
+                        this.contact.email = contact.email;
+                        this.contact.roles = contact.roles;
+                    }, error: (_error) => {
+                        this.toggleEditMode(false);
+
+                        var message = 'Something went wrong, please try again.';
+
+                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                            message = _error?.error['detail'];
+                        }
+
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: message,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    }
+                });
         }
         else if (revoked) {
 
             const revokeData = <ModelUserApproveAccess>{
                 user_id_list: [this.contact._id],
-
+                roles: contact.roles
             };
 
-            this.modifiyRoles();
-            this.contact.name = contact.name;
-            this.contact.email = contact.email;
-            this.contact.roles = contact.roles;
+            this._userService.approveAccessUserAdminApproveAccessPost(revokeData)
+                .subscribe({
+                    next: (response) => {
+
+                        // Toggle the edit mode off
+                        this.toggleEditMode(false);
+
+                        this.alert = {
+                            type: 'success',
+                            message: `Access has been Approved successfully.`,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+
+                        this.modifiyRoles();
+
+                        this.contact.name = contact.name;
+                        this.contact.email = contact.email;
+                        this.contact.roles = contact.roles;
+                    }, error: (_error) => {
+                        this.toggleEditMode(false);
+
+                        var message = 'Something went wrong, please try again.';
+
+                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                            message = _error?.error['detail'];
+                        }
+
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: message,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    }
+                });
         }
         else if (verified && !approved && !revoked) {
             const approveUserData = <ModelUserApproveAccess>{
@@ -372,21 +431,45 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 roles: contact.roles
             };
 
-            this._userService.approveAccessUserAdminApproveAccessPost(approveUserData).subscribe((response) => {
-                console.log(response);
-                this.alert = {
-                    type: 'success',
-                    message: `Access has been Approved successfully.`,
-                };
-                // Show the alert
-                this.showAlert = true;
+            this._userService.approveAccessUserAdminApproveAccessPost(approveUserData)
+                .subscribe({
+                    next: (response) => {
+                        console.log(response);
 
-                this.modifiyRoles();
+                        // Toggle the edit mode off
+                        this.toggleEditMode(false);
 
-                this.contact.name = contact.name;
-                this.contact.email = contact.email;
-                this.contact.roles = contact.roles;
-            });
+                        this.alert = {
+                            type: 'success',
+                            message: `Access has been Approved successfully.`,
+                        };
+                        // Show the alert
+                        this.showAlert = true;
+
+                        this.modifiyRoles();
+
+                        this.contact.name = contact.name;
+                        this.contact.email = contact.email;
+                        this.contact.roles = contact.roles;
+                    }, error: (_error) => {
+                        this.toggleEditMode(false);
+
+                        var message = 'Something went wrong, please try again.';
+
+                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                            message = _error?.error['detail'];
+                        }
+
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: message,
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    }
+                });
         }
     }
 
@@ -396,16 +479,36 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             user_id_list: [contact._id],
             roles: contact.roles
         };
+        // Show the alert
+        this.showAlert = false;
+        this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles)
+            .subscribe({
+                next: (response) => {
+                    console.log(response);
+                    this.alert = {
+                        type: 'success',
+                        message: `User roles has been updated successfully.`,
+                    };
+                    // Show the alert
+                    this.showAlert = true;
+                }, error: (_error) => {
 
-        this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles).subscribe((response) => {
-            console.log(response);
-            this.alert = {
-                type: 'success',
-                message: `User roles has been updated successfully.`,
-            };
-            // Show the alert
-            this.showAlert = true;
-        });
+                    var message = 'Something went wrong, please try again.';
+
+                    if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                        message = _error?.error['detail'];
+                    }
+
+                    // Set the alert
+                    this.alert = {
+                        type: 'error',
+                        message: message,
+                    };
+
+                    // Show the alert
+                    this.showAlert = true;
+                }
+            });
     }
 
     /**
