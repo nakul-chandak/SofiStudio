@@ -484,6 +484,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles)
             .subscribe({
                 next: (response) => {
+                    // Toggle the edit mode off
+                    this.toggleEditMode(false);
                     console.log(response);
                     this.alert = {
                         type: 'success',
@@ -491,7 +493,13 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                     };
                     // Show the alert
                     this.showAlert = true;
+
+                    this.contact.name = contact.name;
+                    this.contact.email = contact.email;
+                    this.contact.roles = contact.roles;
                 }, error: (_error) => {
+                    // Toggle the edit mode off
+                    this.toggleEditMode(false);
 
                     var message = 'Something went wrong, please try again.';
 
