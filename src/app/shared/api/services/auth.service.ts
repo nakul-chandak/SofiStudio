@@ -421,11 +421,10 @@ export class AuthService {
                 id: '',
                 name: user.name,
                 email: user.email,
-                avatar: !user.photo? "": user.photo,
+                avatar: !user.photo? "images/avatars/male.png": user.photo,
                 status: 'online',
             };
             this._userService.user = userData;
-           
         });
     }
 }
