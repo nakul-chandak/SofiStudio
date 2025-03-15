@@ -14,7 +14,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         title: 'Users',
         type : 'basic',
         icon : 'heroicons_outline:users',
-        link : '/apps/users'
+        link : '/users'
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [
@@ -30,7 +30,7 @@ export const compactNavigation: FuseNavigationItem[] = [
         title: 'Users',
         type : 'basic',
         icon : 'heroicons_outline:users',
-        link : '/apps/users'
+        link : '/users'
     }
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
@@ -46,7 +46,7 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         title: 'Users',
         type : 'basic',
         icon : 'heroicons_outline:users',
-        link : '/apps/users'
+        link : '/users'
     }
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
@@ -62,6 +62,6 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         title: 'Users',
         type : 'basic',
         icon : 'heroicons_outline:users',
-        link : '/apps/users'
+        link : '/users'
     }
 ];

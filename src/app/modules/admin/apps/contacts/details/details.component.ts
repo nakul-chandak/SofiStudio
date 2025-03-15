@@ -301,7 +301,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         // Set the alert
                         this.alert = {
                             type: 'success',
-                            message: `A confirmation mail with instructions has been sent to your
+                            message: `A verification mail with instructions has been sent to your
                                       email address. Follow those instructions to confirm your email
                                       address and activate your account.`,
                         };
@@ -353,7 +353,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         // Show the alert
                         this.showAlert = true;
 
-                        this.modifiyRoles();
+                        //this.modifiyRoles();
 
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
@@ -394,13 +394,13 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         this.alert = {
                             type: 'success',
-                            message: `Access has been Approved successfully.`,
+                            message: `Access has been approved successfully.`,
                         };
 
                         // Show the alert
                         this.showAlert = true;
 
-                        this.modifiyRoles();
+                        //this.modifiyRoles();
 
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
@@ -441,12 +441,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         this.alert = {
                             type: 'success',
-                            message: `Access has been Approved successfully.`,
+                            message: `Access has been approved successfully.`,
                         };
                         // Show the alert
                         this.showAlert = true;
 
-                        this.modifiyRoles();
+                        //this.modifiyRoles();
 
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;

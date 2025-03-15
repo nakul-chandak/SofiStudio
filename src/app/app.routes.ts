@@ -76,12 +76,13 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'home', loadChildren: () => import('app/modules/admin/example/example.routes') }, 
             { path: 'profile', loadChildren: () => import('app/modules/admin/pages/profile/profile.routes') },           
+            { path: 'users', loadChildren: () => import('app/modules/admin/apps/contacts/contacts.routes') }
             // Apps
-            {
-                path: 'apps', children: [
-                    { path: 'users', loadChildren: () => import('app/modules/admin/apps/contacts/contacts.routes') }
-                ]
-            }
+            // {
+            //     path: 'apps', children: [
+            //         { path: 'users', loadChildren: () => import('app/modules/admin/apps/contacts/contacts.routes') }
+            //     ]
+            // }
         ],
 
         
