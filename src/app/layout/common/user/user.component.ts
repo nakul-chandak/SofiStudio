@@ -45,11 +45,11 @@ export class UserComponent implements OnInit, OnDestroy {
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-        alert: { type: FuseAlertType; message: string } = {
-            type: 'success',
-            message: '',
-        };
-        showAlert: boolean = false;
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
+    showAlert: boolean = false;
 
     /**
      * Constructor
@@ -58,7 +58,7 @@ export class UserComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _userService: UserService
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -102,33 +102,44 @@ export class UserComponent implements OnInit, OnDestroy {
         if (!this.user) {
             return;
         }
-        
-        const statusModel =<ModelUserUpdateStatus>{
-            onlineStatus:status
+
+        // Update the user
+        // this._userService
+        //     .update({
+        //         ...this.user,
+        //         status,
+        //     })
+        //     .subscribe();
+
+        const statusModel = <ModelUserUpdateStatus>{
+            onlineStatus: status
         }
         //Update the user
-        this._userService.updateStatusUserUpdateStatusPost(statusModel).subscribe({next:(response)=>{
-            this.showAlert = true;
-            this.alert = {
-                type: 'success',
-                message: `User status has been updated successfully.`,
-            };
-        },error:(_error)=>{
-            var message = 'Something went wrong, please try again.';
+        this._userService.updateStatusUserUpdateStatusPost(statusModel).subscribe({
+            next: (response) => {
+                this.user.status = status;
+                this.showAlert = true;
+                this.alert = {
+                    type: 'success',
+                    message: `User status has been updated successfully.`,
+                };
+            }, error: (_error) => {
+                var message = 'Something went wrong, please try again.';
 
-            if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
-                message = _error?.error['detail'];
+                if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                    message = _error?.error['detail'];
+                }
+
+                // Set the alert
+                this.alert = {
+                    type: 'error',
+                    message: message,
+                };
+
+                // Show the alert
+                this.showAlert = true;
             }
-
-            // Set the alert
-            this.alert = {
-                type: 'error',
-                message: message,
-            };
-
-            // Show the alert
-            this.showAlert = true;
-        }});
+        });
     }
 
     /**
