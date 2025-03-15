@@ -35,13 +35,16 @@ import {
     Country,
 } from 'app/modules/admin/apps/contacts/contacts.types';
 import {
+    BehaviorSubject,
     Observable,
     Subject,
     filter,
     fromEvent,
+    of,
     switchMap,
     takeUntil,
 } from 'rxjs';
+import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
@@ -49,6 +52,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
     templateUrl: './list.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: fuseAnimations,
     imports: [
         MatSidenavModule,
         RouterOutlet,
@@ -85,6 +89,8 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     indeterminate = false;
     selectAllContacts = false;
+    isEventTriggred = false;
+
     /**
      * Constructor
      */
@@ -106,7 +112,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        
+
         this.getConactData();
         // Get the countries
         this._contactsService.countries$
@@ -133,7 +139,14 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         // Subscribe to MatDrawer opened change
         this.matDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
-                this.ngOnInit();
+                if (!this.isEventTriggred) {
+                    this.searchInputControl.setValue('');
+                    //this.ngOnInit();
+                }
+
+                this.isEventTriggred = true;
+                // Search
+                //this.ngOnInit();
                 // ct when drawer closed
                 this.selectedContact = null;
 
@@ -175,7 +188,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     getConactData() {
         // Get the contacts
         this.contacts$ = this._userService.contacts$;
-            
+
         this._userService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contacts: Contact[]) => {
@@ -234,14 +247,15 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-       /**
-     * Create contact
-     */
-       editContact(id:string): void {
+    /**
+  * Create contact
+  */
+    editContact(id: string): void {
         this._userService.iseditUserMode = id;
         this._router.navigate(['./', id], {
             relativeTo: this._activatedRoute,
         });
+        this.isEventTriggred = false;
         this._changeDetectorRef.markForCheck();
     }
 

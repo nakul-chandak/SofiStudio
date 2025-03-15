@@ -48,6 +48,7 @@ import { UserService } from 'app/shared/api/services/user.service';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { ModelAuthSignup, ModelUserApproveAccess, ModelUserRevokeAccess, ModelUserUpdateRoles } from 'app/shared/api/model/models'
 import { AuthService } from 'app/shared/api/services/api'
+import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
@@ -55,6 +56,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: fuseAnimations,
     imports: [
         MatButtonModule,
         MatTooltipModule,
@@ -88,7 +90,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     contactForm: UntypedFormGroup;
     contacts: Contact[];
     countries: Country[];
-    roles:Array<string>;
+    roles: Array<string>;
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -140,12 +142,16 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             _id: [''],
             avatar: [null],
             name: ['', [Validators.required]],
-            email: ['', [Validators.required,Validators.email]],
-            roles: this._formBuilder.array([],Validators.required)
+            email: ['', [Validators.required, Validators.email]],
+            roles: this._formBuilder.array([])
         });
 
-        this._userService.iseditUserMode$.pipe(takeUntil(this._unsubscribeAll)) .subscribe((value: string) => {
-            if(this.contact?._id !== value){
+        if (this.isNewContact) {
+            this.contactForm.get('roles').setValidators(Validators.required);
+        }
+
+        this._userService.iseditUserMode$.pipe(takeUntil(this._unsubscribeAll)).subscribe((value: string) => {
+            if (this.contact?._id !== value) {
                 this.resetForm();
             }
             this.isNewContact = (value == "");
@@ -154,78 +160,78 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         this.getRecords();
     }
 
-    resetForm () {
+    resetForm() {
         this.contactForm.reset();
         this.formDirective?.resetForm();
     }
 
-    getRecords(){
-         // Get the contacts
-         this._userService.contacts$
-         .pipe(takeUntil(this._unsubscribeAll))
-         .subscribe((contacts: Contact[]) => {
-             this.contacts = contacts;
+    getRecords() {
+        // Get the contacts
+        this._userService.contacts$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((contacts: Contact[]) => {
+                this.contacts = contacts;
 
-             // Mark for check
-             this._changeDetectorRef.markForCheck();
-         });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
-     // Get the contact
-     this._userService.contact$
-         .pipe(takeUntil(this._unsubscribeAll))
-         .subscribe((contact: Contact) => {
-             // Open the drawer in case it is closed
-             this._contactsListComponent.matDrawer.open();
-                 if(this.isNewContact) {
-                 contact = <Contact> {_id:"", name:"dummy user",photo:"",email:"",approved:false, revoked:false, verified:false,roles:[]};
-                 }
-             // Get the contact
-             this.contact = contact;
-             
-             // Patch values to the form
-             this.contactForm.patchValue(contact);
+        // Get the contact
+        this._userService.contact$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((contact: Contact) => {
+                // Open the drawer in case it is closed
+                this._contactsListComponent.matDrawer.open();
+                if (this.isNewContact) {
+                    contact = <Contact>{ _id: "", name: "New User", photo: "", email: "", approved: false, revoked: false, verified: false, roles: [] };
+                }
+                // Get the contact
+                this.contact = contact;
 
-             contact.roles.forEach((role)=>{
-                 const newform = new FormControl(role);
-                
-                 (this.contactForm.get('roles') as UntypedFormArray).push(newform);
-             })
-             // Toggle the edit mode off
-             this.toggleEditMode(false);
+                // Patch values to the form
+                this.contactForm.patchValue(contact);
 
-             // Mark for check
-             this._changeDetectorRef.markForCheck();
-         });
+                contact.roles.forEach((role) => {
+                    const newform = new FormControl(role);
 
-              // Get the country telephone codes
-     this._userService.roles$
-     .pipe(takeUntil(this._unsubscribeAll))
-     .subscribe((roleNames: Array<string> ) => {
-         this.roles = roleNames;
-         // Mark for check
-         this._changeDetectorRef.markForCheck();
-     });
+                    (this.contactForm.get('roles') as UntypedFormArray).push(newform);
+                })
+                // Toggle the edit mode off
+                this.toggleEditMode(false);
 
-     // Get the country telephone codes
-     this._contactsService.countries$
-         .pipe(takeUntil(this._unsubscribeAll))
-         .subscribe((codes: Country[]) => {
-             this.countries = codes;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
-             // Mark for check
-             this._changeDetectorRef.markForCheck();
-         });
+        // Get the country telephone codes
+        this._userService.roles$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((roleNames: Array<string>) => {
+                this.roles = roleNames;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
-     // Get the tags
-     this._contactsService.tags$
-         .pipe(takeUntil(this._unsubscribeAll))
-         .subscribe((tags: Tag[]) => {
-             this.tags = tags;
-             this.filteredTags = tags;
+        // Get the country telephone codes
+        this._contactsService.countries$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((codes: Country[]) => {
+                this.countries = codes;
 
-             // Mark for check
-             this._changeDetectorRef.markForCheck();
-         });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        // Get the tags
+        this._contactsService.tags$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((tags: Tag[]) => {
+                this.tags = tags;
+                this.filteredTags = tags;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     /**
@@ -273,7 +279,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
     /**
      * Update the contact
      */
-    updateContact(revoked:boolean, approved:boolean, verified:boolean): void {
+    updateContact(revoked: boolean, approved: boolean, verified: boolean): void {
         // Get the contact object
         const contact = this.contactForm.getRawValue();
 
@@ -286,7 +292,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             this._authService
                 .authSignupAuthSignupPost(this.modelAuthSignup)
                 .subscribe({
-                    next: (response) => () => {
+                    next: (response) => {
+                        var message = response.message;
+
                         // Toggle the edit mode off
                         this.toggleEditMode(false);
 
@@ -300,6 +308,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         // Show the alert
                         this.showAlert = true;
+
+                        this.contact.name = contact.name;
+                        this.contact.email = contact.email;
                     }, error: (_error) => {
                         this.toggleEditMode(false);
 
@@ -319,15 +330,15 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.showAlert = true;
                     }
                 });
-                return;
+            //return;
         }
-        else if(approved) {
+        else if (approved) {
             const revokeData = <ModelUserRevokeAccess>{
-                user_id_list:[this.contact._id],
-                revoke:true
+                user_id_list: [this.contact._id],
+                revoke: true
             };
 
-            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe((response)=>{
+            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe((response) => {
                 console.log(response);
                 this.alert = {
                     type: 'success',
@@ -335,22 +346,33 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 };
                 // Show the alert
                 this.showAlert = true;
+
+                this.modifiyRoles();
+
+                this.contact.name = contact.name;
+                this.contact.email = contact.email;
+                this.contact.roles = contact.roles;
             });
         }
-        else if( revoked) {
-            
+        else if (revoked) {
+
             const revokeData = <ModelUserApproveAccess>{
-                user_id_list:[this.contact._id],
-               
+                user_id_list: [this.contact._id],
+
             };
+
+            this.modifiyRoles();
+            this.contact.name = contact.name;
+            this.contact.email = contact.email;
+            this.contact.roles = contact.roles;
         }
-        else if(verified && !approved && !revoked) {
+        else if (verified && !approved && !revoked) {
             const approveUserData = <ModelUserApproveAccess>{
-                user_id_list:[this.contact._id],
+                user_id_list: [this.contact._id],
                 roles: contact.roles
             };
 
-            this._userService.approveAccessUserAdminApproveAccessPost(approveUserData).subscribe((response)=>{
+            this._userService.approveAccessUserAdminApproveAccessPost(approveUserData).subscribe((response) => {
                 console.log(response);
                 this.alert = {
                     type: 'success',
@@ -358,22 +380,28 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 };
                 // Show the alert
                 this.showAlert = true;
+
+                this.modifiyRoles();
+
+                this.contact.name = contact.name;
+                this.contact.email = contact.email;
+                this.contact.roles = contact.roles;
             });
         }
     }
 
-    modifiyRoles () {
+    modifiyRoles() {
         const contact = this.contactForm.getRawValue();
-        const updateUserRoles = <ModelUserUpdateRoles> {
+        const updateUserRoles = <ModelUserUpdateRoles>{
             user_id_list: [contact._id],
-            roles : contact.roles
+            roles: contact.roles
         };
 
-        this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles).subscribe((response)=>{
+        this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles).subscribe((response) => {
             console.log(response);
             this.alert = {
                 type: 'success',
-                message: `User roles  has been updated successfully.`,
+                message: `User roles has been updated successfully.`,
             };
             // Show the alert
             this.showAlert = true;
@@ -831,20 +859,20 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         return item.id || index;
     }
 
-    isRoleChecked(role:string):boolean {
+    isRoleChecked(role: string): boolean {
         var rolesList = this.contactForm.get('roles') as UntypedFormArray;
-       var index =rolesList.controls.findIndex(x=> x.value === role);
-       return index !== -1;
+        var index = rolesList.controls.findIndex(x => x.value === role);
+        return index !== -1;
     }
 
-    onRoleChanged(isChecked:boolean, role:string) {
-        if(isChecked){
-        (
-            this.contactForm.get('roles') as UntypedFormArray).push(new FormControl(role));
+    onRoleChanged(isChecked: boolean, role: string) {
+        if (isChecked) {
+            (
+                this.contactForm.get('roles') as UntypedFormArray).push(new FormControl(role));
         }
         else {
             var roleControls = (this.contactForm.get('roles') as UntypedFormArray);
-            var index =roleControls.controls.findIndex(x=> x.value === role);
+            var index = roleControls.controls.findIndex(x => x.value === role);
             roleControls.removeAt(index);
         }
     }

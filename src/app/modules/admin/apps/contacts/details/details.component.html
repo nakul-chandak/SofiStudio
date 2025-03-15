@@ -137,31 +137,27 @@
                                 target="_blank">
                                 {{ contact.email }}
                             </a>
-                         
+
                         </div>
-                        
+
                     </div>
                 </div>
 
-                  <!-- Roles -->
-             @if (contact.roles.length) {
-                    <div class="mt-2 flex flex-wrap items-center">
-                        @for (
-                            role of contact.roles;
-                            track trackByFn($index, role)
-                        ) {
-                            <div
-                                class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300"
-                            >
-                                <span
-                                    class="whitespace-nowrap text-sm font-medium"
-                                    >{{ role }}</span
-                                >
-                            </div>
-                        }
+                <!-- Roles -->
+                @if (contact.roles.length) {
+                <div class="mt-2 flex flex-wrap items-center">
+                    @for (
+                    role of contact.roles;
+                    track trackByFn($index, role)
+                    ) {
+                    <div
+                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                        <span class="whitespace-nowrap text-sm font-medium">{{ role }}</span>
                     </div>
-                } 
-                
+                    }
+                </div>
+                }
+
 
                 <!-- Phone -->
                 <!-- @if (contact.phoneNumbers.length) {
@@ -342,23 +338,23 @@
                     <div
                         class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         @if(contact.verified){
-                            <span class="whitespace-nowrap text-sm font-medium">Verified</span>
-                            }
-                            @else{
-                            <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
-                            }
+                        <span class="whitespace-nowrap text-sm font-medium">Verified</span>
+                        }
+                        @else{
+                        <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
+                        }
                     </div>
                     <div
                         class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         @if(contact.approved){
-                            <span class="whitespace-nowrap text-sm font-medium">Approved</span>
-                            }
-                            @else if(contact.revoked){
-                            <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
-                            }
-                            @else{
-                            <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
-                            }
+                        <span class="whitespace-nowrap text-sm font-medium">Approved</span>
+                        }
+                        @else if(contact.revoked){
+                        <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
+                        }
+                        @else{
+                        <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
+                        }
                     </div>
                 </div>
 
@@ -409,56 +405,59 @@
                             @if (isNewContact) {
                             <mat-form-field class="flex-auto" [subscriptSizing]="'dynamic'">
                                 <mat-label>Email</mat-label>
-                                
+
                                 <mat-icon matPrefix class="hidden icon-size-5 sm:flex" [svgIcon]="
                                                 'heroicons_solid:envelope'
                                             "></mat-icon>
                                 <input matInput [formControlName]="'email'" [placeholder]="'Email address'"
                                     [spellcheck]="false" />
-                                    @if (contactForm.get('email').hasError('required')) {
-                                        <mat-error> Email address is required </mat-error>
-                                        }
-                                        @else if (contactForm.get('email').hasError('email')) {
-                                        <mat-error>
-                                            Please enter a valid email address
-                                        </mat-error>
-                                        }
+                                @if (contactForm.get('email').hasError('required')) {
+                                <mat-error> Email address is required </mat-error>
+                                }
+                                @else if (contactForm.get('email').hasError('email')) {
+                                <mat-error>
+                                    Please enter a valid email address
+                                </mat-error>
+                                }
                             </mat-form-field>
                             }
                             @else {
-                                <mat-icon [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
-                                <div class="ml-6 min-w-0 space-y-1">
-                                    <div class="flex items-center leading-6">
-                                        <a class="text-primary-500 hover:underline" [href]="'mailto:' + contact.email"
-                                            target="_blank">
-                                            {{ contact.email }}
-                                        </a>
-                                    </div>
+                            <mat-icon [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
+                            <div class="ml-6 min-w-0 space-y-1">
+                                <div class="flex items-center leading-6">
+                                    <a class="text-primary-500 hover:underline" [href]="'mailto:' + contact.email"
+                                        target="_blank">
+                                        {{ contact.email }}
+                                    </a>
                                 </div>
+                            </div>
                             }
                         </div>
                     </div>
                 </div>
-              
+
                 <!--Roles-->
+                @if(!isNewContact){
                 <div class="mt-8">
                     <mat-label>Roles</mat-label>
                     <div class="space-y-4">
                         <ul>
                             @for(role of roles;
                             track trackByFn($index, role); let idx = $index ) {
-                                      <li formArrayName="roles">
-                                        <mat-checkbox [checked] ="isRoleChecked(role)" (change)="onRoleChanged($event.checked,role)">
-                                          {{role}}
-                                        </mat-checkbox>
-                                      </li>
-                                    }
+                            <li formArrayName="roles">
+                                <mat-checkbox [checked]="isRoleChecked(role)"
+                                    (change)="onRoleChanged($event.checked,role)">
+                                    {{role}}
+                                </mat-checkbox>
+                            </li>
+                            }
                         </ul>
                     </div>
                     @if (contactForm.get('roles').hasError('required')) {
-                        <mat-error> Choose at list one role </mat-error>
-                        }
+                    <mat-error> Choose at list one role </mat-error>
+                    }
                 </div>
+                }
 
                 <!-- Phone numbers -->
                 <!-- <div class="mt-8">
@@ -706,21 +705,22 @@
                         Cancel
                     </button>
                     <!-- Save -->
-                     @if(isNewContact || (contact.revoked  || contact.approved || contact.verified)) {
+                    @if(isNewContact || (contact.revoked || contact.approved || contact.verified)) {
                     <button class="ml-2" mat-flat-button [color]="'primary'" [disabled]="contactForm.invalid"
-                        [matTooltip]="'Save'" (click)="updateContact(contact.revoked, contact.approved, contact.verified)">
-                        {{((contact.verified && contact.revoked) 
-                            || (contact.verified && !contact.approved && !contact.revoked))
-                            ? 'Approve' : contact.approved ? 'Revoke' :'Save'}}
+                        [matTooltip]="'Save'"
+                        (click)="updateContact(contact.revoked, contact.approved, contact.verified)">
+                        {{((contact.verified && contact.revoked)
+                        || (contact.verified && !contact.approved && !contact.revoked))
+                        ? 'Approve' : contact.approved ? 'Revoke' :'Save'}}
                     </button>
-                         }
-                    @if(!isNewContact && contact.approved && contact.verified) {
+                    }
+                    <!-- @if(!isNewContact && contact.approved && contact.verified) {
                     <button class="ml-2" mat-flat-button [color]="'primary'" [disabled]="contactForm.invalid"
                         [matTooltip]="'Save'" (click)="modifiyRoles()">
                             Save
                     </button>
 
-                    }
+                    } -->
                 </div>
             </form>
         </div>
