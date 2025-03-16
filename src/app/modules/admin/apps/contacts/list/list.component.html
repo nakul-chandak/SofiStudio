@@ -75,7 +75,8 @@
                                 <span>Select All</span>
                             </button>
                             }
-                                @else {
+                            
+                            @if(selectAllContacts || indeterminate) {
                             <button mat-menu-item (click)="update(false)">
                                 <mat-icon>deselect</mat-icon>
                                 <span>Deselect All</span>
