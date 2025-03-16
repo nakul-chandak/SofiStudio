@@ -18,7 +18,7 @@ import { RouterLink } from '@angular/router';
 import { FuseCardComponent } from '@fuse/components/card';
 import { User } from 'app/core/user/user.types';
 
-import { UserService } from 'app/shared/api/services/user.service';
+import { UserService } from 'app/shared/api/services/api';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

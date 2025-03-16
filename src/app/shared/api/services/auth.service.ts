@@ -175,8 +175,9 @@ export class AuthService {
                     id: '',
                     name: user.name,
                     email: user.email,
-                    avatar: user.photo,
+                    avatar: !user.photo? "images/avatars/male.png": user.photo,
                     status: 'online',
+                    roles: !user.roles? [] : user.roles,
                 };
                 this._userService.user = userData;
             });
@@ -423,6 +424,7 @@ export class AuthService {
                 email: user.email,
                 avatar: !user.photo? "images/avatars/male.png": user.photo,
                 status: 'online',
+                roles: !user.roles? [] : user.roles,
             };
             this._userService.user = userData;
         });
