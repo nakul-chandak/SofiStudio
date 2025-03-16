@@ -20,6 +20,8 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { Subject, takeUntil } from 'rxjs';
+import { UserService } from 'app/shared/api/services/api';
+import { User } from 'app/core/user/user.types';
 
 @Component({
     selector: 'fuse-vertical-navigation-basic-item',
@@ -35,11 +37,11 @@ import { Subject, takeUntil } from 'rxjs';
     ],
 })
 export class FuseVerticalNavigationBasicItemComponent
-    implements OnInit, OnDestroy
-{
+    implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
     private _fuseNavigationService = inject(FuseNavigationService);
     private _fuseUtilsService = inject(FuseUtilsService);
+    private _userService = inject(UserService);
 
     @Input() item: FuseNavigationItem;
     @Input() name: string;
@@ -53,6 +55,7 @@ export class FuseVerticalNavigationBasicItemComponent
 
     private _fuseVerticalNavigationComponent: FuseVerticalNavigationComponent;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    user: User;
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -73,6 +76,21 @@ export class FuseVerticalNavigationBasicItemComponent
         // Get the parent navigation component
         this._fuseVerticalNavigationComponent =
             this._fuseNavigationService.getComponent(this.name);
+
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.user = user;
+                if (this.user.roles?.indexOf('Admin') === -1) {
+                    this._fuseVerticalNavigationComponent.navigation =
+                        this._fuseVerticalNavigationComponent.navigation
+                            .filter(({ title
+                            }) => title !== 'Users');
+                }
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
