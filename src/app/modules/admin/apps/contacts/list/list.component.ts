@@ -318,6 +318,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
    bulkUserRevoke(isRevoke:boolean) {
 
     this.contacts$.subscribe((contacts: Contact[]) => {
+        var totalSelectedUsersCount =contacts.filter(x => x.isBulkSelect).length;
         const selecteduserList = isRevoke ? contacts.filter(x => x.isBulkSelect && !x.revoked).map(x=>x._id):
                                  contacts.filter(x => x.isBulkSelect && x.revoked).map(x=>x._id)
 
@@ -332,10 +333,11 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     .subscribe({
         next: (response) => {
             const msg= isRevoke ? "revoked" : "approved"
-            const value = selecteduserList.length > 1 ? "users" : "user";
+            const userPuralOrSingular = totalSelectedUsersCount > 1 ? "users" : "user";
+            const userVal = selecteduserList.length > 1 ? "users" : "user";
             this.alert = {
                 type: 'success',
-                message: `Only ${selecteduserList.length} ${value} access has been ${msg} successfully.`,
+                message: `Out of the selected ${selecteduserList.length } ${userVal}, access has been approved for ${totalSelectedUsersCount} ${userPuralOrSingular}. The access for the remaining users is already approved.`,
             };
             // Show the alert
             this.showAlert = true;
@@ -360,6 +362,17 @@ export class ContactsListComponent implements OnInit, OnDestroy {
             this.hideAlert();
               }
             });
+          }
+          else {
+            // Set the alert
+            this.alert = {
+                type: 'info',
+                message: "The access for the selected users has already been approved.",
+            };
+
+            // Show the alert
+            this.showAlert = true;
+            this.hideAlert();
           }
         });
     }

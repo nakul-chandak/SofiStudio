@@ -357,7 +357,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         // Show the alert
                         this.showAlert = true;
-
+                        this.hideAlert();
                         //this.modifiyRoles();
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
@@ -380,6 +380,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         // Show the alert
                         this.showAlert = true;
+                        this.hideAlert();
                     }
                 });
         }
@@ -409,6 +410,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
                         this.contact.roles = contact.roles;
+                        this.hideAlert();
                     }, error: (_error) => {
                         this.toggleEditMode(false);
 
@@ -426,6 +428,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                         // Show the alert
                         this.showAlert = true;
+                        this.hideAlert();
                     }
                 });
         }
@@ -499,6 +502,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                     this.contact.name = contact.name;
                     this.contact.email = contact.email;
                     this.contact.roles = contact.roles;
+                    this.hideAlert();
                 }, error: (_error) => {
                     // Toggle the edit mode off
                     this.toggleEditMode(false);
@@ -517,6 +521,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
                     // Show the alert
                     this.showAlert = true;
+                    this.hideAlert();
                 }
             });
     }
@@ -988,5 +993,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
             var index = roleControls.controls.findIndex(x => x.value === role);
             roleControls.removeAt(index);
         }
+    }
+
+    hideAlert() {
+        setTimeout(() => {
+           this.showAlert = false;
+           this._changeDetectorRef.markForCheck();
+          }, 3000)
     }
 }
