@@ -46,6 +46,8 @@ import {
 } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
+import { MatMenuModule } from '@angular/material/menu';
+import { ModelUserApproveAccess, ModelUserRevokeAccess } from 'app/shared/api/model/models';
 
 @Component({
     selector: 'contacts-list',
@@ -58,6 +60,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         RouterOutlet,
         MatFormFieldModule,
         MatIconModule,
+        MatMenuModule,
         MatInputModule,
         FormsModule,
         ReactiveFormsModule,
@@ -273,15 +276,15 @@ export class ContactsListComponent implements OnInit, OnDestroy {
      * Modify contacts
      */
     bulkActions() {
-        this.contacts$.subscribe((contacts: Contact[]) => {
-            const selectedConacts = contacts.filter((contact) => contact.isBulkSelect);
-            this._router.navigate(['./bulk-update'], {
-                relativeTo: this._activatedRoute,
-                state: selectedConacts
-            });
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
+        // this.contacts$.subscribe((contacts: Contact[]) => {
+        //     const selectedConacts = contacts.filter((contact) => contact.isBulkSelect);
+        //     this._router.navigate(['./bulk-update'], {
+        //         relativeTo: this._activatedRoute,
+        //         state: selectedConacts
+        //     });
+        //     // Mark for check
+          //  this._changeDetectorRef.markForCheck();
+        //});
     }
 
     /**
@@ -306,5 +309,65 @@ export class ContactsListComponent implements OnInit, OnDestroy {
 
             });
         }
+    }
+
+    /**
+     * Approve and Revoke user access
+     * @param isRevoke is true means revoke user access and if false means approve user access
+     */
+   bulkUserRevoke(isRevoke:boolean) {
+
+    this.contacts$.subscribe((contacts: Contact[]) => {
+        const selecteduserList = isRevoke ? contacts.filter(x => x.isBulkSelect && !x.revoked).map(x=>x._id):
+                                 contacts.filter(x => x.isBulkSelect && x.revoked).map(x=>x._id)
+
+         // bulk user Approve
+        const revokeData = <ModelUserRevokeAccess>{
+                user_id_list: selecteduserList,
+                revoke: isRevoke  // isRovoke = true means set revoke falg false.
+            };
+    
+        if(selecteduserList?.length > 0) {
+    this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
+    .subscribe({
+        next: (response) => {
+            const msg= isRevoke ? "revoked" : "approved"
+            const value = selecteduserList.length > 1 ? "users" : "user";
+            this.alert = {
+                type: 'success',
+                message: `Only ${selecteduserList.length} ${value} access has been ${msg} successfully.`,
+            };
+            // Show the alert
+            this.showAlert = true;
+            this.searchInputControl.setValue('');
+            this.hideAlert();
+        }, error: (_error) => {
+
+            var message = 'Something went wrong, please try again.';
+
+            if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                message = _error?.error['detail'];
+            }
+
+            // Set the alert
+            this.alert = {
+                type: 'error',
+                message: message,
+            };
+
+            // Show the alert
+            this.showAlert = true;
+            this.hideAlert();
+              }
+            });
+          }
+        });
+    }
+
+    hideAlert() {
+        setTimeout(() => {
+           this.showAlert = false;
+           this._changeDetectorRef.markForCheck();
+          }, 3000)
     }
 }
