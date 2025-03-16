@@ -169,18 +169,7 @@ export class AuthService {
             this.accessToken = response.access_token;
             // Set the authenticated flag to true
             this._authenticated = true;
-
-            this._userService.userMeUserMeGet().subscribe((user)=>{
-                const userData = {
-                    id: '',
-                    name: user.name,
-                    email: user.email,
-                    avatar: !user.photo? "images/avatars/male.png": user.photo,
-                    status: 'online',
-                    roles: !user.roles? [] : user.roles,
-                };
-                this._userService.user = userData;
-            });
+            this.setUserData();
             return of(response);
         }));
     }

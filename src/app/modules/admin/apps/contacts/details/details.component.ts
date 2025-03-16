@@ -72,7 +72,8 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         MatOptionModule,
         MatDatepickerModule,
         TextFieldModule,
-        FuseAlertComponent
+        FuseAlertComponent,
+        JsonPipe
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {
@@ -162,6 +163,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
     resetForm() {
         this.contactForm.reset();
+        (this.contactForm.get('roles') as UntypedFormArray).clear();
         this.formDirective?.resetForm();
     }
 
@@ -332,54 +334,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 });
             //return;
         }
-        else if (approved) {
-            const revokeData = <ModelUserRevokeAccess>{
-                user_id_list: [this.contact._id],
-                revoke: true
-            };
-
-            this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
-                .subscribe({
-                    next: (response) => {
-                        console.log(response);
-
-                        // Toggle the edit mode off
-                        this.toggleEditMode(false);
-
-                        this.alert = {
-                            type: 'success',
-                            message: `Access has been revoked successfully.`,
-                        };
-                        // Show the alert
-                        this.showAlert = true;
-
-                        //this.modifiyRoles();
-
-                        this.contact.name = contact.name;
-                        this.contact.email = contact.email;
-                        this.contact.roles = contact.roles;
-                    }, error: (_error) => {
-                        this.toggleEditMode(false);
-
-                        var message = 'Something went wrong, please try again.';
-
-                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
-                            message = _error?.error['detail'];
-                        }
-
-                        // Set the alert
-                        this.alert = {
-                            type: 'error',
-                            message: message,
-                        };
-
-                        // Show the alert
-                        this.showAlert = true;
-                    }
-                });
+        else if (!revoked && approved) {
+            this.revokeAccess(true,true);
         }
-        else if (revoked) {
-
+        else if (revoked && verified) {
             const revokeData = <ModelUserApproveAccess>{
                 user_id_list: [this.contact._id],
                 roles: contact.roles
@@ -401,10 +359,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.showAlert = true;
 
                         //this.modifiyRoles();
-
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
                         this.contact.roles = contact.roles;
+                        this.revokeAccess (false, false);
                     }, error: (_error) => {
                         this.toggleEditMode(false);
 
@@ -471,6 +429,50 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                     }
                 });
         }
+    }
+
+    revokeAccess(toMessage:boolean, revoke:boolean) {
+        const revokeData = <ModelUserRevokeAccess>{
+            user_id_list: [this.contact._id],
+            revoke: revoke
+        };
+        this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
+                .subscribe({
+                    next: (response) => {
+                        console.log(response);
+                        // Toggle the edit mode off
+                        this.toggleEditMode(false);
+                        this.showAlert = true;
+                         
+                        if(toMessage) {
+                        this.alert = {
+                            type: 'success',
+                            message: `Access has been revoked successfully.`,
+                        };
+                    }
+                        // Show the alert
+                      
+                        //this.modifiyRoles();
+                    }, error: (_error) => {
+                        this.toggleEditMode(false);
+
+                        var message = 'Something went wrong, please try again.';
+
+                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                            message = _error?.error['detail'];
+                        }
+
+                        if(toMessage) {
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: message,
+                        };
+                    }
+                        // Show the alert
+                        this.showAlert = true;
+                    }
+                });
     }
 
     modifiyRoles() {

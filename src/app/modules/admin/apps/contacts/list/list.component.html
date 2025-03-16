@@ -63,12 +63,45 @@
                             <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                             <span class="ml-2 mr-1">Bulk Actions</span>
                         </button> -->
+
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            
+                            @if(!selectAllContacts) {
+                            <button mat-menu-item (click)="update(true)">
+                                <mat-icon>select_all</mat-icon>
+                                <span>Select All</span>
+                            </button>
+                            }
+                                @else {
+                            <button mat-menu-item (click)="update(false)">
+                                <mat-icon>deselect</mat-icon>
+                                <span>Deselect All</span>
+                            </button>
+                            }
+
+                            <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (click)="bulkUserRevoke(false)">
+                              <mat-icon>group_add</mat-icon>
+                              <span>Approve</span>
+                            </button>
+                            <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (click)="bulkUserRevoke(true)">
+                              <mat-icon>group_remove</mat-icon>
+                              <span>Revoke</span>
+                            </button>
+                            <!-- <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate">
+                              <mat-icon>notifications_off</mat-icon>
+                              <span>reinstead</span>
+                            </button> -->
+                          </mat-menu>
+
                     </div>
                 </div>
-                <div class="mt-4 flex">
+                <!-- <div class="mt-4 flex">
                     <mat-checkbox [checked]="selectAllContacts" (change)="update($event.checked)"
                         [indeterminate]="indeterminate"></mat-checkbox>
-                </div>
+                </div> -->
                 <!-- Contacts list -->
                 <div class="relative">
                     @if (contacts$ | async; as contacts) {
