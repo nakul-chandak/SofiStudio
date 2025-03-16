@@ -334,9 +334,11 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                 });
             //return;
         }
+        // Revoke User Access
         else if (!revoked && approved) {
             this.revokeAccess(true,true);
         }
+        // Approve Revoke User Access
         else if (revoked && verified) {
             const revokeData = <ModelUserApproveAccess>{
                 user_id_list: [this.contact._id],
@@ -362,6 +364,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
                         this.contact.roles = contact.roles;
+                        this.contact.approved = true;
                         this.revokeAccess (false, false);
                     }, error: (_error) => {
                         this.toggleEditMode(false);
@@ -384,6 +387,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                     }
                 });
         }
+         // Approving new user access
         else if (verified && !approved && !revoked) {
             const approveUserData = <ModelUserApproveAccess>{
                 user_id_list: [this.contact._id],
@@ -410,6 +414,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.contact.name = contact.name;
                         this.contact.email = contact.email;
                         this.contact.roles = contact.roles;
+                        this.contact.approved = true;
                         this.hideAlert();
                     }, error: (_error) => {
                         this.toggleEditMode(false);
@@ -453,6 +458,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                             message: `Access has been revoked successfully.`,
                         };
                     }
+                    this.contact.revoked = revoke;
                         // Show the alert
                       
                         //this.modifiyRoles();
