@@ -54,6 +54,7 @@ export class FuseVerticalNavigationBasicItemComponent
         this._fuseUtilsService.subsetMatchOptions;
 
     private _fuseVerticalNavigationComponent: FuseVerticalNavigationComponent;
+    private _fuseVerticalNavigationComponentNavigations: FuseNavigationItem[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     user: User;
 
@@ -77,15 +78,20 @@ export class FuseVerticalNavigationBasicItemComponent
         this._fuseVerticalNavigationComponent =
             this._fuseNavigationService.getComponent(this.name);
 
+        this._fuseVerticalNavigationComponentNavigations =this._fuseVerticalNavigationComponent.navigation; 
+
         this._userService.user$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
                 if (this.user.roles?.indexOf('Admin') === -1) {
                     this._fuseVerticalNavigationComponent.navigation =
-                        this._fuseVerticalNavigationComponent.navigation
+                        this._fuseVerticalNavigationComponentNavigations
                             .filter(({ title
                             }) => title !== 'Users');
+                }
+                else {
+                    this._fuseVerticalNavigationComponent.navigation = this._fuseVerticalNavigationComponentNavigations;
                 }
 
                 // Mark for check

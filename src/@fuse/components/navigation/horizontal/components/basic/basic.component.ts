@@ -55,7 +55,8 @@ export class FuseHorizontalNavigationBasicItemComponent
     isActiveMatchOptions: IsActiveMatchOptions =
         this._fuseUtilsService.subsetMatchOptions;
 
-    private _fuseHorizontalNavigationComponent: FuseHorizontalNavigationComponent;
+    private _allFuseHorizontalNavigationComponent: FuseHorizontalNavigationComponent;
+    private _fuseHorizontalNavigationComponentNavigations: FuseNavigationItem[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     user: User;
 
@@ -76,18 +77,21 @@ export class FuseHorizontalNavigationBasicItemComponent
                 : this._fuseUtilsService.subsetMatchOptions;
 
         // Get the parent navigation component
-        this._fuseHorizontalNavigationComponent =
-            this._fuseNavigationService.getComponent(this.name);
+        this._allFuseHorizontalNavigationComponent = this._fuseNavigationService.getComponent(this.name);
+        this._fuseHorizontalNavigationComponentNavigations =this._allFuseHorizontalNavigationComponent.navigation;
 
         this._userService.user$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
                 if (this.user.roles?.indexOf('Admin') === -1) {
-                    this._fuseHorizontalNavigationComponent.navigation =
-                        this._fuseHorizontalNavigationComponent.navigation
+                    this._allFuseHorizontalNavigationComponent.navigation =
+                        this._fuseHorizontalNavigationComponentNavigations
                             .filter(({ title
                             }) => title !== 'Users');
+                }
+                else {
+                    this._allFuseHorizontalNavigationComponent.navigation = this._fuseHorizontalNavigationComponentNavigations;
                 }
 
                 // Mark for check
@@ -98,7 +102,7 @@ export class FuseHorizontalNavigationBasicItemComponent
         this._changeDetectorRef.markForCheck();
 
         // Subscribe to onRefreshed on the navigation component
-        this._fuseHorizontalNavigationComponent.onRefreshed
+        this._allFuseHorizontalNavigationComponent.onRefreshed
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(() => {
                 // Mark for check
