@@ -1,7 +1,6 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { JsonPipe, NgClass } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -73,7 +72,6 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         MatDatepickerModule,
         TextFieldModule,
         FuseAlertComponent,
-        JsonPipe
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {
