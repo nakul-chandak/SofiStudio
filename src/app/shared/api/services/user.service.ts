@@ -37,6 +37,7 @@ import { ModelUserUpdateStatus } from '../model/modelUserUpdateStatus';
 export class UserService {
 
     private httpClient = inject(HttpClient);
+  
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
     private _userEditMode: ReplaySubject<string> = new ReplaySubject<string>();
     private _contacts: BehaviorSubject<Contact[] | null> = new BehaviorSubject(
@@ -281,6 +282,9 @@ export class UserService {
                 ? this.configuration.accessToken()
                 : this.configuration.accessToken;
             headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+        else {
+            headers = headers.set('Authorization', 'Bearer ' + localStorage.getItem('accessToken'));
         }
 
         // to determine the Accept header

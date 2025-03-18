@@ -6,7 +6,6 @@ import {
     Routes,
 } from '@angular/router';
 import { ContactsComponent } from 'app/modules/admin/apps/contacts/contacts.component';
-import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
 import { ContactsDetailsComponent } from 'app/modules/admin/apps/contacts/details/details.component';
 import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
 import { catchError, throwError } from 'rxjs';
@@ -23,7 +22,6 @@ const contactResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ) => {
-    const contactsService = inject(ContactsService);
     const userService = inject(UserService);
     const router = inject(Router);
 
@@ -88,7 +86,6 @@ export default [
         path: '',
         component: ContactsComponent,
         resolve: {
-            tags: () => inject(ContactsService).getTags(),
         },
         children: [
             {
@@ -96,7 +93,6 @@ export default [
                 component: ContactsListComponent,
                 resolve: {
                     contacts: () => inject(UserService).listAllUsersUserAdminListAllUsersGet(),
-                    countries: () => inject(ContactsService).getCountries(),
                     roles:() => inject(UserService).listAllRolesUserAdminListAllRolesGet()
                 },
                 children: [
@@ -111,8 +107,6 @@ export default [
                         component: ContactsDetailsComponent,
                         resolve: {
                             contact: contactResolver,
-                            countries: () =>
-                                inject(ContactsService).getCountries(),
                         },
                         canDeactivate: [canDeactivateContactsDetails],
                     }
