@@ -42,10 +42,11 @@ export class AuthConfirmationRequiredComponent implements OnInit {
     */
     ngOnInit(): void {
         // Get Verification Code from Query String
-        this.route.queryParams.subscribe(params => {
-            this.modelAuthVerifyEmail.verificationCode = params['verificationCode'];
-        });
+        // this.route.queryParams.subscribe(params => {
+        //     this.modelAuthVerifyEmail.verificationCode = params['verificationCode'];
+        // });
 
+        this.modelAuthVerifyEmail.verificationCode = this.route.snapshot.params['id'];
 
         if (this.modelAuthVerifyEmail.verificationCode != undefined && this.modelAuthVerifyEmail.verificationCode != null && this.modelAuthVerifyEmail.verificationCode != '') {
             // Hide the alert
