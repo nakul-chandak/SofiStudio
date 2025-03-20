@@ -108,7 +108,7 @@
                             <mat-checkbox class="display-grid" [checked]="role.isSelected" (click)="$event.stopPropagation()" (change)="updateRoles($event.checked,role.name)"
                              >{{role.name}}</mat-checkbox>
                            }
-                           <button class="ml-4" mat-flat-button [color]="'primary'" class="small-button" (click)="bulkUpdateRoles()">
+                           <button [disabled] = "isRoleSelected()" class="ml-4" mat-flat-button [color]="'primary'" class="small-button" (click)="bulkUpdateRoles()">
                             <span class="ml-2 mr-1">Save</span>
                         </button> 
                           </mat-menu>

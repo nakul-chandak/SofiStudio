@@ -456,7 +456,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
                 this.hideAlert();
                 return;
           }
-          
+
         this.contacts$.subscribe((contacts: Contact[]) => {
             if (isTrigger) {
                 isTrigger =false;
@@ -545,6 +545,10 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         // Show the alert
         this.showAlert = true;
         this.hideAlert();
+    }
+
+    isRoleSelected():boolean {
+        return this.roleList.filter(x => x.isSelected).length <= 0 ;
     }
 
     hideAlert() {
