@@ -47,7 +47,7 @@ import {
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { MatMenuModule } from '@angular/material/menu';
-import { ModelUserApproveAccess, ModelUserRevokeAccess } from 'app/shared/api/model/models';
+import { ModelUserApproveAccess, ModelUserRevokeAccess, ModelUserUpdateRoles } from 'app/shared/api/model/models';
 
 @Component({
     selector: 'contacts-list',
@@ -93,6 +93,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     indeterminate = false;
     selectAllContacts = false;
     isEventTriggred = false;
+    isApproveTrigger = false;
     roleList:Array<any> =[];
     /**
      * Constructor
@@ -330,8 +331,8 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Approve and Revoke user access
-     * @param isRevoke is true means revoke user access and if false means approve user access
+     * Reinstead and Revoke user access
+     * @param isRevoke is true means revoke user access and if false means Reinstead user access
      */
    bulkUserRevoke(isRevoke:boolean) {
     var isManualTrigger = true;
@@ -339,12 +340,12 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     this.contacts$.subscribe((contacts: Contact[]) => {
        const totalSelectedUsersCount =contacts.filter(x => x.isBulkSelect).length;
        const selecteduserList = isRevoke ? contacts.filter(x => x.isBulkSelect && x.verified && !x.revoked).map(x=>x._id):
-                                 contacts.filter(x => x.isBulkSelect && x.verified && x.revoked).map(x=>x._id)
+                                 contacts.filter(x => x.isBulkSelect && x.verified && x.revoked && x.approved).map(x=>x._id)
      
          // bulk user Approve
         const revokeData = <ModelUserRevokeAccess>{
                 user_id_list: selecteduserList,
-                revoke: isRevoke  // isRovoke = true means set revoke falg false.
+                revoke: isRevoke  // isRovoke = true means set revoke flag false.
             };
     
         if(selecteduserList?.length > 0 && isManualTrigger) {
@@ -352,43 +353,31 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
     .subscribe({
         next: (response) => {
-            const msg= isRevoke ? "revoked" : "approved"
+            const msg= isRevoke ? "revoked" : "Reinstead"
             const userPuralOrSingular = totalSelectedUsersCount > 1 ? "users" : "user";
             const userVal = selecteduserList.length > 1 ? "users" : "user";
+            const toBeVerb =  userVal === "users"? "are":"is";
             this.alert = {
                 type: 'success',
-                message: `Out of the selected ${totalSelectedUsersCount } ${userVal}, access has been ${msg} for ${selecteduserList.length} ${userPuralOrSingular}. The access for the remaining users is already approved.`,
+                message: `Out of the selected ${totalSelectedUsersCount } ${userPuralOrSingular}, access has been ${msg} for ${selecteduserList.length} ${userVal}. The access for the remaining ${userVal} ${toBeVerb} not eligible.`,
             };
             // Show the alert
             this.showAlert = true;
             this.searchInputControl.setValue('');
             this.hideAlert();
         }, error: (_error) => {
-
-            var message = 'Something went wrong, please try again.';
-
-            if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
-                message = _error?.error['detail'];
-            }
-
-            // Set the alert
-            this.alert = {
-                type: 'error',
-                message: message,
-            };
-
-            // Show the alert
-            this.showAlert = true;
-            this.hideAlert();
+                this.showError(_error);
               }
             });
           }
+
           else if(isManualTrigger) {
             isManualTrigger = false;
+             const msg= isRevoke ? "revoked" : "Reinstead"
             // Set the alert
             this.alert = {
                 type: 'success',
-                message: "The access for the selected users has already been approved.",
+                message: `The access for the selected users has already been ${msg}.`,
             };
 
             // Show the alert
@@ -398,66 +387,51 @@ export class ContactsListComponent implements OnInit, OnDestroy {
         });
     }
 
-    bulkUserReinstead() {
-        var isManualTrigger = true;
-        this.contacts$.subscribe((contacts: Contact[]) => {
-             const totalSelectedUsersCount = contacts.filter(x => x.isBulkSelect).length;
-            const selecteduserList = contacts.filter(x => x.isBulkSelect && x.verified && x.revoked && x.approved).map(x => x._id);
+    // bulkUserReinstead() {
+    //     var isManualTrigger = true;
+    //     this.contacts$.subscribe((contacts: Contact[]) => {
+    //          const totalSelectedUsersCount = contacts.filter(x => x.isBulkSelect).length;
+    //         const selecteduserList = contacts.filter(x => x.isBulkSelect && x.verified && x.revoked && x.approved).map(x => x._id);
           
-            // bulk user Approve
-            const revokeData = <ModelUserRevokeAccess>{
-                user_id_list: selecteduserList,
-                revoke: false
-            };
+    //         // bulk user Approve
+    //         const revokeData = <ModelUserRevokeAccess>{
+    //             user_id_list: selecteduserList,
+    //             revoke: false
+    //         };
 
-            if (selecteduserList?.length > 0 && isManualTrigger) {
-                isManualTrigger = false;
-                this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe({
-                        next: (response) => {
-                            const userPuralOrSingular = totalSelectedUsersCount > 1 ? "users" : "user";
-                            const userVal = selecteduserList.length > 1 ? "users" : "user";
-                            this.alert = {
-                                type: 'success',
-                                message: `Out of the selected ${selecteduserList.length} ${userVal}, access has been Reinstead for ${selecteduserList.length} ${userPuralOrSingular}. The access for the remaining users is already Reinstead.`,
-                            };
-                            // Show the alert
-                            this.showAlert = true;
-                            this.searchInputControl.setValue('');
-                            this.hideAlert();
-                        }, error: (_error) => {
+    //         if (selecteduserList?.length > 0 && isManualTrigger) {
+    //             isManualTrigger = false;
+    //             this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData).subscribe({
+    //                     next: (response) => {
+    //                         const userPuralOrSingular = totalSelectedUsersCount > 1 ? "users" : "user";
+    //                         const userVal = selecteduserList.length > 1 ? "users" : "user";
+    //                         this.alert = {
+    //                             type: 'success',
+    //                             message: `Out of the selected ${totalSelectedUsersCount} ${userVal}, access has been Reinstead for ${selecteduserList.length} ${userPuralOrSingular}. The access for the remaining users is already Reinstead.`,
+    //                         };
+    //                         // Show the alert
+    //                         this.showAlert = true;
+    //                         this.searchInputControl.setValue('');
+    //                         this.hideAlert();
+    //                     }, error: (_error) => {
+    //                         this.showError(_error);
+    //                     }
+    //                 });
+    //             }
+    //         else if(isManualTrigger) {
+    //             isManualTrigger = false;
+    //             // Set the alert
+    //             this.alert = {
+    //                 type: 'success',
+    //                 message: "The access for the selected users has already been Reinstead.",
+    //             };
 
-                            var message = 'Something went wrong, please try again.';
-
-                            if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
-                                message = _error?.error['detail'];
-                            }
-
-                            // Set the alert
-                            this.alert = {
-                                type: 'error',
-                                message: message,
-                            };
-
-                            // Show the alert
-                            this.showAlert = true;
-                            this.hideAlert();
-                        }
-                    });
-                }
-            else if(isManualTrigger) {
-                isManualTrigger = false;
-                // Set the alert
-                this.alert = {
-                    type: 'success',
-                    message: "The access for the selected users has already been Reinstead.",
-                };
-
-                // Show the alert
-                this.showAlert = true;
-                this.hideAlert();
-            }
-        });
-    }
+    //             // Show the alert
+    //             this.showAlert = true;
+    //             this.hideAlert();
+    //         }
+    //     });
+    // }
 
     updateRoles(checked:boolean,roleName:string) {    
       this.roleList.filter(x=>x.name === roleName).map(x=>x.isSelected=checked);
@@ -471,18 +445,106 @@ export class ContactsListComponent implements OnInit, OnDestroy {
     bulkUpdateRoles() {
         var isTrigger = true;
         const selectedRoles = this.roleList.filter(x => x.isSelected).map(x=>x.name);
+        if(selectedRoles.length <= 0) {
+            isTrigger = false;
+            this.alert = {
+                type: 'error',
+                message: `Select one or more roles to continue.`,
+            };
+                // Show the alert
+                this.showAlert = true;
+                this.hideAlert();
+                return;
+          }
+          
         this.contacts$.subscribe((contacts: Contact[]) => {
             if (isTrigger) {
-                const selectedContacts = contacts.filter(x => x.isBulkSelect).map(x=>x._id);
+                isTrigger =false;
+                const totalSelectedUsersCount =contacts.filter(x => x.isBulkSelect).length;
+                const selectedContacts = this.isApproveTrigger ? contacts.filter(x => x.isBulkSelect && x.verified &&  x.roles.length > 0 && !x.approved && !x.revoked).map(x=>x._id):
+                                         contacts.filter(x => x.isBulkSelect && x.verified).map(x=>x._id);
 
-                // trigger API call
-                console.log(selectedRoles);
-                console.log(selectedContacts);
-
+                const userPuralOrSingular = totalSelectedUsersCount > 1 ? "users" : "user";
+                const toBeVerb =  userPuralOrSingular === "users"? "are":"is";
+                const userVal = selectedContacts.length > 1 ? "users" : "user";
+                const msg = this.isApproveTrigger? "approval" : "update roles" 
+                // check for bulk approval users
+                if(selectedContacts.length > 0 && this.isApproveTrigger) {
+                    const approveAccess = <ModelUserApproveAccess> {
+                        roles:selectedRoles,
+                        user_id_list:selectedContacts
+                    };
+                    // trigger API call to bulk approve users.
+                     this._userService.approveAccessUserAdminApproveAccessPost(approveAccess).subscribe({next:(response)=>{
+                        this.alert = {
+                            type: 'success',
+                            message: `Out of the selected ${totalSelectedUsersCount} ${userPuralOrSingular}, access has been approved for ${selectedContacts.length} ${userVal}.`,
+                        };
+                            // Show the alert
+                            this.showAlert = true;
+                            this.hideAlert();
+                            this.searchInputControl.setValue('');
+                     },error:(error)=>{
+                        this.showError(error);
+                     }
+                    });   
+                }
+                // check is first time user for bulk update roles.
+                else if(selectedContacts.length > 0 && !this.isApproveTrigger) {
+                    const updateUserRoles = <ModelUserUpdateRoles> {
+                        roles:selectedRoles,
+                        user_id_list:selectedContacts
+                    };
+                    
+                 this._userService.updateRolesUserAdminUpdateRolesPost(updateUserRoles).subscribe({next:(response)=>{
+                    this.alert = {
+                        type: 'success',
+                        message: `Out of the selected ${totalSelectedUsersCount} ${userPuralOrSingular}, roles has been assinged for ${selectedContacts.length} ${userVal} successfully.`,
+                    };
+                        // Show the alert
+                        this.showAlert = true;
+                        this.hideAlert();
+                        this.searchInputControl.setValue('');
+                 },error:(error)=>{
+                    this.showError(error);
+                 }
+                });  
+                }
+                else {
+                    this.alert = {
+                        type: 'success',
+                        message: `Non of the selected ${userPuralOrSingular} ${toBeVerb} eligible for ${msg}.`,
+                    };
+                        // Show the alert
+                        this.showAlert = true;
+                        this.hideAlert();
+                }
                 // after successful
                 this.setRoles(false);
             }
         });
+    }
+
+    resetRoles() {
+        this.roleList.map(x => x.isSelected = false);
+    }
+
+    showError(_error:any){
+        var message = 'Something went wrong, please try again.';
+
+        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+            message = _error?.error['detail'];
+        }
+
+        // Set the alert
+        this.alert = {
+            type: 'error',
+            message: message,
+        };
+
+        // Show the alert
+        this.showAlert = true;
+        this.hideAlert();
     }
 
     hideAlert() {

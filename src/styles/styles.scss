@@ -14,3 +14,8 @@
         display: grid;
     }
    }
+   .small-button {
+    padding: 4px 8px; /* Adjust padding as needed */
+    font-size: 12px; /* Adjust font size if necessary */
+    min-width: 0; /* allows the button to be smaller than the default min-width */
+  }
