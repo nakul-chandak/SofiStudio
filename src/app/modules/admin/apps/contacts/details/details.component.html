@@ -719,13 +719,13 @@
                         ? 'Approve' : contact.approved ? 'Revoke' :'Save'}}
                     </button>
                     }
-                    <!-- @if(!isNewContact && contact.approved && contact.verified) { -->
+                    @if(!isNewContact && contact.approved && contact.verified && !contact.revoked) {
                     <button class="ml-2" mat-flat-button [color]="'primary'" [disabled]="contactForm.invalid"
                         [matTooltip]="'Save'" (click)="modifiyRoles()">
                             Update Role
                     </button>
 
-                    <!-- } -->
+                    }
                 </div>
             </form>
         </div>

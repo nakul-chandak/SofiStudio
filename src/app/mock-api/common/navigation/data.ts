@@ -10,12 +10,42 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/home'
     },
     {
-        id   : 'user',
-        title: 'Users',
-        type : 'basic',
-        icon : 'heroicons_outline:users',
-        link : '/users'
-    }
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+        icon: 'mat_outline:admin_panel_settings',
+        children: [
+            {
+                 id   : 'user',
+                title: 'Users',
+                type : 'basic',
+                icon : 'heroicons_outline:users',
+                link : '/users'
+            },
+            {
+                id   : 'settings',
+                title: 'Settings',
+                type : 'basic',
+                icon : 'mat_outline:settings',
+                link : '/settings'
+            },
+        ],
+    },
+    {
+        id: 'content',
+        title: 'Content',
+        type: 'group',
+        icon: 'heroicons_outline:sparkles',
+        children: [
+            {
+                 id   : 'category',
+                title: 'Category',
+                type : 'basic',
+                icon : 'mat_outline:category',
+                link : '/Category'
+            }
+        ],
+    },
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
@@ -26,12 +56,42 @@ export const compactNavigation: FuseNavigationItem[] = [
         link : '/home'
     },
     {
-        id   : 'user',
-        title: 'Users',
-        type : 'basic',
-        icon : 'heroicons_outline:users',
-        link : '/users'
-    }
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+        icon: 'mat_outline:admin_panel_settings',
+        children: [
+            {
+                 id   : 'user',
+                title: 'Users',
+                type : 'basic',
+                icon : 'heroicons_outline:users',
+                link : '/users'
+            },
+            {
+                id   : 'settings',
+                title: 'Settings',
+                type : 'basic',
+                icon : 'mat_outline:settings',
+                link : '/settings'
+            },
+        ],
+    },
+    {
+        id: 'content',
+        title: 'Content',
+        type: 'group',
+        icon: 'heroicons_outline:sparkles',
+        children: [
+            {
+                 id   : 'category',
+                title: 'Category',
+                type : 'basic',
+                icon : 'mat_outline:category',
+                link : '/Category'
+            }
+        ],
+    },
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
     {
@@ -42,12 +102,42 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         link : '/home'
     },
     {
-        id   : 'user',
-        title: 'Users',
-        type : 'basic',
-        icon : 'heroicons_outline:users',
-        link : '/users'
-    }
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+        icon: 'mat_outline:admin_panel_settings',
+        children: [
+            {
+                 id   : 'user',
+                title: 'Users',
+                type : 'basic',
+                icon : 'heroicons_outline:users',
+                link : '/users'
+            },
+            {
+                id   : 'settings',
+                title: 'Settings',
+                type : 'basic',
+                icon : 'mat_outline:settings',
+                link : '/settings'
+            },
+        ],
+    },
+    {
+        id: 'content',
+        title: 'Content',
+        type: 'group',
+        icon: 'heroicons_outline:sparkles',
+        children: [
+            {
+                 id   : 'category',
+                title: 'Category',
+                type : 'basic',
+                icon : 'mat_outline:category',
+                link : '/Category'
+            }
+        ],
+    },
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
@@ -58,10 +148,40 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         link : '/home'
     },
     {
-        id   : 'user',
-        title: 'Users',
-        type : 'basic',
-        icon : 'heroicons_outline:users',
-        link : '/users'
-    }
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+        icon: 'mat_outline:admin_panel_settings',
+        children: [
+            {
+                 id   : 'user',
+                title: 'Users',
+                type : 'basic',
+                icon : 'heroicons_outline:users',
+                link : '/users'
+            },
+            {
+                id   : 'settings',
+                title: 'Settings',
+                type : 'basic',
+                icon : 'mat_outline:settings',
+                link : '/settings'
+            },
+        ],
+    },
+    {
+        id: 'content',
+        title: 'Content',
+        type: 'group',
+        icon: 'heroicons_outline:sparkles',
+        children: [
+            {
+                 id   : 'category',
+                title: 'Category',
+                type : 'basic',
+                icon : 'mat_outline:category',
+                link : '/Category'
+            }
+        ],
+    },
 ];
