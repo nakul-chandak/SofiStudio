@@ -10,23 +10,21 @@
  * Do not edit the class manually.
  *//* tslint:disable:no-unused-variable member-ordering */
 
-import { inject, Inject, Injectable, Optional } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
     HttpClient, HttpHeaders, HttpParams,
     HttpResponse, HttpEvent
 } from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec } from '../encoder';
 
-import { BehaviorSubject, map, Observable, of, ReplaySubject, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 
-import { HTTPValidationError } from '../model/hTTPValidationError';
 import { ModelCommonResponse } from '../model/modelCommonResponse';
 import { ModelUserApproveAccess } from '../model/modelUserApproveAccess';
 import { ModelUserRevokeAccess } from '../model/modelUserRevokeAccess';
 import { ModelUserUpdateRoles } from '../model/modelUserUpdateRoles';
 import { ModelUserUpdateUser } from '../model/modelUserUpdateUser';
 
-import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
 import { User } from 'app/core/user/user.types';
 import { Contact } from 'app/modules/admin/apps/contacts/contacts.types';

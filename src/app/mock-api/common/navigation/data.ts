@@ -38,11 +38,11 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:sparkles',
         children: [
             {
-                 id   : 'category',
+                 id  :'category',
                 title: 'Category',
                 type : 'basic',
                 icon : 'mat_outline:category',
-                link : '/Category'
+                link : '/category'
             }
         ],
     },
@@ -84,11 +84,11 @@ export const compactNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:sparkles',
         children: [
             {
-                 id   : 'category',
+                 id  : 'category',
                 title: 'Category',
                 type : 'basic',
                 icon : 'mat_outline:category',
-                link : '/Category'
+                link : '/category'
             }
         ],
     },
@@ -130,11 +130,11 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:sparkles',
         children: [
             {
-                 id   : 'category',
+                 id  : 'category',
                 title: 'Category',
                 type : 'basic',
                 icon : 'mat_outline:category',
-                link : '/Category'
+                link : '/category'
             }
         ],
     },
@@ -176,11 +176,11 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:sparkles',
         children: [
             {
-                 id   : 'category',
+                 id  : 'category',
                 title: 'Category',
                 type : 'basic',
                 icon : 'mat_outline:category',
-                link : '/Category'
+                link : '/category'
             }
         ],
     },
