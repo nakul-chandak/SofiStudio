@@ -1,6 +1,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    OnDestroy,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
@@ -17,8 +18,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-
-import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { ModelSAInfraIntegrationUpdate, ModelSAUXIntegration } from 'app/shared/api/model/models';
 import { SuperAdminService } from 'app/shared/api/services/api';
@@ -40,7 +39,7 @@ import { Subject, takeUntil } from 'rxjs';
         FuseAlertComponent
     ],
 })
-export class SettingsSecurityComponent implements OnInit {
+export class SettingsSecurityComponent implements OnInit, OnDestroy {
     securityForm: UntypedFormGroup;
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',

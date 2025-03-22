@@ -412,7 +412,7 @@ export class AuthService {
                 name: user.name,
                 email: user.email,
                 avatar: !user.photo? "images/avatars/male.png": user.photo,
-                status: 'online',
+                status: !user.onlineStatus? 'online' : user.onlineStatus,
                 roles: !user.roles? [] : user.roles,
             };
             this._userService.user = userData;

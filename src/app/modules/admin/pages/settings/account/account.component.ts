@@ -2,6 +2,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import {
     ChangeDetectionStrategy,
     Component,
+    OnDestroy,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
@@ -21,9 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SuperAdminService } from 'app/shared/api/services/api';
 import { ModelSAInfraIntegration, ModelSAInfraIntegrationUpdate } from 'app/shared/api/model/models';
-import { ModelSAUpdateData } from 'app/shared/api/model/models';
 import { Subject, takeUntil } from 'rxjs';
-import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
@@ -44,7 +43,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         FuseAlertComponent
     ],
 })
-export class SettingsAccountComponent implements OnInit {
+export class SettingsAccountComponent implements OnInit, OnDestroy {
     accountForm: UntypedFormGroup;
     modelSAInfraIntegration: ModelSAInfraIntegration = {
         createDatetime: undefined,
@@ -71,7 +70,8 @@ export class SettingsAccountComponent implements OnInit {
     /**
      * Constructor
      */
-    constructor(private _formBuilder: UntypedFormBuilder, private superAdminService: SuperAdminService) { }
+    constructor(private _formBuilder: UntypedFormBuilder, private superAdminService: SuperAdminService) { 
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

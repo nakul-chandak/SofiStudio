@@ -88,7 +88,7 @@ export class FuseHorizontalNavigationBasicItemComponent
                     this._allFuseHorizontalNavigationComponent.navigation =
                         this._fuseHorizontalNavigationComponentNavigations
                             .filter(({ title
-                            }) => title !== 'Users');
+                            }) => title === 'Home');
                 }
                 else {
                     this._allFuseHorizontalNavigationComponent.navigation = this._fuseHorizontalNavigationComponentNavigations;

@@ -88,7 +88,7 @@ export class FuseVerticalNavigationBasicItemComponent
                     this._fuseVerticalNavigationComponent.navigation =
                         this._fuseVerticalNavigationComponentNavigations
                             .filter(({ title
-                            }) => title !== 'Users');
+                            }) => title === 'Home');
                 }
                 else {
                     this._fuseVerticalNavigationComponent.navigation = this._fuseVerticalNavigationComponentNavigations;
