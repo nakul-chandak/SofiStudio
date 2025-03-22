@@ -162,6 +162,8 @@ export class SettingsSecurityComponent implements OnInit {
 
                 // Show the alert
                 this.showAlert = true;
+
+                this.securityForm.enable();
             }, error: (_error) => {
                 this.securityForm.enable();
 

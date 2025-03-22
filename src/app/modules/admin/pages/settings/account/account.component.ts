@@ -163,9 +163,11 @@ export class SettingsAccountComponent implements OnInit {
                     type: 'success',
                     message: 'Infra Integration details has been updated.',
                 };
-                
+
                 // Show the alert
                 this.showAlert = true;
+
+                this.accountForm.enable();
             }, error: (_error) => {
                 this.accountForm.enable();
 
