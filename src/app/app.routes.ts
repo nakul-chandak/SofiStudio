@@ -85,6 +85,9 @@ export const appRoutes: Route[] = [
             { path: 'users', loadChildren: () => import('app/modules/admin/apps/contacts/contacts.routes') },
             // Settings
             {path: 'settings', loadChildren: () => import('app/modules/admin/pages/settings/settings.routes')},
+
+             //cantent routing
+            {path: 'category', loadChildren: () => import('app/modules/admin/pages/content/content.routes')},
             // Apps
             // {
             //     path: 'apps', children: [
