@@ -88,7 +88,7 @@ export const compactNavigation: FuseNavigationItem[] = [
                 title: 'Category',
                 type : 'basic',
                 icon : 'mat_outline:category',
-                link : '/Cctegory'
+                link : '/category'
             }
         ],
     },
