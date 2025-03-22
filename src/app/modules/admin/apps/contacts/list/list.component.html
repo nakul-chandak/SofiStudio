@@ -66,16 +66,16 @@
 
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>
-                          </button>
-                          <mat-menu #menu="matMenu">
-                            
+                        </button>
+                        <mat-menu #menu="matMenu">
+
                             @if(!selectAllContacts) {
                             <button mat-menu-item (click)="update(true)">
                                 <mat-icon>select_all</mat-icon>
                                 <span>Select All</span>
                             </button>
                             }
-                            
+
                             @if(selectAllContacts || indeterminate) {
                             <button mat-menu-item (click)="update(false)">
                                 <mat-icon>deselect</mat-icon>
@@ -83,35 +83,41 @@
                             </button>
                             }
 
-                            <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (mouseover)="isApproveTrigger=true" [matMenuTriggerFor]="multiRoles">
-                              <mat-icon>group_add</mat-icon>
-                              <span>Approve</span>
+                            <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
+                                (mouseover)="isApproveTrigger=true" [matMenuTriggerFor]="multiRoles">
+                                <mat-icon>group_add</mat-icon>
+                                <span>Approve</span>
                             </button>
-                            <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (click)="bulkUserRevoke(true)">
-                              <mat-icon>group_remove</mat-icon>
-                              <span>Revoke</span>
+                            <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
+                                (click)="bulkUserRevoke(true)">
+                                <mat-icon>group_remove</mat-icon>
+                                <span>Revoke</span>
                             </button>
 
-                            <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (click)="bulkUserRevoke(false)">
+                            <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
+                                (click)="bulkUserRevoke(false)">
                                 <mat-icon>group_add</mat-icon>
                                 <span>Reinstead</span>
-                              </button>
+                            </button>
 
-                              <button mat-menu-item [disabled] ="!selectAllContacts && !indeterminate" (mouseover)="isApproveTrigger=false" [matMenuTriggerFor]="multiRoles">
+                            <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
+                                (mouseover)="isApproveTrigger=false" [matMenuTriggerFor]="multiRoles">
                                 <mat-icon>group_add</mat-icon>
                                 <span>Update Roles</span>
-                              </button>
-                            </mat-menu>
+                            </button>
+                        </mat-menu>
 
-                          <mat-menu class="listUser" #multiRoles="matMenu" (closed)="resetRoles()">
-                           @for(role of roleList; track role) {
-                            <mat-checkbox class="display-grid" [checked]="role.isSelected" (click)="$event.stopPropagation()" (change)="updateRoles($event.checked,role.name)"
-                             >{{role.name}}</mat-checkbox>
-                           }
-                           <button [disabled] = "isRoleSelected()" class="ml-4" mat-flat-button [color]="'primary'" (click)="bulkUpdateRoles()">
-                            <span class="ml-2 mr-1">Save</span>
-                        </button> 
-                          </mat-menu>
+                        <mat-menu class="listUser" #multiRoles="matMenu" (closed)="resetRoles()">
+                            @for(role of roleList; track role) {
+                            <mat-checkbox class="display-grid" [checked]="role.isSelected"
+                                (click)="$event.stopPropagation()"
+                                (change)="updateRoles($event.checked,role.name)">{{role.name}}</mat-checkbox>
+                            }
+                            <button [disabled]="isRoleSelected()" class="ml-4" mat-flat-button [color]="'primary'"
+                                (click)="bulkUpdateRoles()">
+                                <span class="ml-2 mr-1">Save</span>
+                            </button>
+                        </mat-menu>
 
                     </div>
                 </div>
@@ -145,14 +151,15 @@
                         <mat-checkbox [checked]="contact.isBulkSelect"
                             (change)="update($event.checked,contact)"></mat-checkbox>
 
-                        <a class="z-20 flex w-full cursor-pointer items-center px-6 py-4 md:px-8" [ngClass]="{
+                        <a class="z-20 flex w-full cursor-pointer items-center px-6 md:px-8"
+                            style="padding-top: 1rem !important;padding-bottom: 0.5rem !important;" [ngClass]="{
                                                                         'dark:hover:bg-hover':
                                                                             !selectedContact ||
                                                                             selectedContact._id !== contact._id,
                                                                         'dark:bg-hover':
                                                                             selectedContact &&
                                                                             selectedContact._id === contact._id,
-                                                                    }" (click)="editContact(contact._id)" >
+                                                                    }" (click)="editContact(contact._id)">
                             <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
                                 @if (contact.photo) {
                                 <img class="h-full w-full object-cover" [src]="contact.photo" alt="Contact avatar" />
@@ -164,12 +171,76 @@
                                 </div>
                                 }
                             </div>
+                            <span class="relative">
+                                @if(contact.onlineStatus !== null && contact.onlineStatus !== undefined &&
+                                contact.onlineStatus !== ''){
+                                @if(contact.onlineStatus === 'offline') {
+                                <span class="absolute h-2 w-2 rounded-full ring-2 bg-gray-400 dark:ring-gray-900"
+                                    style="bottom: -17px !important;right: 5px !important;"></span>}
+                                @else if(contact.onlineStatus === 'online') {
+                                <span class="absolute h-2 w-2 rounded-full ring-2 bg-green-500 dark:ring-gray-900"
+                                    style="bottom: -17px !important;right: 5px !important;"></span>}
+                                @else if(contact.onlineStatus === 'away') {
+                                <span class="absolute h-2 w-2 rounded-full ring-2 bg-amber-500 dark:ring-gray-900"
+                                    style="bottom: -17px !important;right: 5px !important;"></span>}
+                                @else if(contact.onlineStatus === 'busy') {
+                                <span class="absolute h-2 w-2 rounded-full ring-2 bg-red-500 dark:ring-gray-900"
+                                    style="bottom: -17px !important;right: 5px !important;"></span>}
+                                }
+                            </span>
                             <div class="ml-4 min-w-0">
                                 <div class="truncate font-medium leading-5">
                                     {{ contact.name }}
                                 </div>
-                                <div class="text-secondary truncate leading-5">
+                                <!-- <div class="text-secondary truncate leading-5">
                                     {{ contact.email }}
+                                </div> -->
+                                <div class="mt-2 flex flex-wrap items-center">
+                                    <div
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">{{ contact.email }}</span>
+                                    </div>
+                                    @if(contact.verified){
+                                    <div style="background-color: #0061F2 !important;"
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">Verified</span>
+                                    </div>
+                                    }
+                                    @else{
+                                    <div
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
+                                    </div>
+                                    }
+                                    @if(contact.approved && !contact.revoked){
+                                    <div style="background-color: darkgreen !important;"
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">Approved</span>
+                                    </div>
+                                    }
+                                    @else if(!contact.approved && !contact.revoked){
+                                    <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;"
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
+                                    </div>
+                                    }
+                                    @else if((contact.approved && contact.revoked) || contact.revoked){
+                                    <div
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
+                                    </div>
+                                    }
+                                    @if (contact.roles.length) {
+                                    @for (
+                                    role of contact.roles;
+                                    track trackByFn($index, role)
+                                    ) {
+                                    <div
+                                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="whitespace-nowrap text-sm font-medium">{{ role }}</span>
+                                    </div>
+                                    }
+                                    }
                                 </div>
                             </div>
                         </a>

@@ -42,12 +42,29 @@
                         {{ contact.name.charAt(0) }}
                     </div>
                     }
+                    <span class="relative">
+                        @if(contact.onlineStatus !== null && contact.onlineStatus !== undefined &&
+                        contact.onlineStatus !== ''){
+                        @if(contact.onlineStatus === 'offline') {
+                        <span class="absolute h-3 w-3 rounded-full ring-2 bg-gray-400 dark:ring-gray-900"
+                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                        @else if(contact.onlineStatus === 'online') {
+                        <span class="absolute h-3 w-3 rounded-full ring-2 bg-green-500 dark:ring-gray-900"
+                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                        @else if(contact.onlineStatus === 'away') {
+                        <span class="absolute h-3 w-3 rounded-full ring-2 bg-amber-500 dark:ring-gray-900"
+                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                        @else if(contact.onlineStatus === 'busy') {
+                        <span class="absolute h-3 w-3 rounded-full ring-2 bg-red-500 dark:ring-gray-900"
+                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                        }
+                    </span>
                 </div>
                 <!-- Actions -->
                 <div class="mb-1 ml-auto flex items-center">
                     <button mat-stroked-button (click)="toggleEditMode(true)">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-square'"></mat-icon>
-                        <span class="ml-2">Update User</span>
+                        <span class="ml-2">Update</span>
                     </button>
                 </div>
             </div>
@@ -78,27 +95,36 @@
                 } -->
 
             <div class="mt-2 flex flex-wrap items-center">
-                <div
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                    @if(contact.verified){
+                @if(contact.verified){
+                <div style="background-color: #0061F2 !important;"
+                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Verified</span>
-                    }
-                    @else{
-                    <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
-                    }
                 </div>
+                }
+                @else{
                 <div
                     class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                    @if(contact.approved && !contact.revoked){
-                    <span class="whitespace-nowrap text-sm font-medium">Approved</span>
-                    }
-                    @else if((contact.approved && contact.revoked) || contact.revoked){
-                    <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
-                    }
-                    @else{
-                    <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
-                    }
+                    <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
                 </div>
+                }
+                @if(contact.approved && !contact.revoked){
+                <div style="background-color: darkgreen !important;"
+                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                    <span class="whitespace-nowrap text-sm font-medium">Approved</span>
+                </div>
+                }
+                @else if(!contact.approved && !contact.revoked){
+                <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;"
+                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                    <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
+                </div>
+                }
+                @else if((contact.approved && contact.revoked) || contact.revoked){
+                <div
+                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                    <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
+                </div>
+                }
             </div>
 
             <div class="mt-4 flex flex-col space-y-8 border-t pt-6">
@@ -338,27 +364,36 @@
                 </div>
 
                 <div class="mt-2 flex flex-wrap items-center">
-                    <div
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                        @if(contact.verified){
+                    @if(contact.verified){
+                    <div style="background-color: #0061F2 !important;"
+                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Verified</span>
-                        }
-                        @else{
-                        <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
-                        }
                     </div>
+                    }
+                    @else{
                     <div
                         class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                        @if(contact.approved && !contact.revoked){
-                        <span class="whitespace-nowrap text-sm font-medium">Approved</span>
-                        }
-                        @else if((contact.approved && contact.revoked) || contact.revoked){
-                        <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
-                        }
-                        @else{
-                        <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
-                        }
+                        <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
                     </div>
+                    }
+                    @if(contact.approved && !contact.revoked){
+                    <div style="background-color: darkgreen !important;"
+                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                        <span class="whitespace-nowrap text-sm font-medium">Approved</span>
+                    </div>
+                    }
+                    @else if(!contact.approved && !contact.revoked){
+                    <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;"
+                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                        <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
+                    </div>
+                    }
+                    @else if((contact.approved && contact.revoked) || contact.revoked){
+                    <div
+                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                        <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
+                    </div>
+                    }
                 </div>
 
                 <!-- Title -->
@@ -698,7 +733,6 @@
                 <!-- Actions -->
                 <!-- {{contactForm.value | json}} -->
                 <div
-                 
                     class="-mx-6 mt-10 flex items-center border-t bg-gray-50 py-4 pl-1 pr-4 dark:bg-transparent sm:-mx-12 sm:pl-7 sm:pr-12">
                     <!-- Delete -->
                     <!-- <button mat-button [color]="'warn'" [matTooltip]="'Delete'" (click)="deleteContact()">
@@ -722,7 +756,7 @@
                     @if(!isNewContact && contact.approved && contact.verified && !contact.revoked) {
                     <button class="ml-2" mat-flat-button [color]="'primary'" [disabled]="contactForm.invalid"
                         [matTooltip]="'Save'" (click)="modifiyRoles()">
-                            Update Role
+                        Update Role
                     </button>
 
                     }

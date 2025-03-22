@@ -26,6 +26,7 @@ export interface Contact {
     verified:boolean;
     approved:boolean;
     revoked:boolean;
+    onlineStatus: string;
 }
 
 export interface Country {
