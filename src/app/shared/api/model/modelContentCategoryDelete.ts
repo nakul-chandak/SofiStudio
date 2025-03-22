@@ -10,11 +10,6 @@
  * Do not edit the class manually.
  */
 
-export type OnlineStatus = 'online' | 'away' | 'busy' | 'offline';
-
-export const OnlineStatus = {
-    Online: 'online' as OnlineStatus,
-    Away: 'away' as OnlineStatus,
-    Busy: 'busy' as OnlineStatus,
-    Offline: 'offline' as OnlineStatus
-};
+export interface ModelContentCategoryDelete { 
+    id: string;
+}

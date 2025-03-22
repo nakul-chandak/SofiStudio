@@ -8,16 +8,18 @@
                 Following information is publicly displayed, be careful!
             </div>
         </div> -->
+        @if (showAlert) {
+        <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+            [@shake]="alert.type === 'error'">
+            {{ alert.message }}
+        </fuse-alert>
+        }
         <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
             <!-- Name -->
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>API Url</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_outline:insert_link'"
-                        matPrefix
-                    ></mat-icon>
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
                     <input [formControlName]="'apiurl'" matInput />
                 </mat-form-field>
             </div>
@@ -25,11 +27,7 @@
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>API Key</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_outline:vpn_key'"
-                        matPrefix
-                    ></mat-icon>
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:vpn_key'" matPrefix></mat-icon>
                     <input [formControlName]="'apikey'" matInput />
                 </mat-form-field>
             </div>
@@ -37,11 +35,7 @@
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>API Host Id</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:identification'"
-                        matPrefix
-                    ></mat-icon>
+                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:identification'" matPrefix></mat-icon>
                     <input [formControlName]="'apihostid'" matInput />
                 </mat-form-field>
             </div>
@@ -110,8 +104,8 @@
             </div>
         </div> -->
         <!-- <div class="mt-8 grid w-full gap-6 sm:grid-cols-4"> -->
-            <!-- Email -->
-            <!-- <div class="sm:col-span-2">
+        <!-- Email -->
+        <!-- <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Email</mat-label>
                     <mat-icon
@@ -122,8 +116,8 @@
                     <input [formControlName]="'email'" matInput />
                 </mat-form-field>
             </div> -->
-            <!-- Phone -->
-            <!-- <div class="sm:col-span-2">
+        <!-- Phone -->
+        <!-- <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Phone</mat-label>
                     <mat-icon
@@ -134,8 +128,8 @@
                     <input [formControlName]="'phone'" matInput />
                 </mat-form-field>
             </div> -->
-            <!-- Country -->
-            <!-- <div class="sm:col-span-2">
+        <!-- Country -->
+        <!-- <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Country</mat-label>
                     <mat-icon
@@ -153,8 +147,8 @@
                     </mat-select>
                 </mat-form-field>
             </div> -->
-            <!-- Language -->
-            <!-- <div class="sm:col-span-2">
+        <!-- Language -->
+        <!-- <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Language</mat-label>
                     <mat-icon
@@ -178,13 +172,8 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            <button mat-stroked-button type="button">Cancel</button>
-            <button
-                class="ml-4"
-                mat-flat-button
-                type="button"
-                [color]="'primary'"
-            >
+            <button mat-stroked-button type="button" (click)="resetForm()">Cancel</button>
+            <button class="ml-4" mat-flat-button type="button" [color]="'primary'" [disabled]="accountForm.disabled" (click)="saveForm()">
                 Save
             </button>
         </div>

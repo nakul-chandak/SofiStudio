@@ -8,49 +8,34 @@
                 You can only change your password twice within 24 hours!
             </div>
         </div> -->
+        @if (showAlert) {
+        <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+            [@shake]="alert.type === 'error'">
+            {{ alert.message }}
+        </fuse-alert>
+        }
         <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
             <!-- Current password -->
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Home Link</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_outline:insert_link'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        [formControlName]="'homeLink'"                        
-                        matInput
-                    />
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
+                    <input [formControlName]="'homeLink'" matInput />
                 </mat-form-field>
             </div>
             <!-- Current password -->
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Verify Email Link</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_outline:insert_link'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        [formControlName]="'verifyEmailLink'"                        
-                        matInput
-                    />
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
+                    <input [formControlName]="'verifyEmailLink'" matInput />
                 </mat-form-field>
             </div>
             <div class="sm:col-span-4">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Reset Password Link</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_outline:insert_link'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        [formControlName]="'resetPasswordLink'"                        
-                        matInput
-                    />
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
+                    <input [formControlName]="'resetPasswordLink'" matInput />
                 </mat-form-field>
             </div>
             <!-- New password -->
@@ -86,8 +71,8 @@
             </div>
         </div> -->
         <!-- <div class="mt-8 grid w-full gap-6 sm:grid-cols-4"> -->
-            <!-- 2-step auth -->
-            <!-- <div class="flex items-center justify-between sm:col-span-4">
+        <!-- 2-step auth -->
+        <!-- <div class="flex items-center justify-between sm:col-span-4">
                 <div
                     class="flex-auto cursor-pointer"
                     (click)="twoStepToggle.toggle()"
@@ -108,8 +93,8 @@
                 >
                 </mat-slide-toggle>
             </div> -->
-            <!-- Ask to change password -->
-            <!-- <div class="flex items-center justify-between sm:col-span-4">
+        <!-- Ask to change password -->
+        <!-- <div class="flex items-center justify-between sm:col-span-4">
                 <div
                     class="flex-auto cursor-pointer"
                     (click)="askPasswordChangeToggle.toggle()"
@@ -137,13 +122,9 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            <button mat-stroked-button type="button">Cancel</button>
-            <button
-                class="ml-4"
-                mat-flat-button
-                type="button"
-                [color]="'primary'"
-            >
+            <button mat-stroked-button type="button" (click)="resetForm()">Cancel</button>
+            <button class="ml-4" mat-flat-button type="button" [color]="'primary'" [disabled]="securityForm.disabled"
+                (click)="saveForm()">
                 Save
             </button>
         </div>
