@@ -11,7 +11,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { Board } from './content.models';
 import { ContentService } from './content.service';
 import { CategoryListComponent } from './category/list-category/list-category.component';
-import { CategoryAddCardComponent } from './category/add-category/add-card.component';
+import { CategoryAddCardComponent } from './category/add-category/add-category.component';
 import { ScrumboardBoardComponent } from './category/board/board.component';
 import { ScrumboardCardComponent } from './category/card/card.component';
 

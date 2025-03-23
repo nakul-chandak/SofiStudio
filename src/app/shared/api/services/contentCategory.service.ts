@@ -57,30 +57,10 @@ export class ContentCategoryService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addCategoryContentCategoryAddPostForm(name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
-    public addCategoryContentCategoryAddPostForm(name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
-    public addCategoryContentCategoryAddPostForm(name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public addCategoryContentCategoryAddPostForm(name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        if (name === null || name === undefined) {
-            throw new Error('Required parameter name was null or undefined when calling addCategoryContentCategoryAddPost.');
-        }
-
-        if (workflowName === null || workflowName === undefined) {
-            throw new Error('Required parameter workflowName was null or undefined when calling addCategoryContentCategoryAddPost.');
-        }
-
-        if (description === null || description === undefined) {
-            throw new Error('Required parameter description was null or undefined when calling addCategoryContentCategoryAddPost.');
-        }
-
-        if (tags === null || tags === undefined) {
-            throw new Error('Required parameter tags was null or undefined when calling addCategoryContentCategoryAddPost.');
-        }
-
-        if (file === null || file === undefined) {
-            throw new Error('Required parameter file was null or undefined when calling addCategoryContentCategoryAddPost.');
-        }
+    public addCategoryContentCategoryAddPostForm(formdata:FormData, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
+    public addCategoryContentCategoryAddPostForm(formdata:FormData, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
+    public addCategoryContentCategoryAddPostForm(formdata:FormData, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
+    public addCategoryContentCategoryAddPostForm(formdata:FormData, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -107,37 +87,11 @@ export class ContentCategoryService {
         ];
 
         const canConsumeForm = this.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): void; };
-        let useForm = false;
-        let convertFormParamsToString = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        }
-
-        if (name !== undefined) {
-            formParams = formParams.append('name', <any>name) as any || formParams;
-        }
-        if (workflowName !== undefined) {
-            formParams = formParams.append('workflowName', <any>workflowName) as any || formParams;
-        }
-        if (description !== undefined) {
-            formParams = formParams.append('description', <any>description) as any || formParams;
-        }
-        if (tags) {
-            tags.forEach((element) => {
-                formParams = formParams.append('tags', <any>element) as any || formParams;
-            })
-        }
-        if (file !== undefined) {
-            formParams = formParams.append('file', <any>file) as any || formParams;
-        }
+        
 
         return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/content/category/add`,
             {
-                body: convertFormParamsToString ? formParams.toString() : formParams,
+                body: formdata,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
