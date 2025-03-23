@@ -21,3 +21,4 @@ export * from './modelUserUpdateUser';
 export * from './onlineStatus';
 export * from './validationError';
 export * from './modelAuthToken';
+export * from './modelCategory';
