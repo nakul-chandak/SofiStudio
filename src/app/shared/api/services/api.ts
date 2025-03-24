@@ -8,4 +8,4 @@ export * from './superAdmin.service';
 import { SuperAdminService } from './superAdmin.service';
 export * from './user.service';
 import { UserService } from './user.service';
-export const APIS = [AuthService, ContentCategoryService, DefaultService, SuperAdminService, UserService];
+export const APIS = [AuthService, ContentCategoryService, DefaultService, SuperAdminService, UserService, ContentCategoryService];

@@ -13,24 +13,46 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { DateTime } from 'luxon';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { ContentService } from '../../content.service';
 import { Board } from '../../content.models';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { FuseCardComponent } from '@fuse/components/card';
+import { MatButtonModule } from '@angular/material/button';
+import { Category } from 'app/shared/api/model/models';
+import { ContentCategoryService } from 'app/shared/api/services/api';
+import { AsyncPipe } from '@angular/common';
+
 
 @Component({
     selector: 'list-category',
     templateUrl: './list-category.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CdkScrollable, RouterLink, MatIconModule,MatSidenavModule, RouterOutlet],
+    styles: [
+        `
+            mat-drawer-content fuse-card {
+                margin: 16px;
+            }
+        `,
+    ],
+    imports: [
+        CdkScrollable,
+        MatIconModule,
+        MatSidenavModule,
+        RouterOutlet,
+        FuseCardComponent,
+        MatButtonModule,
+        AsyncPipe
+    ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
-    
     @ViewChild('matCategoryDrawer', { static: true }) matCategoryDrawer: MatDrawer;
 
     boards: Board[];
+    categories:Category[];
+    categories$:Observable<Category[]>;
     drawerMode: 'side' | 'over';
     // Private
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -43,7 +65,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _contentService: ContentService,
         private _router: Router,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _contentCategoryService:ContentCategoryService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -78,6 +101,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
+
+        // Get List of categories
+
+          this.categories$ = this._contentCategoryService.categories$;
+                this._contentCategoryService.categories$
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((contacts: Category[]) => {
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
+
 
          // Subscribe to MatDrawer opened change
          this.matCategoryDrawer.openedChange.subscribe((opened) => {
@@ -131,6 +165,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      * @param item
      */
     trackByFn(index: number, item: any): any {
-        return item.id || index;
+        return item._id || index;
     }
 }
