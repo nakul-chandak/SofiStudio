@@ -53,7 +53,6 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         RouterLink,
         MatTooltip,
         MatInputModule,
-        FuseFindByKeyPipe,
         MatCheckboxModule,
         FuseAlertComponent
     ],

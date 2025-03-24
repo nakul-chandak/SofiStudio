@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
-import { Observable }                                        from 'rxjs';
+import { BehaviorSubject, Observable, tap }                                        from 'rxjs';
 
 import { ModelCommonResponse } from '../model/modelCommonResponse';
 import { ModelContentCategoryDelete } from '../model/modelContentCategoryDelete';
@@ -12,7 +12,7 @@ import { ModelContentCategoryDelete } from '../model/modelContentCategoryDelete'
 import { BASE_PATH }  from '../variables';
 import { Configuration }  from '../configuration';
 import { environment } from 'environments/environment';
-
+import { Category } from '../model/models';
 
 @Injectable({ providedIn: 'root' })
 export class ContentCategoryService {
@@ -21,6 +21,17 @@ export class ContentCategoryService {
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
+    private _categories: BehaviorSubject<Category[] | null> = new BehaviorSubject(
+        null
+    );
+
+    /**
+     * Getter for categories
+     */
+    get categories$(): Observable<Category[]> {
+        return this._categories.asObservable();
+    }
+        
     constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
@@ -245,7 +256,9 @@ export class ContentCategoryService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe(tap((categories)=>{
+            this._categories.next(categories);
+        }));
     }
 
     /**

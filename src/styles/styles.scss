@@ -19,3 +19,9 @@
     font-size: 12px; /* Adjust font size if necessary */
     min-width: 0; /* allows the button to be smaller than the default min-width */
   }
+
+  fuse-card .firstCard {
+    margin: 15px 15px 15px 15px !important;
+    width: 90% !important;
+    // min-height: 50vh;
+  }

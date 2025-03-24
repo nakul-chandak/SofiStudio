@@ -14,6 +14,7 @@ import { CategoryListComponent } from './category/list-category/list-category.co
 import { CategoryAddCardComponent } from './category/add-category/add-category.component';
 import { ScrumboardBoardComponent } from './category/board/board.component';
 import { ScrumboardCardComponent } from './category/card/card.component';
+import { ContentCategoryService } from 'app/shared/api/services/api';
 
 /**
  * Board resolver
@@ -27,6 +28,7 @@ const boardResolver = (
 ): Observable<Board> => {
     const scrumboardService = inject(ContentService);
     const router = inject(Router);
+    const contentCategoryService = inject(ContentCategoryService);
 
     return scrumboardService.getBoard(route.paramMap.get('boardId')).pipe(
         // Error here means the requested board is not available
@@ -106,6 +108,7 @@ export default [
         component: CategoryListComponent,
         resolve: {
             boards: () => inject(ContentService).getBoards(),
+            category:() => inject(ContentCategoryService).listAllCategoriesContentCategoryListAllGet()
         },
         children:[
             {
