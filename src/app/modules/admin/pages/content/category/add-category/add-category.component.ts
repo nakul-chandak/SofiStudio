@@ -6,6 +6,7 @@ import {
     ElementRef,
     EventEmitter,
     Input,
+    OnDestroy,
     OnInit,
     Output,
     Renderer2,
@@ -35,9 +36,9 @@ import { CategoryListComponent } from '../list-category/list-category.component'
 import { Category } from 'app/shared/api/model/models';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'add-category',
@@ -58,7 +59,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
     ],
      animations: fuseAnimations,
 })
-export class CategoryAddCardComponent implements OnInit {
+export class CategoryAddCardComponent implements OnInit, OnDestroy {
     @ViewChild('titleInput') titleInput: ElementRef;
     @ViewChild('titleAutosize') titleAutosize: CdkTextareaAutosize;
     @ViewChild('uploadFileInput') private _uploadFileInput: ElementRef;
@@ -75,6 +76,7 @@ export class CategoryAddCardComponent implements OnInit {
         };
 
     private _tagsPanelOverlayRef: OverlayRef;
+     private _unsubscribeAll: Subject<any> = new Subject<any>();
     fileData= "";
     categoryForm: UntypedFormGroup;
     file:File;
@@ -82,9 +84,10 @@ export class CategoryAddCardComponent implements OnInit {
     category:Category;
     tags: Array<string> =[];;
     tagsEditMode: boolean = false;
-    filteredTags: Array<string> =[];
+    filteredTags: Array<string> = [];
     showAlert: boolean = false;
-
+    categoryId = "";
+    isFormEditMode= false;
     /**
      * Constructor
      */
@@ -112,15 +115,34 @@ export class CategoryAddCardComponent implements OnInit {
             name: ['', [Validators.required]],
             workflowName:['', [Validators.required]],
             description:['', [Validators.required]],
-            tags: [[]]
+            tags: []
         });
 
-        this.resetForm();
+        this._contentCategoryService.getCategoryId$.pipe(takeUntil(this._unsubscribeAll)).subscribe((value: string) => {
+            this.categoryId = value;
+            this.resetForm();
+            if(value === "00000000-0000-0000-0000-000000000000" || value === "") {
+                this.isFormEditMode = false;
+            }
+            this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((cate)=>{
 
-        this.filteredTags = this.tags =  this.category.tags;
-        // Toggle the edit mode off
-        this.toggleEditMode(false);
+                if(cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
+                    this.isFormEditMode = true;
+                    this.category = cate;
+                    this.categoryForm.patchValue(cate);    
+                }
+            });
+        });
 
+        if(this.category){
+            this.filteredTags = this.tags =  this.category.tags;
+            // Toggle the edit mode off
+          this.toggleEditMode(false);
+        }
+        else {
+            this.resetForm();
+        }
          // Mark for check
          this._changeDetectorRef.markForCheck();
     }
@@ -195,6 +217,9 @@ export class CategoryAddCardComponent implements OnInit {
             };
             this.fileData ="";
             this.file = null;
+            this.tags = this.filteredTags = [];
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
         }
 
         /**
@@ -503,5 +528,16 @@ export class CategoryAddCardComponent implements OnInit {
            this._changeDetectorRef.markForCheck();
           }, 3000)
     }
+
+    
+    /**
+     * On destroy
+     */
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next(null);
+        this._unsubscribeAll.complete();
+    }
+
     
 }

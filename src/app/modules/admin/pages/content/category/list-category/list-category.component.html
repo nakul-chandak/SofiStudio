@@ -1,4 +1,4 @@
-<div class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto" cdkScrollable>
+<div id="lst-Category" class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto" cdkScrollable>
     <!-- Main -->
     <mat-drawer-container class="bg-card h-full flex-auto dark:bg-transparent" (backdropClick)="onBackdropClicked()">
         <!-- Drawer -->
@@ -36,7 +36,7 @@
                     track trackByFn(i, category);
                     let i = $index
                     ) {
-                    <fuse-card class="filter-article flex w-full max-w-80 flex-col">
+                    <fuse-card class="filter-article flex w-full max-w-80 flex-col hover:bg-hover">
                         <img class="object-cover" [src]="getImage(category.photo)" alt="{{category.name}}" />
                         <div class="m-8">
                             <div class="text-2xl font-semibold leading-tight">
@@ -45,6 +45,11 @@
                             <div class="mt-4">
                                 {{category.description}}
                             </div>
+                        </div>
+                        <div class="editCategory">
+                            <button (click)="editCategory(category._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
                         </div>
                     </fuse-card>
                     }

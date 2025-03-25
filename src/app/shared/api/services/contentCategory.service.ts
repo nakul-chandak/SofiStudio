@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
-import { BehaviorSubject, Observable, tap }                                        from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, tap }                                        from 'rxjs';
 
 import { ModelCommonResponse } from '../model/modelCommonResponse';
 import { ModelContentCategoryDelete } from '../model/modelContentCategoryDelete';
@@ -25,13 +25,41 @@ export class ContentCategoryService {
         null
     );
 
+    private _category: BehaviorSubject<Category | null> = new BehaviorSubject(
+        null
+    );
+
+    private _categorId: ReplaySubject<string> = new ReplaySubject<string>();
+
+
     /**
      * Getter for categories
      */
     get categories$(): Observable<Category[]> {
         return this._categories.asObservable();
     }
-        
+
+        /**
+     * Getter for category
+     */
+    get category$(): Observable<Category> {
+        return this._category.asObservable();
+    }
+
+    /**
+     * setter for category edit and pass category Id
+     */
+    set setCategoryId(value: string) {
+        this._categorId.next(value);
+    }
+
+      /**
+     * getter for category Id
+     */
+    get getCategoryId$(): Observable<string> {
+        return this._categorId.asObservable();
+    }
+
     constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
@@ -212,7 +240,9 @@ export class ContentCategoryService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe(tap((category)=>{
+            this._category.next(category);
+        }));
     }
 
     /**
