@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
-import { BehaviorSubject, Observable, ReplaySubject, tap }                                        from 'rxjs';
+import { BehaviorSubject, catchError, from, map, Observable, of, ReplaySubject, tap }                                        from 'rxjs';
 
 import { ModelCommonResponse } from '../model/modelCommonResponse';
 import { ModelContentCategoryDelete } from '../model/modelContentCategoryDelete';
@@ -358,34 +358,12 @@ export class ContentCategoryService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCategoryContentCategoryUpdatePostForm(id: string, name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
-    public updateCategoryContentCategoryUpdatePostForm(id: string, name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
-    public updateCategoryContentCategoryUpdatePostForm(id: string, name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
-    public updateCategoryContentCategoryUpdatePostForm(id: string, name: string, workflowName: string, description: string, tags: Array<string>, file: string | null, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public updateCategoryContentCategoryUpdatePostForm(formData:FormData, observe?: 'body', reportProgress?: boolean): Observable<ModelCommonResponse>;
+    public updateCategoryContentCategoryUpdatePostForm(formData:FormData, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ModelCommonResponse>>;
+    public updateCategoryContentCategoryUpdatePostForm(formData:FormData, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ModelCommonResponse>>;
+    public updateCategoryContentCategoryUpdatePostForm(formData:FormData, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
-
-        if (name === null || name === undefined) {
-            throw new Error('Required parameter name was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
-
-        if (workflowName === null || workflowName === undefined) {
-            throw new Error('Required parameter workflowName was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
-
-        if (description === null || description === undefined) {
-            throw new Error('Required parameter description was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
-
-        if (tags === null || tags === undefined) {
-            throw new Error('Required parameter tags was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
-
-        if (file === null || file === undefined) {
-            throw new Error('Required parameter file was null or undefined when calling updateCategoryContentCategoryUpdatePost.');
-        }
+       
 
         let headers = this.defaultHeaders;
 
@@ -413,39 +391,10 @@ export class ContentCategoryService {
 
         const canConsumeForm = this.canConsumeForm(consumes);
 
-        let formParams: { append(param: string, value: any): void; };
-        let useForm = false;
-        let convertFormParamsToString = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        }
-
-        if (id !== undefined) {
-            formParams = formParams.append('id', <any>id) as any || formParams;
-        }
-        if (name !== undefined) {
-            formParams = formParams.append('name', <any>name) as any || formParams;
-        }
-        if (workflowName !== undefined) {
-            formParams = formParams.append('workflowName', <any>workflowName) as any || formParams;
-        }
-        if (description !== undefined) {
-            formParams = formParams.append('description', <any>description) as any || formParams;
-        }
-        if (tags) {
-            tags.forEach((element) => {
-                formParams = formParams.append('tags', <any>element) as any || formParams;
-            })
-        }
-        if (file !== undefined) {
-            formParams = formParams.append('file', <any>file) as any || formParams;
-        }
-
+       
         return this.httpClient.request<ModelCommonResponse>('post',`${this.basePath}/content/category/update`,
             {
-                body: convertFormParamsToString ? formParams.toString() : formParams,
+                body: formData,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
@@ -453,5 +402,61 @@ export class ContentCategoryService {
             }
         );
     }
+
+    getUrlToBlobFile(imageUrl: string, fileName: string): Observable<File | null> {
+        let headers = this.defaultHeaders;
+
+        // authentication (OAuth2PasswordBearer) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        return this.httpClient.get(imageUrl, { responseType: 'blob',headers:headers}).pipe(
+          catchError((error) => {
+            console.error('Error converting URL to Blob:', error);
+            return of(null); // Return null in case of error
+          }),
+          map((blob) => {
+            if (!blob) {
+              return null; // Handle the null blob from error case
+            }
+            const file = new File([blob], fileName, {
+              type: blob.type,
+            });
+            return file;
+          })
+        );
+      }
+
+      urlToBlob(imageUrl: string): Observable<Blob | null> {
+        return from(
+          fetch(imageUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+              }
+              return response.blob();
+            })
+            .catch((error) => {
+              console.error('Error fetching image:', error);
+              return null;
+            })
+        ).pipe(
+          catchError(() => of(null)) // Handle any errors from the from conversion to observable.
+        );
+      }
+    
 
 }

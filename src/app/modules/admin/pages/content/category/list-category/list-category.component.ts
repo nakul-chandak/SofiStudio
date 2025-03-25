@@ -109,6 +109,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
          // Subscribe to MatDrawer opened change
          this.matCategoryDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
+                this._contentCategoryService.listAllCategoriesContentCategoryListAllGet().subscribe();
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }

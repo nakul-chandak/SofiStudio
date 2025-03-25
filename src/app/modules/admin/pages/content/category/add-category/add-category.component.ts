@@ -27,7 +27,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { fuseAnimations } from '@fuse/animations';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { MatInputModule } from '@angular/material/input';
@@ -38,7 +38,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'add-category',
@@ -98,7 +98,9 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         private _contentCategoryService: ContentCategoryService,
         private _renderer2: Renderer2,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _router: Router,
+        private route: ActivatedRoute
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -117,6 +119,8 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
             description:['', [Validators.required]],
             tags: []
         });
+        // const categoryId = this.route.snapshot.params['id'];
+        // console.log(categoryId);
 
         this._contentCategoryService.getCategoryId$.pipe(takeUntil(this._unsubscribeAll)).subscribe((value: string) => {
             this.categoryId = value;
@@ -124,19 +128,21 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
             if(value === "00000000-0000-0000-0000-000000000000" || value === "") {
                 this.isFormEditMode = false;
             }
-            this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((cate)=>{
-
-                if(cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
-                    this.isFormEditMode = true;
-                    this.category = cate;
-                    this.categoryForm.patchValue(cate);    
-                }
-            });
+        });
+        
+        this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((cate)=>{
+            if(cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
+                this.isFormEditMode = true;
+                this.category = cate;
+                this.categoryForm.patchValue(cate);    
+            }
         });
 
         if(this.category){
-            this.filteredTags = this.tags =  this.category.tags;
+            const tages = this.separateStringIntoArray(this.category.tags);
+            this.category.tags = tages;
+            this.filteredTags = this.tags = tages;
             // Toggle the edit mode off
           this.toggleEditMode(false);
         }
@@ -146,6 +152,19 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
          // Mark for check
          this._changeDetectorRef.markForCheck();
     }
+
+
+    separateStringIntoArray(stringArray) {
+        if (!Array.isArray(stringArray) || stringArray.length === 0) {
+          return []; // Return empty array for invalid input
+        }
+      
+        const result = [];
+        for (const str of stringArray) {
+          result.push(...str.split(',')); //spread the split array into the result array
+        }
+        return result;
+      }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -168,6 +187,12 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         if (this.file) {
             formdata.append("file", this.file, this.file.name);
         }
+       
+        if(this.isFormEditMode) {
+            formdata.append("id", this.categoryId);
+            this.update(formdata)
+            return;
+        }
 
         this._contentCategoryService.addCategoryContentCategoryAddPostForm(formdata).subscribe({
             next: (response) => {
@@ -185,8 +210,54 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
                    
                     // close drawer aftwe add category
                     setTimeout(() => {
+                           // Go back to the list
+                      this._router.navigate(['/category'], { relativeTo: this.route });
                     this.closeDrawer();
                     },3000);
+                    
+                }
+            }, error: (error) => { this.showError(error); }
+        })
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    async getFileFromUrl() {
+       const blob = await firstValueFrom (this._contentCategoryService.getUrlToBlobFile(this.category?.photo,this.categoryId));
+       //this.file = new File([blob], this.categoryId, {
+       // type: blob.type,
+    //  });
+    }
+
+    /**
+     * Update card
+     * @param formData 
+     */
+   async update(formData:FormData):Promise<void> {
+                if(!this.file && this.category?.photo) {
+                    await this.getFileFromUrl()
+                }
+
+                this._contentCategoryService.updateCategoryContentCategoryUpdatePostForm(formData).subscribe({
+            next: (response) => {
+                if (response.status.toLocaleLowerCase() === "success") {
+                    // Set the alert
+                    this.alert = {
+                        type: 'success',
+                        message: `category has been updated successfuly.`,
+                    };
+                    // Show the alert
+                    this.showAlert = true;
+                    this.resetForm();
+                   
+                    // close drawer aftwe add category
+                    setTimeout(() => {
+                        // Go back to the list
+                      this._router.navigate(['/category'], { relativeTo: this.route });
+                    this.closeDrawer();
+                    },3000);
+                    this._changeDetectorRef.markForCheck();
                 }
             }, error: (error) => { this.showError(error); }
         })
