@@ -77,14 +77,14 @@ const canDeactivateContent = (
  * @param route
  * @param state
  */
-const cardResolver = (
+const categoryResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ) => {
-    const scrumboardService = inject(ContentService);
+    const scrumboardService = inject(ContentCategoryService);
     const router = inject(Router);
 
-    return scrumboardService.getCard(route.paramMap.get('cardId')).pipe(
+    return scrumboardService.findCategoryContentCategoryFindIdGet(route.paramMap.get('id')).pipe(
         // Error here means the requested card is not available
         catchError((error) => {
             // Log the error
@@ -107,31 +107,29 @@ export default [
         path: '',
         component: CategoryListComponent,
         resolve: {
-            boards: () => inject(ContentService).getBoards(),
             category:() => inject(ContentCategoryService).listAllCategoriesContentCategoryListAllGet()
         },
         children:[
             {
-                path: 'newCategory',
+                path: 'new/:id',
                 component: CategoryAddCardComponent,
+                canDeactivate:[canDeactivateContent]
+            },
+            {
+                path: 'edit/:id',
+                component: CategoryAddCardComponent,
+                resolve:{
+                    category:categoryResolver
+                },
                 canDeactivate:[canDeactivateContent]
             },
         ]
     },
         {
-        path: ':boardId',
-        component: ScrumboardBoardComponent,
+        path: '',
+        component: CategoryListComponent,
         resolve: {
-            board: boardResolver,
-        },
-        children: [
-            {
-                path: 'card/:cardId',
-                component: ScrumboardCardComponent,
-                resolve: {
-                    card: cardResolver,
-                },
-            },
-        ],
-    },
+            category:() => inject(ContentCategoryService).listAllCategoriesContentCategoryListAllGet()
+        }
+    }
 ] as Routes;

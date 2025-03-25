@@ -20,6 +20,14 @@
     min-width: 0; /* allows the button to be smaller than the default min-width */
   }
 
+  
+#lst-Category {
+  mat-drawer-content fuse-card .editCategory {
+    position: absolute;
+    bottom: 2px;
+    right: 10px;
+  }
+
   fuse-card .firstCard {
     margin: 15px 15px 15px 15px !important;
     width: 90% !important;
@@ -29,4 +37,5 @@
   mat-drawer-content fuse-card {
     margin: 16px;
     min-height: 395px;
+  }
 }

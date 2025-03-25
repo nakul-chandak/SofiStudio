@@ -30,13 +30,6 @@ import { AsyncPipe } from '@angular/common';
     templateUrl: './list-category.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styles: [
-        `
-            mat-drawer-content fuse-card {
-                margin: 16px;
-            }
-        `,
-    ],
     imports: [
         CdkScrollable,
         MatIconModule,
@@ -145,7 +138,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }
 
     AddNewCategory() {
-             this._router.navigate(['./newCategory'], {
+        this._contentCategoryService.setCategoryId = "";
+         const id="00000000-0000-0000-0000-000000000000";
+             this._router.navigate([`./new/${id}`], {
                 relativeTo: this._activatedRoute,
             });
     }
@@ -156,6 +151,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Edit category
+     * @param id 
+     */
+    editCategory(id:string) {
+        this._contentCategoryService.setCategoryId = id;
+        this._router.navigate([`./edit/${id}`], {
+            relativeTo: this._activatedRoute,
+        });
     }
 
     /**
