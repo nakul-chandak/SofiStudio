@@ -23,5 +23,10 @@
   fuse-card .firstCard {
     margin: 15px 15px 15px 15px !important;
     width: 90% !important;
-    // min-height: 50vh;
+    min-height: 360px;
   }
+
+  mat-drawer-content fuse-card {
+    margin: 16px;
+    min-height: 395px;
+}

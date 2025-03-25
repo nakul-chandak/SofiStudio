@@ -159,6 +159,15 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * append unique value against url to reflect image on UI after update.
+     * @param url 
+     * @returns 
+     */
+    getImage(url:string) {
+        return url ? `${url}?v=${new Date().getTime()}`: "";
+    }
+
+    /**
      * Track by function for ngFor loops
      *
      * @param index
