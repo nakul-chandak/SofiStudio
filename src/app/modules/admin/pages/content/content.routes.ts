@@ -16,37 +16,6 @@ import { ScrumboardBoardComponent } from './category/board/board.component';
 import { ScrumboardCardComponent } from './category/card/card.component';
 import { ContentCategoryService } from 'app/shared/api/services/api';
 
-/**
- * Board resolver
- *
- * @param route
- * @param state
- */
-const boardResolver = (
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-): Observable<Board> => {
-    const scrumboardService = inject(ContentService);
-    const router = inject(Router);
-    const contentCategoryService = inject(ContentCategoryService);
-
-    return scrumboardService.getBoard(route.paramMap.get('boardId')).pipe(
-        // Error here means the requested board is not available
-        catchError((error) => {
-            // Log the error
-            console.error(error);
-
-            // Get the parent url
-            const parentUrl = state.url.split('/').slice(0, -1).join('/');
-
-            // Navigate to there
-            router.navigateByUrl(parentUrl);
-
-            // Throw an error
-            return throwError(error);
-        })
-    );
-};
 
 const canDeactivateContent = (
     component: CategoryAddCardComponent,
@@ -54,13 +23,13 @@ const canDeactivateContent = (
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot
 ) => {
-    // Get the next route
+    // // Get the next route
     let nextRoute: ActivatedRouteSnapshot = nextState.root;
     while (nextRoute.firstChild) {
         nextRoute = nextRoute.firstChild;
     }
 
-    // If the next state doesn't contain '/contacts'
+    // If the next state doesn't contain '/category'
     // it means we are navigating away from the
     // contacts app
     if (!nextState.url.includes('/category')) {
@@ -124,12 +93,5 @@ export default [
                 canDeactivate:[canDeactivateContent]
             },
         ]
-    },
-        {
-        path: '',
-        component: CategoryListComponent,
-        resolve: {
-            category:() => inject(ContentCategoryService).listAllCategoriesContentCategoryListAllGet()
-        }
     }
 ] as Routes;

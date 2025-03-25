@@ -204,6 +204,9 @@
             @if(fileData != "") {
             <img class="h-full w-full object-cover" [src]="fileData" />
             }
+            @else if(category.photo){
+                <img class="h-full w-full object-cover" [src]="category.photo" />
+            }
             @else{
             <div
                 class="flex mt-2 h-full w-full items-center justify-center overflow-hidden rounded text-8xl font-bold uppercase leading-none text-gray-600">
@@ -220,7 +223,7 @@
                     (click)="save()"
                     [disabled]="categoryForm.invalid"
                 >
-                    Add card
+                    {{isFormEditMode ? 'Update card' : 'New card' }}
                 </button>
             </div>
         </form>
