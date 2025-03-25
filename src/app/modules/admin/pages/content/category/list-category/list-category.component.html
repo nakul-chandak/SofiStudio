@@ -37,7 +37,7 @@
                     let i = $index
                     ) {
                     <fuse-card class="filter-article flex w-full max-w-80 flex-col">
-                        <img class="object-cover" [src]="category.photo" alt="{{category.name}}" />
+                        <img class="object-cover" [src]="getImage(category.photo)" alt="{{category.name}}" />
                         <div class="m-8">
                             <div class="text-2xl font-semibold leading-tight">
                                 {{category.name}}
