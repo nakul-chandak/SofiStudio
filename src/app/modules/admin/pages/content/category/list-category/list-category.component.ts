@@ -8,6 +8,7 @@ import {
     OnInit,
     ViewChild,
     ViewEncapsulation,
+    Pipe, PipeTransform
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -22,7 +23,8 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Category } from 'app/shared/api/model/models';
 import { ContentCategoryService } from 'app/shared/api/services/api';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -37,7 +39,9 @@ import { AsyncPipe } from '@angular/common';
         RouterOutlet,
         FuseCardComponent,
         MatButtonModule,
-        AsyncPipe
+        AsyncPipe,
+        CommonModule,
+        MatTooltipModule
     ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {

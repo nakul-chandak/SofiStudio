@@ -20,6 +20,7 @@ import { User } from 'app/core/user/user.types';
 
 import { UserService } from 'app/shared/api/services/api';
 import { Subject, takeUntil } from 'rxjs';
+import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
 @Component({
     selector: 'profile',
@@ -38,27 +39,120 @@ import { Subject, takeUntil } from 'rxjs';
         MatDividerModule,
         MatTooltipModule,
         NgClass,
+        FuseAlertComponent
     ],
 })
 export class ProfileComponent implements OnInit {
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-     user: User;
+    user: User;
+
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
+    showAlert: boolean = false;
+    editMode: boolean = false;
     /**
      * Constructor
      */
-    constructor( private _changeDetectorRef: ChangeDetectorRef,
-        private _userService: UserService) {}
-   
+    constructor(private _changeDetectorRef: ChangeDetectorRef,
+        private _userService: UserService) { }
+
     ngOnInit(): void {
-   // Subscribe to user changes
-           this._userService.user$
-               .pipe(takeUntil(this._unsubscribeAll))
-               .subscribe((user: User) => {
-                   this.user = user;
-   
-                   // Mark for check
-                   this._changeDetectorRef.markForCheck();
-               });
+        // Subscribe to user changes
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.user = user;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
+
+    /**
+     * Upload avatar
+     *
+     * @param fileList
+     */
+    uploadAvatar(fileList: FileList): void {
+        // Return if canceled
+        if (!fileList.length) {
+            return;
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const file = fileList[0];
+
+        // Return if the file is not allowed
+        if (!allowedTypes.includes(file.type)) {
+            return;
+        }
+
+        // Upload the avatar
+        this._userService.uploadProfilePicUserUploadProfilePicPostForm(file)
+            .subscribe({
+                next: (response) => {
+                    //this.contact.photo = response.url;
+                    this.alert = {
+                        type: 'success',
+                        message: `Profile picture has been updated successfully.`,
+                    };
+                    // Show the alert
+                    this.showAlert = true;
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                }, error: (_error) => {
+                    var message = 'Something went wrong, please try again.';
+
+                    if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                        message = _error?.error['detail'];
+                    }
+
+                    // Set the alert
+                    this.alert = {
+                        type: 'error',
+                        message: message,
+                    };
+
+                    // Show the alert
+                    this.showAlert = true;
+                }
+            });
+    }
+
+    /**
+     * Toggle edit mode
+     *
+     * @param editMode
+     */
+    toggleEditMode(editMode: boolean | null = null): void {
+        if (editMode === null) {
+            this.editMode = !this.editMode;
+        } else {
+            this.editMode = editMode;
+        }
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Remove the avatar
+     */
+    removeAvatar(): void {
+        // Get the form control for 'avatar'
+        //const avatarFormControl = this.contactForm.get('avatar');
+
+        // Set the avatar as null
+        //avatarFormControl.setValue(null);
+
+        // Set the file input value as null
+        //this._avatarFileInput.nativeElement.value = null;
+
+        // Update the contact
+        //this.contact.avatar = null;
     }
 }

@@ -70,7 +70,8 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
         MatSelectModule,
         MatOptionModule,
         MatDatepickerModule,
-        TextFieldModule
+        TextFieldModule,
+        FuseAlertComponent
     ],
 })
 export class ContactsDetailsComponent implements OnInit, OnDestroy {
@@ -333,7 +334,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         }
         // Revoke User Access
         else if (!revoked && approved) {
-            this.revokeAccess(true,true);
+            this.revokeAccess(true, true);
         }
         // Approve Revoke User Access
         else if (revoked && verified) {
@@ -362,7 +363,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                         this.contact.email = contact.email;
                         this.contact.roles = contact.roles;
                         this.contact.approved = true;
-                        this.revokeAccess (false, false);
+                        this.revokeAccess(false, false);
                     }, error: (_error) => {
                         this.toggleEditMode(false);
 
@@ -384,7 +385,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
                     }
                 });
         }
-         // Approving new user access
+        // Approving new user access
         else if (verified && !approved && !revoked) {
             const approveUserData = <ModelUserApproveAccess>{
                 user_id_list: [this.contact._id],
@@ -436,49 +437,49 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-    revokeAccess(toMessage:boolean, revoke:boolean) {
+    revokeAccess(toMessage: boolean, revoke: boolean) {
         const revokeData = <ModelUserRevokeAccess>{
             user_id_list: [this.contact._id],
             revoke: revoke
         };
         this._userService.revokeAccessUserAdminRevokeAccessPost(revokeData)
-                .subscribe({
-                    next: (response) => {
-                        console.log(response);
-                        // Toggle the edit mode off
-                        this.toggleEditMode(false);
-                        this.showAlert = true;
-                         
-                        if(toMessage) {
+            .subscribe({
+                next: (response) => {
+                    console.log(response);
+                    // Toggle the edit mode off
+                    this.toggleEditMode(false);
+                    this.showAlert = true;
+
+                    if (toMessage) {
                         this.alert = {
                             type: 'success',
                             message: `Access has been revoked successfully.`,
                         };
                     }
                     this.contact.revoked = revoke;
-                        // Show the alert
-                      
-                        //this.modifiyRoles();
-                    }, error: (_error) => {
-                        this.toggleEditMode(false);
+                    // Show the alert
 
-                        var message = 'Something went wrong, please try again.';
+                    //this.modifiyRoles();
+                }, error: (_error) => {
+                    this.toggleEditMode(false);
 
-                        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
-                            message = _error?.error['detail'];
-                        }
+                    var message = 'Something went wrong, please try again.';
 
-                        if(toMessage) {
+                    if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                        message = _error?.error['detail'];
+                    }
+
+                    if (toMessage) {
                         // Set the alert
                         this.alert = {
                             type: 'error',
                             message: message,
                         };
                     }
-                        // Show the alert
-                        this.showAlert = true;
-                    }
-                });
+                    // Show the alert
+                    this.showAlert = true;
+                }
+            });
     }
 
     modifiyRoles() {
@@ -616,7 +617,36 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
         }
 
         // Upload the avatar
-        this._userService.uploadProfilePicUserUploadProfilePicPostForm(file).subscribe();
+        this._userService.uploadProfilePicUserUploadProfilePicPostForm(file)
+            .subscribe({
+                next: (response) => {
+                    this.contact.photo = response.url;
+                    this.alert = {
+                        type: 'success',
+                        message: `Profile picture has been updated successfully.`,
+                    };
+                    // Show the alert
+                    this.showAlert = true;
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                }, error: (_error) => {
+                    var message = 'Something went wrong, please try again.';
+
+                    if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+                        message = _error?.error['detail'];
+                    }
+
+                    // Set the alert
+                    this.alert = {
+                        type: 'error',
+                        message: message,
+                    };
+
+                    // Show the alert
+                    this.showAlert = true;
+                }
+            });
     }
 
     /**
@@ -1000,8 +1030,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy {
 
     hideAlert() {
         setTimeout(() => {
-           this.showAlert = false;
-           this._changeDetectorRef.markForCheck();
-          }, 3000)
+            this.showAlert = false;
+            this._changeDetectorRef.markForCheck();
+        }, 3000)
     }
 }

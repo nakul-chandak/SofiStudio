@@ -14,9 +14,9 @@
             {{ alert.message }}
         </fuse-alert>
         }
-        <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
+        <div class="mt-8 grid w-full gap-4 sm:grid-cols-2">
             <!-- Current password -->
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Home Link</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
@@ -24,14 +24,14 @@
                 </mat-form-field>
             </div>
             <!-- Current password -->
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Verify Email Link</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
                     <input [formControlName]="'verifyEmailLink'" matInput />
                 </mat-form-field>
             </div>
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Reset Password Link</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:insert_link'" matPrefix></mat-icon>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Divider -->
-        <div class="my-10 border-t"></div>
+        <!-- <div class="my-10 border-t"></div> -->
 
         <!-- Section -->
         <!-- <div class="w-full">
@@ -118,7 +118,7 @@
         <!-- </div> -->
 
         <!-- Divider -->
-        <div class="my-10 border-t"></div>
+        <div class="my-10 border-t" style="margin-top: 1.0rem !important;margin-bottom: 1.0rem !important;"></div>
 
         <!-- Actions -->
         <div class="flex items-center justify-end">

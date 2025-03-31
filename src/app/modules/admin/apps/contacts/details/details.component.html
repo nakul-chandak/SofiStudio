@@ -47,16 +47,16 @@
                         contact.onlineStatus !== ''){
                         @if(contact.onlineStatus === 'offline') {
                         <span class="absolute h-3 w-3 rounded-full ring-2 bg-gray-400 dark:ring-gray-900"
-                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                            style="bottom: -48px !important;right: 19px !important;"></span>}
                         @else if(contact.onlineStatus === 'online') {
                         <span class="absolute h-3 w-3 rounded-full ring-2 bg-green-500 dark:ring-gray-900"
-                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                            style="bottom: -48px !important;right: 19px !important;"></span>}
                         @else if(contact.onlineStatus === 'away') {
                         <span class="absolute h-3 w-3 rounded-full ring-2 bg-amber-500 dark:ring-gray-900"
-                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                            style="bottom: -48px !important;right: 19px !important;"></span>}
                         @else if(contact.onlineStatus === 'busy') {
                         <span class="absolute h-3 w-3 rounded-full ring-2 bg-red-500 dark:ring-gray-900"
-                            style="bottom: -48px !important;right: 22px !important;"></span>}
+                            style="bottom: -48px !important;right: 19px !important;"></span>}
                         }
                     </span>
                 </div>
@@ -96,32 +96,32 @@
 
             <div class="mt-2 flex flex-wrap items-center">
                 @if(contact.verified){
-                <div style="background-color: #0061F2 !important;"
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                <div style="background-color: #0061F2 !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Verified</span>
                 </div>
                 }
                 @else{
-                <div
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                <div style="margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
                 </div>
                 }
                 @if(contact.approved && !contact.revoked){
-                <div style="background-color: darkgreen !important;"
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                <div style="background-color: darkgreen !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Approved</span>
                 </div>
                 }
                 @else if(!contact.approved && !contact.revoked){
-                <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;"
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
                 </div>
                 }
                 @else if((contact.approved && contact.revoked) || contact.revoked){
-                <div
-                    class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                <div style="margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                     <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
                 </div>
                 }
@@ -176,8 +176,8 @@
                     role of contact.roles;
                     track trackByFn($index, role)
                     ) {
-                    <div
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                    <div style="margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">{{ role }}</span>
                     </div>
                     }
@@ -313,8 +313,8 @@
                     <div
                         class="ring-bg-card relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full ring-4">
                         <!-- Upload / Remove avatar -->
-                        <div class="absolute inset-0 z-10 bg-black bg-opacity-50"></div>
-                        <div class="absolute inset-0 z-20 flex items-center justify-center">
+                        <!-- <div class="absolute inset-0 z-10 bg-black bg-opacity-50"></div> -->
+                        <!-- <div class="absolute inset-0 z-20 flex items-center justify-center">
                             <div>
                                 <input id="avatar-file-input"
                                     class="pointer-events-none invisible absolute h-0 w-0 opacity-0" type="file"
@@ -336,7 +336,7 @@
                                             "></mat-icon>
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- Image/Letter -->
                         @if (contact.photo) {
                         <img class="h-full w-full object-cover" [src]="contact.photo" />
@@ -347,6 +347,23 @@
                             {{ contact.name.charAt(0) }}
                         </div>
                         }
+                        <span class="relative">
+                            @if(contact.onlineStatus !== null && contact.onlineStatus !== undefined &&
+                            contact.onlineStatus !== ''){
+                            @if(contact.onlineStatus === 'offline') {
+                            <span class="absolute h-3 w-3 rounded-full ring-2 bg-gray-400 dark:ring-gray-900"
+                                style="bottom: -48px !important;right: 19px !important;"></span>}
+                            @else if(contact.onlineStatus === 'online') {
+                            <span class="absolute h-3 w-3 rounded-full ring-2 bg-green-500 dark:ring-gray-900"
+                                style="bottom: -48px !important;right: 19px !important;"></span>}
+                            @else if(contact.onlineStatus === 'away') {
+                            <span class="absolute h-3 w-3 rounded-full ring-2 bg-amber-500 dark:ring-gray-900"
+                                style="bottom: -48px !important;right: 19px !important;"></span>}
+                            @else if(contact.onlineStatus === 'busy') {
+                            <span class="absolute h-3 w-3 rounded-full ring-2 bg-red-500 dark:ring-gray-900"
+                                style="bottom: -48px !important;right: 19px !important;"></span>}
+                            }
+                        </span>
                     </div>
                 </div>
 
@@ -365,32 +382,32 @@
 
                 <div class="mt-2 flex flex-wrap items-center">
                     @if(contact.verified){
-                    <div style="background-color: #0061F2 !important;"
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                    <div style="background-color: #0061F2 !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Verified</span>
                     </div>
                     }
                     @else{
-                    <div
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                    <div style="margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Not verified</span>
                     </div>
                     }
                     @if(contact.approved && !contact.revoked){
-                    <div style="background-color: darkgreen !important;"
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                    <div style="background-color: darkgreen !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Approved</span>
                     </div>
                     }
                     @else if(!contact.approved && !contact.revoked){
-                    <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;"
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:text-gray-300">
+                    <div style="background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Inactive</span>
                     </div>
                     }
                     @else if((contact.approved && contact.revoked) || contact.revoked){
-                    <div
-                        class="mb-3 mr-3 flex items-center justify-center rounded-full bg-gray-100 px-3 py-1 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                    <div style="margin-bottom: 0.25rem !important;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">Revoked</span>
                     </div>
                     }
