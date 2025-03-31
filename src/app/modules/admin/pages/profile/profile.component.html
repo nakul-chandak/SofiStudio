@@ -9,16 +9,19 @@
                 alt="Cover image"
             /> -->
         </div>
-
-        <!-- User info -->
-        <div class="bg-card mx-auto flex w-full max-w-5xl flex-0 flex-col items-center px-8 lg:h-18 lg:flex-row">
-            <!-- Avatar -->
-            @if (showAlert) {
+        @if (showAlert) {
+        <div style="margin-bottom: 85px;">
             <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
                 [@shake]="alert.type === 'error'">
                 {{ alert.message }}
             </fuse-alert>
-            }
+        </div>
+        }
+
+        <!-- User info -->
+        <div class="bg-card mx-auto flex w-full max-w-5xl flex-0 flex-col items-center px-8 lg:h-18 lg:flex-row">
+            <!-- Avatar -->
+
 
             <!-- <div class="-mt-26 rounded-full lg:-mt-22">                
                 @if(user?.avatar){
@@ -85,35 +88,39 @@
                 </div>
             </div>
             @if (editMode) {
-            <div style="margin-top: -60px !important;"
-                class="mt-4 flex flex-col items-center lg:ml-8 lg:mt-0 lg:items-start">
+            <form [formGroup]="userForm">
+                <div style="margin-top: -60px !important;"
+                    class="mt-4 flex flex-col items-center lg:ml-8 lg:mt-0 lg:items-start">
 
-                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
-                    <!-- <mat-label>Name</mat-label> -->
-                    <mat-icon matPrefix class="hidden icon-size-5 sm:flex"
-                        [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
-                    <input matInput [placeholder]="'Name'" [spellcheck]="false" />
-                </mat-form-field>
-                <div style="margin-left: 5px !important;"
-                    class="-mx-6 flex items-center py-4 pl-1 pr-4 dark:bg-transparent sm:-mx-12 sm:pl-7 sm:pr-12">
-                    <!-- Delete -->
-                    <!-- <button mat-button [color]="'warn'" [matTooltip]="'Delete'" (click)="deleteContact()">
+                    <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                        <!-- <mat-label>Name</mat-label> -->
+                        <mat-icon matPrefix class="hidden icon-size-5 sm:flex"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <input [formControlName]="'userName'" [placeholder]="'User Name'" [spellcheck]="false"
+                            matInput />
+                    </mat-form-field>
+                    <div style="margin-left: 5px !important;"
+                        class="-mx-6 flex items-center py-4 pl-1 pr-4 dark:bg-transparent sm:-mx-12 sm:pl-7 sm:pr-12">
+                        <!-- Delete -->
+                        <!-- <button mat-button [color]="'warn'" [matTooltip]="'Delete'" (click)="deleteContact()">
                         Delete
                     </button> -->
 
-                    <!-- Cancel -->
-                    <button class="ml-auto" mat-button [matTooltip]="'Cancel'" (click)="toggleEditMode(false)">
-                        Cancel
-                    </button>
-                    <!-- Save -->
+                        <!-- Cancel -->
+                        <button class="ml-auto" mat-button [matTooltip]="'Cancel'" (click)="toggleEditMode(false)">
+                            Cancel
+                        </button>
+                        <!-- Save -->
 
-                    <button class="ml-2" mat-flat-button [color]="'primary'" [matTooltip]="'Save'">
-                        save
-                    </button>
+                        <button class="ml-2" mat-flat-button [color]="'primary'" [matTooltip]="'Save'"
+                            (click)="updateUserName()" [disabled]="userForm.disabled">
+                            save
+                        </button>
+
+                    </div>
 
                 </div>
-
-            </div>
+            </form>
             }
             <!-- Details -->
             <div class="mt-4 flex flex-col items-center lg:ml-8 lg:mt-0 lg:items-start">

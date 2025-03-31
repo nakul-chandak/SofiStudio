@@ -21,6 +21,8 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/shared/api/services/api';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
+import { FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ModelUserUpdateUser } from 'app/shared/api/model/models';
 
 @Component({
     selector: 'profile',
@@ -43,9 +45,13 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
     ],
 })
 export class ProfileComponent implements OnInit {
-
+    userForm: UntypedFormGroup;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     user: User;
+
+    modelUserUpdateUser: ModelUserUpdateUser = {
+        name: ''
+    };
 
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
@@ -56,19 +62,82 @@ export class ProfileComponent implements OnInit {
     /**
      * Constructor
      */
-    constructor(private _changeDetectorRef: ChangeDetectorRef,
+    constructor(private _formBuilder: UntypedFormBuilder, private _changeDetectorRef: ChangeDetectorRef,
         private _userService: UserService) { }
 
     ngOnInit(): void {
+
+        // Create the form
+        this.userForm = this._formBuilder.group({
+            userName: new FormControl('', Validators.compose([Validators.required])),
+        });
+
         // Subscribe to user changes
         this._userService.user$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
 
+                this.userForm.setValue({
+                    userName: this.user.name
+                });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+    }
+
+    updateUserName() {
+        if (this.userForm.invalid) {
+            return;
+        }
+
+        this.modelUserUpdateUser.name = this.userForm.controls.userName.value;
+
+        // Disable the form
+        this.userForm.disable();
+
+        // Hide the alert
+        this.showAlert = false;
+
+        this._userService.updateUserUserUpdatePost(this.modelUserUpdateUser).subscribe({
+            next: (response) => {
+
+                // Navigate to the confirmation required page
+                this.alert = {
+                    type: 'success',
+                    message: 'User Name has been updated.',
+                };
+
+                // Show the alert
+                this.showAlert = true;
+
+                this.toggleEditMode(false);
+
+                setTimeout(() => {
+                    this.showAlert = false;
+                    this._changeDetectorRef.markForCheck();
+                }, 3000)
+
+            }, error: (_error) => {
+                this.userForm.enable();
+
+                var message = 'Something went wrong, please try again.';
+
+                if (_error.status === 409 || _error.status === 500 || _error.status === 403 || _error.status === 422) {
+                    message = _error?.error['detail'];
+                }
+
+                // Set the alert
+                this.alert = {
+                    type: 'error',
+                    message: message,
+                };
+
+                // Show the alert
+                this.showAlert = true;
+            }
+        });
     }
 
     /**
@@ -133,6 +202,12 @@ export class ProfileComponent implements OnInit {
             this.editMode = !this.editMode;
         } else {
             this.editMode = editMode;
+        }
+
+        if (editMode) {
+            this.userForm.setValue({
+                userName: this.user.name
+            });
         }
 
         // Mark for check
