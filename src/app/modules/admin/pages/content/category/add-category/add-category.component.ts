@@ -57,7 +57,7 @@ import { firstValueFrom, Observable, Subject, takeUntil } from 'rxjs';
         MatCheckboxModule,
         FuseAlertComponent
     ],
-     animations: fuseAnimations,
+    animations: fuseAnimations,
 })
 export class CategoryAddCardComponent implements OnInit, OnDestroy {
     @ViewChild('titleInput') titleInput: ElementRef;
@@ -66,28 +66,28 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
     @ViewChild(FormGroupDirective) formDirective;
-    
+
     @Input() buttonTitle: string = 'Add a card';
     @Output() readonly saved: EventEmitter<string> = new EventEmitter<string>();
 
-     alert: { type: FuseAlertType; message: string } = {
-            type: 'success',
-            message: '',
-        };
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
 
     private _tagsPanelOverlayRef: OverlayRef;
-     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    fileData= "";
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    fileData = "";
     categoryForm: UntypedFormGroup;
-    file:File;
+    file: File;
     editMode = false;
-    category:Category;
-    tags: Array<string> =[];;
+    category: Category;
+    tags: Array<string> = [];;
     tagsEditMode: boolean = false;
     filteredTags: Array<string> = [];
     showAlert: boolean = false;
     categoryId = "";
-    isFormEditMode= false;
+    isFormEditMode = false;
     /**
      * Constructor
      */
@@ -101,7 +101,7 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         private _viewContainerRef: ViewContainerRef,
         private _router: Router,
         private route: ActivatedRoute
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -115,8 +115,8 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         // Initialize the new list form
         this.categoryForm = this._formBuilder.group({
             name: ['', [Validators.required]],
-            workflowName:['', [Validators.required]],
-            description:['', [Validators.required]],
+            workflowName: ['', [Validators.required]],
+            description: ['', [Validators.required]],
             tags: []
         });
         // const categoryId = this.route.snapshot.params['id'];
@@ -125,46 +125,46 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         this._contentCategoryService.getCategoryId$.pipe(takeUntil(this._unsubscribeAll)).subscribe((value: string) => {
             this.categoryId = value;
             this.resetForm();
-            if(value === "00000000-0000-0000-0000-000000000000" || value === "") {
+            if (value === "00000000-0000-0000-0000-000000000000" || value === "") {
                 this.isFormEditMode = false;
             }
         });
-        
-        this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((cate)=>{
-            if(cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
-                this.isFormEditMode = true;
-                this.category = cate;
-                this.categoryForm.patchValue(cate);    
-            }
-        });
 
-        if(this.category){
+        this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((cate) => {
+                if (cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
+                    this.isFormEditMode = true;
+                    this.category = cate;
+                    this.categoryForm.patchValue(cate);
+                }
+            });
+
+        if (this.category) {
             const tages = this.separateStringIntoArray(this.category.tags);
             this.category.tags = tages;
             this.filteredTags = this.tags = tages;
             // Toggle the edit mode off
-          this.toggleEditMode(false);
+            this.toggleEditMode(false);
         }
         else {
             this.resetForm();
         }
-         // Mark for check
-         this._changeDetectorRef.markForCheck();
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
 
     separateStringIntoArray(stringArray) {
         if (!Array.isArray(stringArray) || stringArray.length === 0) {
-          return []; // Return empty array for invalid input
+            return []; // Return empty array for invalid input
         }
-      
+
         const result = [];
         for (const str of stringArray) {
-          result.push(...str.split(',')); //spread the split array into the result array
+            result.push(...str.split(',')); //spread the split array into the result array
         }
         return result;
-      }
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -187,8 +187,8 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         if (this.file) {
             formdata.append("file", this.file, this.file.name);
         }
-       
-        if(this.isFormEditMode) {
+
+        if (this.isFormEditMode) {
             formdata.append("id", this.categoryId);
             this.update(formdata)
             return;
@@ -207,14 +207,14 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
                     this.resetForm();
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
-                   
+
                     // close drawer aftwe add category
                     setTimeout(() => {
-                           // Go back to the list
-                      this._router.navigate(['/category'], { relativeTo: this.route });
-                    this.closeDrawer();
-                    },3000);
-                    
+                        // Go back to the list
+                        this._router.navigate(['/category'], { relativeTo: this.route });
+                        this.closeDrawer();
+                    }, 3000);
+
                 }
             }, error: (error) => { this.showError(error); }
         })
@@ -224,22 +224,22 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     }
 
     async getFileFromUrl() {
-       const blob = await firstValueFrom (this._contentCategoryService.getUrlToBlobFile(this.category?.photo,this.categoryId));
-       //this.file = new File([blob], this.categoryId, {
-       // type: blob.type,
-    //  });
+        const blob = await firstValueFrom(this._contentCategoryService.getUrlToBlobFile(this.category?.photo, this.categoryId));
+        //this.file = new File([blob], this.categoryId, {
+        // type: blob.type,
+        //  });
     }
 
     /**
      * Update card
      * @param formData 
      */
-   async update(formData:FormData):Promise<void> {
-                if(!this.file && this.category?.photo) {
-                    await this.getFileFromUrl()
-                }
+    async update(formData: FormData): Promise<void> {
+        if (!this.file && this.category?.photo) {
+            await this.getFileFromUrl()
+        }
 
-                this._contentCategoryService.updateCategoryContentCategoryUpdatePostForm(formData).subscribe({
+        this._contentCategoryService.updateCategoryContentCategoryUpdatePostForm(formData).subscribe({
             next: (response) => {
                 if (response.status.toLocaleLowerCase() === "success") {
                     // Set the alert
@@ -250,13 +250,13 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
                     // Show the alert
                     this.showAlert = true;
                     this.resetForm();
-                   
+
                     // close drawer aftwe add category
                     setTimeout(() => {
                         // Go back to the list
-                      this._router.navigate(['/category'], { relativeTo: this.route });
-                    this.closeDrawer();
-                    },3000);
+                        this._router.navigate(['/category'], { relativeTo: this.route });
+                        this.closeDrawer();
+                    }, 3000);
                     this._changeDetectorRef.markForCheck();
                 }
             }, error: (error) => { this.showError(error); }
@@ -273,31 +273,38 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         return this._categoryListComponent.matCategoryDrawer.close();
     }
 
+    redirecttoCategory(){
+         // Go back to the list
+         //this.resetForm();
+         this._router.navigate(['/category'], { relativeTo: this.route });
+         this.closeDrawer();
+    }
+
     /**
      * reset form
      */
     resetForm() {
-            this.categoryForm.reset();
-            this.formDirective?.resetForm();
-            this.category = <Category>{
-                name:"",
-                description:"",
-                tags:[],
-                workflowName:"",
-                photo:""
-            };
-            this.fileData ="";
-            this.file = null;
-            this.tags = this.filteredTags = [];
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }
+        this.categoryForm.reset();
+        this.formDirective?.resetForm();
+        this.category = <Category>{
+            name: "",
+            description: "",
+            tags: [],
+            workflowName: "",
+            photo: ""
+        };
+        this.fileData = "";
+        this.file = null;
+        this.tags = this.filteredTags = [];
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
 
-        /**
-     * Upload Files
-     *
-     * @param fileList
-     */
+    /**
+ * Upload Files
+ *
+ * @param fileList
+ */
     uploadFiles(fileList: FileList): void {
         // Return if canceled
         if (!fileList.length) {
@@ -306,12 +313,12 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
 
         const allowedTypes = ['image/jpeg', 'image/png'];
         this.file = fileList[0];
-        
+
         // Return if the file is not allowed
         if (!allowedTypes.includes(this.file.type)) {
             return;
         }
-        this.fileToBase64(this.file).then( (base64:string) => {
+        this.fileToBase64(this.file).then((base64: string) => {
             this.fileData = base64;
             this._changeDetectorRef.markForCheck();
         });
@@ -319,14 +326,14 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
 
     fileToBase64(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = error => reject(error);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
         });
-      }
+    }
 
-    removeFile(): void {}
+    removeFile(): void { }
 
     /**
      * Open tags panel
@@ -423,12 +430,12 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-     /**
-     * Toggle contact tag
-     *
-     * @param tag
-     */
-     toggleTag(tag: string): void {
+    /**
+    * Toggle contact tag
+    *
+    * @param tag
+    */
+    toggleTag(tag: string): void {
         if (this.category.tags.includes(tag)) {
             this.removeTag(tag);
         } else {
@@ -436,31 +443,31 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         }
     }
 
-        /**
-     * Remove tag from the contact
-     *
-     * @param tag
-     */
-        removeTag(tag: string): void {
-            // Remove the tag
-            this.category.tags.splice(
-                this.category.tags.findIndex((item) => item === tag),
-                1
-            );
-    
-            // Update the contact form
-            this.categoryForm.get('tags').patchValue(this.category.tags);
-    
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }
+    /**
+ * Remove tag from the contact
+ *
+ * @param tag
+ */
+    removeTag(tag: string): void {
+        // Remove the tag
+        this.category.tags.splice(
+            this.category.tags.findIndex((item) => item === tag),
+            1
+        );
 
-     /**
-     * Add tag to the contact
-     *
-     * @param tag
-     */
-     addTag(tag: string): void {
+        // Update the contact form
+        this.categoryForm.get('tags').patchValue(this.category.tags);
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+    * Add tag to the contact
+    *
+    * @param tag
+    */
+    addTag(tag: string): void {
         // Add the tag
         this.category.tags.unshift(tag);
 
@@ -471,21 +478,21 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-       /**
-     * Toggle the tags edit mode
-     */
-       toggleTagsEditMode(): void {
+    /**
+  * Toggle the tags edit mode
+  */
+    toggleTagsEditMode(): void {
         this.tagsEditMode = !this.tagsEditMode;
     }
 
-      /**
-     * Delete the tag
-     *
-     * @param tag
-     */
-      deleteTag(tag: string): void {
+    /**
+   * Delete the tag
+   *
+   * @param tag
+   */
+    deleteTag(tag: string): void {
         // Delete the tag from the server
-         
+
         // remove from list
 
         // Mark for check
@@ -558,21 +565,21 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         );
     }
 
-     /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-     trackByFn(index: number, item: any): any {
+    /**
+    * Track by function for ngFor loops
+    *
+    * @param index
+    * @param item
+    */
+    trackByFn(index: number, item: any): any {
         return item || index;
     }
 
-   /**
-    * show error on page as alert
-    * @param _error 
-    */
-    showError(_error:any){
+    /**
+     * show error on page as alert
+     * @param _error 
+     */
+    showError(_error: any) {
         var message = 'Something went wrong, please try again.';
 
         if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
@@ -595,12 +602,12 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
      */
     hideAlert() {
         setTimeout(() => {
-           this.showAlert = false;
-           this._changeDetectorRef.markForCheck();
-          }, 3000)
+            this.showAlert = false;
+            this._changeDetectorRef.markForCheck();
+        }, 3000)
     }
 
-    
+
     /**
      * On destroy
      */
@@ -610,5 +617,5 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    
+
 }

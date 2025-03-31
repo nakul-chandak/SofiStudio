@@ -18,8 +18,12 @@
     </div>
     <div class="relative flex sm:px-12 h-full w-full rounded-lg">
         <form class="flex w-full flex-col items-start" [formGroup]="categoryForm" #formDirective="ngForm">
-            <div style="margin-bottom: 15px;"
-                class="mt-5 ring-bg-card relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full ring-4">
+            <div style="width: 320px !important;
+            height: 200px !important;
+            margin-bottom: 20px;
+            border: 1px solid black !important;
+            border-radius: 1rem;"
+                class="mt-5 ring-bg-card relative flex h-32 w-32 items-center justify-center overflow-hidden">
                 <div class="absolute inset-0 z-10 bg-black bg-opacity-50"></div>
                 <div class="absolute inset-0 z-20 flex items-center justify-center">
                     <div class="-mt-6 ml-2 inset-0 z-20 flex items-center justify-center">
@@ -63,25 +67,34 @@
 
             <!--Name -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 65px !important;">
+                <mat-form-field class="w-full" style="height: 80px !important;">
                     <mat-label>Name</mat-label>
                     <input [formControlName]="'name'" matInput />
+                    @if (categoryForm.get('name').hasError('required')) {
+                    <mat-error>Name is required </mat-error>
+                    }
                 </mat-form-field>
             </div>
 
             <!--workflow Name -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 65px !important;">
+                <mat-form-field class="w-full" style="height: 80px !important;">
                     <mat-label>Workflow Name</mat-label>
                     <input [formControlName]="'workflowName'" matInput />
+                    @if (categoryForm.get('workflowName').hasError('required')) {
+                    <mat-error>Workflow Name is required </mat-error>
+                    }
                 </mat-form-field>
             </div>
 
             <!--description -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 65px !important;">
+                <mat-form-field class="w-full" style="height: 80px !important;">
                     <mat-label>Description</mat-label>
                     <input [formControlName]="'description'" matInput />
+                    @if (categoryForm.get('workflowName').hasError('required')) {
+                    <mat-error>Description is required </mat-error>
+                    }
                 </mat-form-field>
             </div>
 
@@ -220,11 +233,13 @@
                     </button> -->
 
                 <!-- Cancel -->
-                <button style="margin-left: 17rem !important;" class="ml-auto" mat-button [matTooltip]="'Cancel'" (click)="toggleEditMode(false)">
+                <button style="margin-left: 17rem !important;" class="ml-auto" mat-button [matTooltip]="'Cancel'"
+                    (click)="redirecttoCategory()">
                     Cancel
                 </button>
                 <!-- Save -->
-                <button class="ml-2" mat-flat-button [color]="'primary'" (click)="save()" [disabled]="categoryForm.invalid">
+                <button class="ml-2" mat-flat-button [color]="'primary'" (click)="save()"
+                    [disabled]="categoryForm.invalid">
                     {{isFormEditMode ? 'Update card' : 'New card' }}
                 </button>
             </div>

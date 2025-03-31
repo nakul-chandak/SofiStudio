@@ -11,7 +11,7 @@ import {
     Pipe, PipeTransform
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet, RouterModule } from '@angular/router';
 
 import { DateTime } from 'luxon';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -41,7 +41,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatButtonModule,
         AsyncPipe,
         CommonModule,
-        MatTooltipModule
+        MatTooltipModule,
+        RouterLink,
+        RouterModule
     ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
