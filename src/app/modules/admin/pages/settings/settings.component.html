@@ -1,71 +1,78 @@
-<div
-    class="flex w-full min-w-0 flex-col sm:absolute sm:inset-0 sm:overflow-hidden"
->
-    <mat-drawer-container class="flex-auto sm:h-full">
+<div class="flex w-full min-w-0 flex-col sm:absolute sm:inset-0 sm:overflow-hidden">
+    <div class="fuse-horizontal-navigation-item-title" style="margin-left: 20px;margin-top: 10px;margin-bottom: 10px;">
+        <div style="
+    width: 2.3%;
+    float: left;
+">
+            <a mat-icon-button [matTooltip]="'home'" [routerLink]="['/home']">
+                <mat-icon
+                    class="mat-icon notranslate fuse-horizontal-navigation-item-icon mat-icon-no-color ng-star-inserted"
+                    [svgIcon]="'heroicons_outline:home'"></mat-icon>
+            </a>
+        </div>
+        <div style="
+    width: 10%;
+    float: left;
+    margin-top: 8px;
+">
+            <span style="padding-right: 6px;float:left;"> <mat-icon
+                    class="mat-icon notranslate fuse-horizontal-navigation-item-icon mat-icon-no-color ng-star-inserted"
+                    [svgIcon]="'arrow_forward_ios'"></mat-icon> </span>
+            <span style="padding-right: 6px;float:left;padding-top: 2px;"> Admin </span>
+            <span style="padding-right: 6px;float:left;"> <mat-icon
+                    class="mat-icon notranslate fuse-horizontal-navigation-item-icon mat-icon-no-color ng-star-inserted"
+                    [svgIcon]="'arrow_forward_ios'"></mat-icon> </span>
+            <span class="fuse-horizontal-navigation-item-active"
+                style="float:left;padding-top: 2px;color: rgba(13, 148, 136, 1);"> Settings </span>
+        </div>
+    </div>
+    <mat-drawer-container class="flex-auto sm:h-full border-t">
+
         <!-- Drawer -->
-        <mat-drawer
-            class="dark:bg-gray-900 sm:w-96"
-            [autoFocus]="false"
-            [mode]="drawerMode"
-            [opened]="drawerOpened"
-            #drawer
-        >
+        <mat-drawer class="dark:bg-gray-900 sm:w-96" [autoFocus]="false" [mode]="drawerMode" [opened]="drawerOpened"
+            #drawer>
             <!-- Header -->
             <div class="m-8 mr-6 flex items-center justify-between sm:my-10">
                 <!-- Title -->
-                <div
-                    class="text-4xl font-extrabold leading-none tracking-tight"
-                >
+                <div class="text-4xl font-extrabold leading-none tracking-tight">
                     Settings
                 </div>
                 <!-- Close button -->
                 <div class="lg:hidden">
                     <button mat-icon-button (click)="drawer.close()">
-                        <mat-icon
-                            [svgIcon]="'heroicons_outline:x-mark'"
-                        ></mat-icon>
+                        <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
                     </button>
                 </div>
             </div>
             <!-- Panel links -->
             <div class="flex flex-col divide-y border-b border-t">
                 @for (panel of panels; track trackByFn($index, panel)) {
-                    <div
-                        class="flex cursor-pointer px-8 py-5"
-                        [ngClass]="{
+                <div class="flex cursor-pointer px-8 py-5" [ngClass]="{
                             'dark:hover:bg-hover':
                                 !selectedPanel || selectedPanel !== panel.id,
                             'dark:bg-hover':
                                 selectedPanel && selectedPanel === panel.id,
-                        }"
-                        (click)="goToPanel(panel.id)"
-                    >
-                        <mat-icon
-                            [ngClass]="{
+                        }" (click)="goToPanel(panel.id)">
+                    <mat-icon [ngClass]="{
                                 'text-hint':
                                     !selectedPanel ||
                                     selectedPanel !== panel.id,
                                 'text-primary dark:text-primary-500':
                                     selectedPanel && selectedPanel === panel.id,
-                            }"
-                            [svgIcon]="panel.icon"
-                        ></mat-icon>
-                        <div class="ml-3">
-                            <div
-                                class="font-medium leading-6"
-                                [ngClass]="{
+                            }" [svgIcon]="panel.icon"></mat-icon>
+                    <div class="ml-3">
+                        <div class="font-medium leading-6" [ngClass]="{
                                     'text-primary dark:text-primary-500':
                                         selectedPanel &&
                                         selectedPanel === panel.id,
-                                }"
-                            >
-                                {{ panel.title }}
-                            </div>
-                            <div class="text-secondary mt-0.5">
-                                {{ panel.description }}
-                            </div>
+                                }">
+                            {{ panel.title }}
+                        </div>
+                        <div class="text-secondary mt-0.5">
+                            {{ panel.description }}
                         </div>
                     </div>
+                </div>
                 }
             </div>
         </mat-drawer>
@@ -77,20 +84,12 @@
                 <!-- Panel header -->
                 <div class="flex items-center">
                     <!-- Drawer toggle -->
-                    <button
-                        class="-ml-2 lg:hidden"
-                        mat-icon-button
-                        (click)="drawer.toggle()"
-                    >
-                        <mat-icon
-                            [svgIcon]="'heroicons_outline:bars-3'"
-                        ></mat-icon>
+                    <button class="-ml-2 lg:hidden" mat-icon-button (click)="drawer.toggle()">
+                        <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                     </button>
 
                     <!-- Panel title -->
-                    <div
-                        class="ml-2 text-3xl font-bold leading-none tracking-tight lg:ml-0"
-                    >
+                    <div class="ml-2 text-3xl font-bold leading-none tracking-tight lg:ml-0">
                         {{ getPanelInfo(selectedPanel).title }}
                     </div>
                 </div>
@@ -98,26 +97,26 @@
                 <!-- Load settings panel -->
                 <div class="mt-8">
                     @switch (selectedPanel) {
-                        <!-- Account -->
-                        @case ('account') {
-                            <settings-account></settings-account>
-                        }
-                        <!-- Security -->
-                        @case ('security') {
-                            <settings-security></settings-security>
-                        }
-                        <!-- Plan & Billing -->
-                        @case ('plan-billing') {
-                            <settings-plan-billing></settings-plan-billing>
-                        }
-                        <!-- Notifications -->
-                        @case ('notifications') {
-                            <settings-notifications></settings-notifications>
-                        }
-                        <!-- Team -->
-                        @case ('team') {
-                            <settings-team></settings-team>
-                        }
+                    <!-- Account -->
+                    @case ('account') {
+                    <settings-account></settings-account>
+                    }
+                    <!-- Security -->
+                    @case ('security') {
+                    <settings-security></settings-security>
+                    }
+                    <!-- Plan & Billing -->
+                    @case ('plan-billing') {
+                    <settings-plan-billing></settings-plan-billing>
+                    }
+                    <!-- Notifications -->
+                    @case ('notifications') {
+                    <settings-notifications></settings-notifications>
+                    }
+                    <!-- Team -->
+                    @case ('team') {
+                    <settings-team></settings-team>
+                    }
                     }
                 </div>
             </div>

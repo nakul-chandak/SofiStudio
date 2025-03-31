@@ -39,6 +39,29 @@
                     <input [formControlName]="'apihostid'" matInput />
                 </mat-form-field>
             </div>
+
+            <!-- Name -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                    <mat-label>Connection String</mat-label>
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:private_connectivity'" matPrefix></mat-icon>
+                    <input readonly="true" [disabled]="true" [formControlName]="'connectionString'" matInput />
+                </mat-form-field>
+            </div>
+            @if(modelSAInfraIntegration.data.containers.length > 0){
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                    <mat-label>Container Detail</mat-label>
+                    <input style="width: 0px !important;" matInput />
+                    @for(containers of modelSAInfraIntegration.data.containers; track containers) {
+                    <div style="float: left;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                        class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                        <span class="whitespace-nowrap text-sm font-medium">{{ containers.name }}</span>
+                    </div>
+                    }
+                </mat-form-field>
+            </div>
+            }
             <!-- Username -->
             <!-- <div class="sm:col-span-4">
                 <mat-form-field
@@ -173,7 +196,8 @@
         <!-- Actions -->
         <div class="flex items-center justify-end">
             <button mat-stroked-button type="button" (click)="resetForm()">Cancel</button>
-            <button class="ml-4" mat-flat-button type="button" [color]="'primary'" [disabled]="accountForm.disabled" (click)="saveForm()">
+            <button class="ml-4" mat-flat-button type="button" [color]="'primary'" [disabled]="accountForm.disabled"
+                (click)="saveForm()">
                 Save
             </button>
         </div>

@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SuperAdminService } from 'app/shared/api/services/api';
-import { ModelSAInfraIntegration, ModelSAInfraIntegrationUpdate } from 'app/shared/api/model/models';
+import { ModelSAInfraIntegration, ModelSAInfraIntegrationData, ModelSAInfraIntegrationUpdate } from 'app/shared/api/model/models';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 
@@ -70,7 +70,7 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
     /**
      * Constructor
      */
-    constructor(private _formBuilder: UntypedFormBuilder, private superAdminService: SuperAdminService) { 
+    constructor(private _formBuilder: UntypedFormBuilder, private superAdminService: SuperAdminService) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -86,6 +86,7 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
             apiurl: new FormControl('', Validators.compose([Validators.required])),
             apikey: new FormControl('', Validators.compose([Validators.required])),
             apihostid: new FormControl('', Validators.compose([Validators.required])),
+            connectionString: new FormControl('', Validators.compose([Validators.required])),
         });
         this.showAlert = false;
         this.superAdminService.superAdminData$
@@ -96,7 +97,8 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
                         this.accountForm.setValue({
                             apiurl: superAdminInfraIntegration.data.infra_api_url,
                             apikey: superAdminInfraIntegration.data.infra_api_key,
-                            apihostid: superAdminInfraIntegration.data.infra_api_host_id
+                            apihostid: superAdminInfraIntegration.data.infra_api_host_id,
+                            connectionString: superAdminInfraIntegration.data.connectionString
                         });
 
                         this.modelSAInfraIntegration = superAdminInfraIntegration;
@@ -134,7 +136,8 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
             this.accountForm.setValue({
                 apiurl: this.modelSAInfraIntegration.data.infra_api_url,
                 apikey: this.modelSAInfraIntegration.data.infra_api_key,
-                apihostid: this.modelSAInfraIntegration.data.infra_api_host_id
+                apihostid: this.modelSAInfraIntegration.data.infra_api_host_id,
+                connectionString: this.modelSAInfraIntegration.data.connectionString,
             });
         }
     }
@@ -155,6 +158,15 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
         this.showAlert = false;
 
         this.modelSAInfraIntegrationUpdate.data = this.modelSAInfraIntegration.data;
+        
+        var _modelSAInfraIntegrationData: ModelSAInfraIntegrationData ={
+            infra_api_url: this.accountForm.controls.apihostid.value,
+            infra_api_key: this.accountForm.controls.apikey.value,
+            infra_api_host_id: this.accountForm.controls.apiurl.value,
+            type: 'INFRA-INTEGRATION'
+        }
+
+        this.modelSAInfraIntegrationUpdate.data = _modelSAInfraIntegrationData;
 
         this.superAdminService.updateDataSuperAdminUpdateDataPost(this.modelSAInfraIntegrationUpdate).subscribe({
             next: (response) => {

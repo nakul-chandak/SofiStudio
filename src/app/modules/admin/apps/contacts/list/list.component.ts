@@ -26,6 +26,7 @@ import {
     Router,
     RouterLink,
     RouterOutlet,
+    RouterModule
 } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
@@ -48,6 +49,7 @@ import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { MatMenuModule } from '@angular/material/menu';
 import { ModelUserApproveAccess, ModelUserRevokeAccess, ModelUserUpdateRoles } from 'app/shared/api/model/models';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'contacts-list',
@@ -69,7 +71,10 @@ import { ModelUserApproveAccess, ModelUserRevokeAccess, ModelUserUpdateRoles } f
         AsyncPipe,
         I18nPluralPipe,
         MatCheckboxModule,
-        FuseAlertComponent
+        FuseAlertComponent,
+        RouterLink,
+        RouterModule,
+        MatTooltipModule
     ],
 })
 export class ContactsListComponent implements OnInit, OnDestroy {

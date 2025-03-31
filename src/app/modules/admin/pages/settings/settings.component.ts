@@ -18,6 +18,11 @@ import { SettingsNotificationsComponent } from './notifications/notifications.co
 import { SettingsPlanBillingComponent } from './plan-billing/plan-billing.component';
 import { SettingsSecurityComponent } from './security/security.component';
 import { SettingsTeamComponent } from './team/team.component';
+import {
+    RouterLink,
+    RouterModule
+} from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'settings',
@@ -34,6 +39,9 @@ import { SettingsTeamComponent } from './team/team.component';
         SettingsPlanBillingComponent,
         SettingsNotificationsComponent,
         SettingsTeamComponent,
+        RouterLink,
+        RouterModule,
+        MatTooltipModule
     ],
 })
 export class SettingsComponent implements OnInit, OnDestroy {
