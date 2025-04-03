@@ -42,7 +42,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         AsyncPipe,
         CommonModule,
         MatTooltipModule,
-        RouterLink,
+        // RouterLink,
         RouterModule
     ],
 })
@@ -165,10 +165,18 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      * @param id 
      */
     editCategory(id:string) {
+        const params = window.location.pathname.split('/');
+        const length =  params?.length;
+        var editId = params[length - 1];
+       if(editId !== id) {
         this._contentCategoryService.setCategoryId = id;
         this._router.navigate([`./edit/${id}`], {
             relativeTo: this._activatedRoute,
         });
+
+         // Mark for check
+         this._changeDetectorRef.markForCheck();
+     }  
     }
 
     /**

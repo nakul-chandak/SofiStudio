@@ -39,6 +39,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { firstValueFrom, Observable, Subject, takeUntil } from 'rxjs';
+import { JsonPipe } from '@angular/common';
 
 @Component({
     selector: 'add-category',
@@ -81,13 +82,20 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     categoryForm: UntypedFormGroup;
     file: File;
     editMode = false;
-    category: Category;
+    category = <Category>{
+        name: "",
+        description: "",
+        tags: [],
+        workflowName: "",
+        photo: ""
+    };
     tags: Array<string> = [];;
     tagsEditMode: boolean = false;
     filteredTags: Array<string> = [];
     showAlert: boolean = false;
     categoryId = "";
     isFormEditMode = false;
+    isNewForm = false;
     /**
      * Constructor
      */
@@ -112,6 +120,11 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this._categoryListComponent.matCategoryDrawer.open();
+
+        this.route.paramMap.subscribe(params => {
+            this.categoryId = params.get('id');
+          });
+
         // Initialize the new list form
         this.categoryForm = this._formBuilder.group({
             name: ['', [Validators.required]],
@@ -119,38 +132,36 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
             description: ['', [Validators.required]],
             tags: []
         });
-        // const categoryId = this.route.snapshot.params['id'];
-        // console.log(categoryId);
 
-        this._contentCategoryService.getCategoryId$.pipe(takeUntil(this._unsubscribeAll)).subscribe((value: string) => {
-            this.categoryId = value;
-            this.resetForm();
-            if (value === "00000000-0000-0000-0000-000000000000" || value === "") {
-                this.isFormEditMode = false;
+        this._contentCategoryService.getCategoryId$.subscribe((value)=> {
+            if(value === "" || value =="00000000-0000-0000-0000-000000000000") {
+                this._changeDetectorRef.markForCheck();
+                this.isNewForm = true;
             }
-        });
+        })
 
         this._contentCategoryService.category$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((cate) => {
-                if (cate && (this.categoryId !== "00000000-0000-0000-0000-000000000000" && this.categoryId !== "")) {
-                    this.isFormEditMode = true;
-                    this.category = cate;
-                    this.categoryForm.patchValue(cate);
-                }
+                    if(!this._categoryListComponent.matCategoryDrawer.opened)
+                        {
+                            this._categoryListComponent.matCategoryDrawer.open();
+                        }
+                           // this.resetForm();
+                           if(this.categoryId != "00000000-0000-0000-0000-000000000000") {
+                            this.isFormEditMode = true;
+                            this.category = cate;
+                            this.categoryForm.patchValue(cate);
+                           
+                            if (this.category) {
+                                const tages = this.separateStringIntoArray(this.category.tags);
+                                this.category.tags = tages;
+                                this.filteredTags = this.tags = tages;
+                                // Toggle the edit mode off
+                                this.toggleEditMode(false);
+                            }
+                        }
+                        
             });
-
-        if (this.category) {
-            const tages = this.separateStringIntoArray(this.category.tags);
-            this.category.tags = tages;
-            this.filteredTags = this.tags = tages;
-            // Toggle the edit mode off
-            this.toggleEditMode(false);
-        }
-        else {
-            this.resetForm();
-        }
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
     }
 
 
