@@ -21,10 +21,12 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseCardComponent } from '@fuse/components/card';
 import { MatButtonModule } from '@angular/material/button';
-import { Category } from 'app/shared/api/model/models';
+import { Category, ModelContentCategoryDelete } from 'app/shared/api/model/models';
 import { ContentCategoryService } from 'app/shared/api/services/api';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FuseAlertType } from '@fuse/components/alert/alert.types';
+import { FuseAlertComponent } from '@fuse/components/alert';
 
 
 @Component({
@@ -42,7 +44,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         AsyncPipe,
         CommonModule,
         MatTooltipModule,
-        // RouterLink,
+        FuseAlertComponent,
         RouterModule
     ],
 })
@@ -56,6 +58,12 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     // Private
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+      alert: { type: FuseAlertType; message: string } = {
+            type: 'success',
+            message: '',
+        };
+    
+    showAlert = false;
     /**
      * Constructor
      */
@@ -115,11 +123,15 @@ export class CategoryListComponent implements OnInit, OnDestroy {
          // Subscribe to MatDrawer opened change
          this.matCategoryDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
-                this._contentCategoryService.listAllCategoriesContentCategoryListAllGet().subscribe();
+                this.updateList();
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
         });
+    }
+
+    updateList() {
+        this._contentCategoryService.listAllCategoriesContentCategoryListAllGet().subscribe();
     }
 
     /**
@@ -179,6 +191,29 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      }  
     }
 
+    removeCategory(id:string) {
+       const deleteCategoryModel = <ModelContentCategoryDelete>{id:id};
+        this._contentCategoryService.deleteCategoryContentCategoryDeletePost(deleteCategoryModel).subscribe({
+            next:(response) => {
+                if (response.status.toLocaleLowerCase() === "success") {
+                    // Set the alert
+                    this.alert = {
+                        type: 'success',
+                        message: `Category has been removed successfuly.`,
+                    };
+                       // Show the alert
+                       this.showAlert = true;
+                       // Mark for check
+                       this.hideAlert();
+                       this.updateList();
+                }
+            },
+            error:(error)=> {
+                this.showError(error);
+            }
+        })
+    }
+
     /**
      * append unique value against url to reflect image on UI after update.
      * @param url 
@@ -196,5 +231,29 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item._id || index;
+    }
+
+    hideAlert() {
+        setTimeout(() => {
+            this.showAlert = false;
+            this._changeDetectorRef.markForCheck();
+        }, 2000)
+    }
+    
+    showError(_error:any){
+        var message = 'Something went wrong, please try again.';
+
+        if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
+            message = _error?.error['detail'];
+        }
+        // Set the alert
+        this.alert = {
+            type: 'error',
+            message: message,
+        };
+
+        // Show the alert
+        this.showAlert = true;
+        this.hideAlert();
     }
 }

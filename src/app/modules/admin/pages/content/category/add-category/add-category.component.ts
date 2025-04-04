@@ -19,7 +19,6 @@ import {
     FormGroupDirective,
     FormsModule,
     ReactiveFormsModule,
-    UntypedFormArray,
     UntypedFormBuilder,
     UntypedFormGroup,
     Validators,
@@ -38,9 +37,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
-import { JsonPipe } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage  } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
