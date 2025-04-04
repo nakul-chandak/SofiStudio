@@ -1,5 +1,13 @@
 <div id="lst-Category" class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto" cdkScrollable>
-   
+    <div>
+        <!-- Alert -->
+        @if (showAlert) {
+        <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+            [@shake]="alert.type === 'error'">
+            {{ alert.message }}
+        </fuse-alert>
+        }
+        </div>
     <!-- <div class="fuse-horizontal-navigation-item-title" style="margin-left: 43px;margin-top: 10px;">
         <div style="
         width: 2.3%;
@@ -95,7 +103,7 @@
                             </button>
                         </div>
                          <div class="ml-2">
-                            <button (click)="editCategory(category._id)">
+                            <button (click)="removeCategory(category._id)">
                                 <mat-icon class="text-white" [svgIcon]="
                                 'heroicons_outline:trash'
                             "></mat-icon>
