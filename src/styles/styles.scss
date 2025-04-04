@@ -20,14 +20,13 @@
     min-width: 0; /* allows the button to be smaller than the default min-width */
   }
 
-  
+  /* CSS for list category */
 #lst-Category {
   mat-drawer-content fuse-card .editCategory {
     position: absolute;
     bottom: 2px;
     right: 10px;
   }
-
   fuse-card .firstCard {
     margin: 15px 15px 15px 15px !important;
     width: 90% !important;
@@ -38,4 +37,27 @@
     margin: 16px;
     min-height: 395px;
   }
+  mat-icon {
+    min-height: 18px;
+    min-width: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+  /* CSS for add category */
+#add-category {
+  .upload-img-container {
+    width: 320px;
+    height: 200px;
+    border: 1px solid black !important;
+    border-radius: 1rem;
+  }
+
+  image-cropper {
+    width: 310px;
+    height: 190px;
+  }
+  
+  
 }
