@@ -86,10 +86,21 @@
                                 {{ category.description }}
                             </div>
                         </div>
-                        <div class="editCategory">
+                        <div class="editCategory flex">
+                            <div>
                             <button (click)="editCategory(category._id)">
-                                <mat-icon>edit</mat-icon>
+                                <mat-icon class="text-white" [svgIcon]="
+                                'heroicons_outline:pencil'
+                            "></mat-icon>
                             </button>
+                        </div>
+                         <div class="ml-2">
+                            <button (click)="editCategory(category._id)">
+                                <mat-icon class="text-white" [svgIcon]="
+                                'heroicons_outline:trash'
+                            "></mat-icon>
+                            </button>
+                        </div>
                         </div>
                     </fuse-card>
                     }
