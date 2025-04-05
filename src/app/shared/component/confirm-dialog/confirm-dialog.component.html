@@ -1,0 +1,10 @@
+<div>
+    <h2 mat-dialog-title>{{confirmFields.title}}</h2>
+    <mat-dialog-content>
+        {{confirmFields.message}}
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close>{{confirmFields.cancelButtonLabel}}</button>
+        <button mat-button mat-flat-button [color]="'primary'" mat-dialog-close (click) ="confirmAction()" cdkFocusInitial>{{confirmFields.confirmButtonLabel}}</button>
+    </mat-dialog-actions>
+</div>

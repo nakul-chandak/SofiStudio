@@ -8,7 +8,8 @@ import {
     OnInit,
     ViewChild,
     ViewEncapsulation,
-    Pipe, PipeTransform
+    Pipe, PipeTransform,
+    inject
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet, RouterModule } from '@angular/router';
@@ -22,11 +23,14 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseCardComponent } from '@fuse/components/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Category, ModelContentCategoryDelete } from 'app/shared/api/model/models';
-import { ContentCategoryService } from 'app/shared/api/services/api';
+import { ContentCategoryService, SharedService } from 'app/shared/api/services/api';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FuseAlertType } from '@fuse/components/alert/alert.types';
 import { FuseAlertComponent } from '@fuse/components/alert';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'app/shared/component/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialog } from 'app/shared/types';
 
 
 @Component({
@@ -45,12 +49,14 @@ import { FuseAlertComponent } from '@fuse/components/alert';
         CommonModule,
         MatTooltipModule,
         FuseAlertComponent,
-        RouterModule
+        RouterModule,
+        MatDialogModule
     ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
     @ViewChild('matCategoryDrawer', { static: true }) matCategoryDrawer: MatDrawer;
-
+    readonly dialog = inject(MatDialog);
+    readonly sharedService = inject(SharedService);
     boards: Board[];
     categories:Category[];
     categories$:Observable<Category[]>;
@@ -191,29 +197,41 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      }  
     }
 
-    removeCategory(id:string) {
-       const deleteCategoryModel = <ModelContentCategoryDelete>{id:id};
-        this._contentCategoryService.deleteCategoryContentCategoryDeletePost(deleteCategoryModel).subscribe({
-            next:(response) => {
-                if (response.status.toLocaleLowerCase() === "success") {
-                    // Set the alert
-                    this.alert = {
-                        type: 'success',
-                        message: `Category has been removed successfuly.`,
-                    };
-                       // Show the alert
-                       this.showAlert = true;
-                       // Mark for check
-                       this.hideAlert();
-                       this.updateList();
-                }
-            },
-            error:(error)=> {
-                this.showError(error);
+    removeCategory(id: string) {
+        this.sharedService.confirmDialog = <ConfirmDialog>{
+            cancelButtonLabel: "Cancel",
+            confirmButtonLabel: "Delete",
+            message: "Do you really want to delete?",
+            title: "Are you sure?"
+        };
+        const dialogRef = this.dialog.open(ConfirmDialogComponent);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if (result) {
+                const deleteCategoryModel = <ModelContentCategoryDelete>{ id: id };
+                this._contentCategoryService.deleteCategoryContentCategoryDeletePost(deleteCategoryModel).subscribe({
+                    next: (response) => {
+                        if (response.status.toLocaleLowerCase() === "success") {
+                            // Set the alert
+                            this.alert = {
+                                type: 'success',
+                                message: `Category has been removed successfuly.`,
+                            };
+                            // Show the alert
+                            this.showAlert = true;
+                            // Mark for check
+                            this.hideAlert();
+                            this.updateList();
+                        }
+                    },
+                    error: (error) => {
+                        this.showError(error);
+                    }
+                });
             }
         })
     }
 
+    
     /**
      * append unique value against url to reflect image on UI after update.
      * @param url 
