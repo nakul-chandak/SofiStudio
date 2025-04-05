@@ -1,5 +1,5 @@
 <div class="absolute inset-0 flex min-w-0 flex-col overflow-hidden">
-    <div class="fuse-horizontal-navigation-item-title" style="margin-left: 20px;margin-top: 10px;">
+    <!-- <div class="fuse-horizontal-navigation-item-title" style="margin-left: 20px;margin-top: 10px;">
         <div style="
         width: 2.3%;
         float: left;
@@ -25,7 +25,7 @@
             <span class="fuse-horizontal-navigation-item-active"
                 style="float:left;padding-top: 2px;color: rgba(13, 148, 136, 1);"> Users </span>
         </div>
-    </div>
+    </div> -->
     <!-- Alert -->
     @if (showAlert) {
     <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
@@ -121,11 +121,11 @@
                                 <span>Revoke</span>
                             </button>
 
-                            <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
+                            <!-- <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
                                 (click)="bulkUserRevoke(false)">
                                 <mat-icon>group_add</mat-icon>
                                 <span>Reinstead</span>
-                            </button>
+                            </button> -->
 
                             <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
                                 (mouseover)="isApproveTrigger=false" [matMenuTriggerFor]="multiRoles">

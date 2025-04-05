@@ -6,27 +6,27 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id   : 'example',
         title: 'Home',
         type : 'basic',
-        icon : 'heroicons_outline:home',
+        icon : '',
         link : '/home'
     },
     {
         id: 'admin',
         title: 'Admin',
         type: 'group',
-        icon: 'mat_outline:admin_panel_settings',
+        icon: '',
         children: [
             {
                  id   : 'user',
                 title: 'Users',
                 type : 'basic',
-                icon : 'heroicons_outline:users',
+                icon : '',
                 link : '/users'
             },
             {
                 id   : 'settings',
                 title: 'Settings',
                 type : 'basic',
-                icon : 'mat_outline:settings',
+                icon : '',
                 link : '/settings'
             },
         ],
@@ -35,13 +35,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id: 'content',
         title: 'Content',
         type: 'group',
-        icon: 'heroicons_outline:sparkles',
+        icon: '',
         children: [
             {
                  id  :'category',
                 title: 'Category',
                 type : 'basic',
-                icon : 'mat_outline:category',
+                icon : '',
                 link : '/category'
             }
         ],
@@ -52,27 +52,27 @@ export const compactNavigation: FuseNavigationItem[] = [
         id   : 'example',
         title: 'Home',
         type : 'basic',
-        icon : 'heroicons_outline:home',
+        icon : '',
         link : '/home'
     },
     {
         id: 'admin',
         title: 'Admin',
         type: 'group',
-        icon: 'mat_outline:admin_panel_settings',
+        icon: '',
         children: [
             {
                  id   : 'user',
                 title: 'Users',
                 type : 'basic',
-                icon : 'heroicons_outline:users',
+                icon : '',
                 link : '/users'
             },
             {
                 id   : 'settings',
                 title: 'Settings',
                 type : 'basic',
-                icon : 'mat_outline:settings',
+                icon : '',
                 link : '/settings'
             },
         ],
@@ -87,7 +87,7 @@ export const compactNavigation: FuseNavigationItem[] = [
                  id  : 'category',
                 title: 'Category',
                 type : 'basic',
-                icon : 'mat_outline:category',
+                icon : '',
                 link : '/category'
             }
         ],
@@ -98,27 +98,27 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         id   : 'example',
         title: 'Home',
         type : 'basic',
-        icon : 'heroicons_outline:home',
+        icon : '',
         link : '/home'
     },
     {
         id: 'admin',
         title: 'Admin',
         type: 'group',
-        icon: 'mat_outline:admin_panel_settings',
+        icon: '',
         children: [
             {
                  id   : 'user',
                 title: 'Users',
                 type : 'basic',
-                icon : 'heroicons_outline:users',
+                icon : '',
                 link : '/users'
             },
             {
                 id   : 'settings',
                 title: 'Settings',
                 type : 'basic',
-                icon : 'mat_outline:settings',
+                icon : '',
                 link : '/settings'
             },
         ],
@@ -127,13 +127,13 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         id: 'content',
         title: 'Content',
         type: 'group',
-        icon: 'heroicons_outline:sparkles',
+        icon: '',
         children: [
             {
                  id  : 'category',
                 title: 'Category',
                 type : 'basic',
-                icon : 'mat_outline:category',
+                icon : '',
                 link : '/category'
             }
         ],
@@ -144,27 +144,27 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         id   : 'example',
         title: 'Home',
         type : 'basic',
-        icon : 'heroicons_outline:home',
+        icon : '',
         link : '/home'
     },
     {
         id: 'admin',
         title: 'Admin',
         type: 'group',
-        icon: 'mat_outline:admin_panel_settings',
+        icon: '',
         children: [
             {
                  id   : 'user',
                 title: 'Users',
                 type : 'basic',
-                icon : 'heroicons_outline:users',
+                icon : '',
                 link : '/users'
             },
             {
                 id   : 'settings',
                 title: 'Settings',
                 type : 'basic',
-                icon : 'mat_outline:settings',
+                icon : '',
                 link : '/settings'
             },
         ],
@@ -173,13 +173,13 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         id: 'content',
         title: 'Content',
         type: 'group',
-        icon: 'heroicons_outline:sparkles',
+        icon: '',
         children: [
             {
                  id  : 'category',
                 title: 'Category',
                 type : 'basic',
-                icon : 'mat_outline:category',
+                icon : '',
                 link : '/category'
             }
         ],
