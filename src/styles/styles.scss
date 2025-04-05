@@ -53,11 +53,12 @@
     border: 1px solid black !important;
     border-radius: 1rem;
   }
-
-  image-cropper {
-    width: 310px;
-    height: 190px;
-  }
-  
-  
+ .txt {
+  height: 57px !important;
+  margin-bottom: -1.25em;
+ }
+}
+.img-cropper {
+  height:99% ;
+  position: relative;
 }

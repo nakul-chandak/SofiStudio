@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Upload Image</h1>
+<mat-dialog-content>
+    <div style="height: 100%;width: 100vh;">
+    <image-cropper class="img-cropper" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" format="png,jpg,jpeg"
+        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"></image-cropper>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" mat-flat-button [color]="'primary'" (click) ="returnCroppedImage()" cdkFocusInitial>save</button>
+</mat-dialog-actions>

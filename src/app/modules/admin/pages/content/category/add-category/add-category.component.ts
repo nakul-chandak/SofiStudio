@@ -5,6 +5,7 @@ import {
     Component,
     ElementRef,
     EventEmitter,
+    inject,
     Input,
     OnDestroy,
     OnInit,
@@ -30,7 +31,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { MatInputModule } from '@angular/material/input';
-import { ContentCategoryService } from 'app/shared/api/services/contentCategory.service';
 import { CategoryListComponent } from '../list-category/list-category.component';
 import { Category } from 'app/shared/api/model/models';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -38,8 +38,12 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { Subject, takeUntil } from 'rxjs';
-import { ImageCroppedEvent, ImageCropperComponent, LoadedImage  } from 'ngx-image-cropper';
+import { ImageCroppedEvent, LoadedImage  } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogContentComponent } from 'app/shared/component/dialog-content/dialog-content.component';
+import { ContentCategoryService,SharedService } from 'app/shared/api/services/api';
+import { DialogData } from '../../content.types';
 
 @Component({
     selector: 'add-category',
@@ -56,24 +60,21 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
         MatTooltip,
         MatInputModule,
         MatCheckboxModule,
-        FuseAlertComponent,
-        ImageCropperComponent
+        MatDialogModule,
+        FuseAlertComponent
     ],
     animations: fuseAnimations,
 })
 export class CategoryAddCardComponent implements OnInit, OnDestroy {
     @ViewChild('titleInput') titleInput: ElementRef;
     @ViewChild('titleAutosize') titleAutosize: CdkTextareaAutosize;
-    @ViewChild('uploadFileInput') private _uploadFileInput: ElementRef;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
     @ViewChild(FormGroupDirective) formDirective;
 
     @Input() buttonTitle: string = 'Add a card';
     @Output() readonly saved: EventEmitter<string> = new EventEmitter<string>();
-
-    imageChangedEvent: Event | null = null;
-    croppedImage: SafeUrl  = '';
+    readonly dialog = inject(MatDialog);
     
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
@@ -83,6 +84,7 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     categoryForm: UntypedFormGroup;
+    croppedImage: SafeUrl  = '';
     file: File;
     editMode = false;
     category = <Category>{
@@ -98,7 +100,6 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     showAlert: boolean = false;
     categoryId = "";
     isFormEditMode = false;
-    showCropControl = false;
     fileName="dummy";
     /**
      * Constructor
@@ -113,7 +114,8 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         private _viewContainerRef: ViewContainerRef,
         private _router: Router,
         private route: ActivatedRoute,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private sharedService:SharedService
     ) { }
 
     // -----------------------------------------------------------------------------------------------------
@@ -302,8 +304,6 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
 
     removeFile(): void { 
         this.croppedImage = '';
-        this.showCropControl = false;
-        this.imageChangedEvent = null;
     }
 
     /**
@@ -589,34 +589,20 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
     }
 
     fileChangeEvent(event: any): void {
-        this.imageChangedEvent = event;
         this.fileName = event.target.files[0].name; // Get the file name
-        this.showCropControl = true;
         this.croppedImage ='';
+        this.openDialog(event);
     }
 
-    imageCropped(event: ImageCroppedEvent) {
-        this.convertBlobToFile(event.blob)
-        this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
-        // event.blob can be used to upload the cropped image
+    openDialog(event:Event) {
+        this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event};
+        const dialogRef = this.dialog.open(DialogContentComponent,{height:"70%", panelClass:"img-cropper"});
+        dialogRef.afterClosed().subscribe((result:DialogData) => {
+          if(result) {
+            this.croppedImage = result?.tempUrl;
+            this.file = result?.file;
+            this._changeDetectorRef.markForCheck();
+          }
+        });
       }
-
-    imageLoaded(image: LoadedImage) {
-    // show cropper
-    }
-    cropperReady() {
-    // cropper ready
-    }
-    loadImageFailed() {
-    // show message
-    }
-
-    convertBlobToFile(blob: Blob) {
-        const file = new File([blob], this.fileName, { type: blob.type });
-        this.file = file;
-      }
-
-    cropImage() {
-        this.showCropControl = false;
-    }
 }
