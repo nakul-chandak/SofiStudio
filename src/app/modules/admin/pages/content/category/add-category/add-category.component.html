@@ -60,6 +60,7 @@
             <div class=" mt-2 flex w-full rounded-lg p-1 shadow">
                 <mat-form-field class="w-full txt">
                     <!-- <mat-label>Name</mat-label> -->
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:contacts'" matPrefix></mat-icon>
                     <input [formControlName]="'name'" 
                     [matTooltip]="categoryForm.get('name').hasError('required')? 'Name is required': 'Name'"
                     [placeholder]="'Name'" matInput />
@@ -73,6 +74,7 @@
             <div class="flex w-full rounded-lg p-1 shadow">
                 <mat-form-field class="w-full txt">
                     <!-- <mat-label>Workflow Name</mat-label> -->
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:app_registration'" matPrefix></mat-icon>
                     <input [formControlName]="'workflowName'" 
                     [matTooltip]="categoryForm.get('name').hasError('required')? 'Workflow Name is required': 'Workflow Name'"
                     [placeholder]="'Workflow Name'" matInput />
@@ -86,6 +88,7 @@
             <div class="flex w-full rounded-lg p-1 shadow">
                 <mat-form-field class="w-full txt">
                     <!-- <mat-label>Description</mat-label> -->
+                    <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:description'" matPrefix></mat-icon>
                     <input [formControlName]="'description'" 
                     [matTooltip]="categoryForm.get('name').hasError('required')? 'Description is required': 'Description'"
                     [placeholder]="'Description'" matInput />
