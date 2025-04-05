@@ -41,9 +41,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { ImageCroppedEvent, LoadedImage  } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogContentComponent } from 'app/shared/component/dialog-content/dialog-content.component';
 import { ContentCategoryService,SharedService } from 'app/shared/api/services/api';
 import { DialogData } from '../../content.types';
+import { ImageContentDialogComponent } from '../dialog/image-dialog/image-dialog.component';
 
 @Component({
     selector: 'add-category',
@@ -114,7 +114,6 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         private _viewContainerRef: ViewContainerRef,
         private _router: Router,
         private route: ActivatedRoute,
-        private sanitizer: DomSanitizer,
         private sharedService:SharedService
     ) { }
 
@@ -596,7 +595,7 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
 
     openDialog(event:Event) {
         this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event};
-        const dialogRef = this.dialog.open(DialogContentComponent,{height:"70%", panelClass:"img-cropper"});
+        const dialogRef = this.dialog.open(ImageContentDialogComponent,{height:"70%", panelClass:"img-cropper"});
         dialogRef.afterClosed().subscribe((result:DialogData) => {
           if(result) {
             this.croppedImage = result?.tempUrl;

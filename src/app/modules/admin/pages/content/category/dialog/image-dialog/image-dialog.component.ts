@@ -8,17 +8,17 @@ import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image
 import { first, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-dialog-content',
+  selector: 'app-image-dialog',
   imports: [MatDialogModule, MatButtonModule, ImageCropperComponent],
-  templateUrl: './dialog-content.component.html'
+  templateUrl: './image-dialog.component.html'
 })
-export class DialogContentComponent implements OnInit {
+export class ImageContentDialogComponent implements OnInit {
   croppedImage: SafeUrl  = '';
   imageChangedEvent : Event | null = null;
   fileName = "";
   file :File;
   constructor(private sanitizer: DomSanitizer, private readonly sharedService:SharedService,
-    private dialogRef: MatDialogRef<DialogContentComponent, DialogData>) {
+    private dialogRef: MatDialogRef<ImageContentDialogComponent, DialogData>) {
     
   }
   ngOnInit(): void {

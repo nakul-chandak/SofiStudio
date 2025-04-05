@@ -21,7 +21,7 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/shared/api/services/api';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
-import { FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ModelUserUpdateUser } from 'app/shared/api/model/models';
 
 @Component({
@@ -41,7 +41,8 @@ import { ModelUserUpdateUser } from 'app/shared/api/model/models';
         MatDividerModule,
         MatTooltipModule,
         NgClass,
-        FuseAlertComponent
+        FuseAlertComponent,
+        ReactiveFormsModule
     ],
 })
 export class ProfileComponent implements OnInit {
