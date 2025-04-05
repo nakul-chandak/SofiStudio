@@ -114,7 +114,6 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         private _viewContainerRef: ViewContainerRef,
         private _router: Router,
         private route: ActivatedRoute,
-        private sanitizer: DomSanitizer,
         private sharedService:SharedService
     ) { }
 
