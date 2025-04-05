@@ -50,7 +50,7 @@
                 }
             </div>
 
-            <div class="flex mt-2">
+            <div class="flex mt-2" style="margin-bottom: 0.5rem !important;">
                 <button [disabled]="croppedImage == ''" class="ml-2" mat-flat-button [color]="'primary'" (click)="cropImage()"
                 >
                Crop Image
@@ -77,34 +77,40 @@
 
             <!--Name -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 80px !important;">
-                    <mat-label>Name</mat-label>
-                    <input [formControlName]="'name'" matInput />
-                    @if (categoryForm.get('name').hasError('required')) {
-                    <mat-error>Name is required </mat-error>
-                    }
+                <mat-form-field class="w-full" style="height: 57px !important;margin-bottom: -1.25em;">
+                    <!-- <mat-label>Name</mat-label> -->
+                    <input [formControlName]="'name'" 
+                    [matTooltip]="categoryForm.get('name').hasError('required')? 'Name is required': 'Name'"
+                    [placeholder]="'Name'" matInput />
+                    <!-- @if (categoryForm.get('name').hasError('required')) {
+                    <mat-error>Name is required</mat-error>
+                    } -->
                 </mat-form-field>
             </div>
 
             <!--workflow Name -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 80px !important;">
-                    <mat-label>Workflow Name</mat-label>
-                    <input [formControlName]="'workflowName'" matInput />
-                    @if (categoryForm.get('workflowName').hasError('required')) {
+                <mat-form-field class="w-full" style="height: 57px !important;margin-bottom: -1.25em;">
+                    <!-- <mat-label>Workflow Name</mat-label> -->
+                    <input [formControlName]="'workflowName'" 
+                    [matTooltip]="categoryForm.get('name').hasError('required')? 'Workflow Name is required': 'Workflow Name'"
+                    [placeholder]="'Workflow Name'" matInput />
+                    <!-- @if (categoryForm.get('workflowName').hasError('required')) {
                     <mat-error>Workflow Name is required </mat-error>
-                    }
+                    } -->
                 </mat-form-field>
             </div>
 
             <!--description -->
             <div class="flex w-full rounded-lg p-1 shadow">
-                <mat-form-field class="w-full" style="height: 80px !important;">
-                    <mat-label>Description</mat-label>
-                    <input [formControlName]="'description'" matInput />
-                    @if (categoryForm.get('workflowName').hasError('required')) {
+                <mat-form-field class="w-full" style="height: 57px !important;margin-bottom: -1.25em;">
+                    <!-- <mat-label>Description</mat-label> -->
+                    <input [formControlName]="'description'" 
+                    [matTooltip]="categoryForm.get('name').hasError('required')? 'Description is required': 'Description'"
+                    [placeholder]="'Description'" matInput />
+                    <!-- @if (categoryForm.get('workflowName').hasError('required')) {
                     <mat-error>Description is required </mat-error>
-                    }
+                    } -->
                 </mat-form-field>
             </div>
 
@@ -250,7 +256,7 @@
                 <!-- Save -->
                 <button class="ml-2" mat-flat-button [color]="'primary'" (click)="save()"
                     [disabled]="categoryForm.invalid">
-                    {{isFormEditMode ? 'Update card' : 'New card' }}
+                    {{isFormEditMode ? 'Update' : 'Save' }}
                 </button>
             </div>
             <!-- <div class="mt-3 flex items-center">

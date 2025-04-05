@@ -57,10 +57,10 @@
                 <!--Card -->
                 <div class="flex w-full max-w-600 flex-wrap items-start">
 
-                    <fuse-card style="height: 335px !important;min-height: 335px !important;"
+                    <fuse-card style="height: 335px !important;min-height: 335px !important;max-width: 16rem !important;"
                         class="filter-article flex w-full max-w-80 flex-col">
                         <!-- New board -->
-                        <div (click)="AddNewCategory()" style="height: 300px !important;min-height: 300px !important;"
+                        <div (click)="AddNewCategory()" style="height: 305px !important;min-height: 305px !important;width: 88% !important;"
                             class="firstCard flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors duration-150 ease-in-out hover:bg-hover">
                             <button>
                                 <mat-icon class="text-hint icon-size-12"
@@ -77,7 +77,7 @@
                     track trackByFn(i, category);
                     let i = $index
                     ) {
-                    <fuse-card style="min-height: 335px !important;"
+                    <fuse-card style="min-height: 335px !important;max-width: 16rem !important;"
                         class="filter-article flex w-full max-w-80 flex-col hover:bg-hover">
                         <img style="height: 200px;width: 320px;" class="object-cover" height="200px" width="320px"
                             [src]="getImage(category.photo)" alt="{{category.name}}" />
