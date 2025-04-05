@@ -39,3 +39,10 @@ export interface ILabel {
     boardId: string;
     title: string;
 }
+export interface DialogData {
+    name: string;
+    file:File;
+    imageEvent:Event;
+    tempUrl:string;
+  }
+
