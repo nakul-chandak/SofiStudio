@@ -598,9 +598,11 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
         this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event};
         const dialogRef = this.dialog.open(DialogContentComponent,{height:"70%", panelClass:"img-cropper"});
         dialogRef.afterClosed().subscribe((result:DialogData) => {
-          this.croppedImage = result.tempUrl;
-          this.file = result.file;
-          this._changeDetectorRef.markForCheck();
+          if(result) {
+            this.croppedImage = result?.tempUrl;
+            this.file = result?.file;
+            this._changeDetectorRef.markForCheck();
+          }
         });
       }
 }
