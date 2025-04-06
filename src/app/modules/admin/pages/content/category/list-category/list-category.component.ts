@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet, RouterModule } from '@angular/router';
 
 import { DateTime } from 'luxon';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { ContentService } from '../../content.service';
 import { Board } from '../../content.models';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
@@ -24,13 +24,17 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Category, ModelContentCategoryDelete } from 'app/shared/api/model/models';
 import { ContentCategoryService, SharedService } from 'app/shared/api/services/api';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FuseAlertType } from '@fuse/components/alert/alert.types';
 import { FuseAlertComponent } from '@fuse/components/alert';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'app/shared/component/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialog } from 'app/shared/types';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 
 @Component({
@@ -50,7 +54,13 @@ import { ConfirmDialog } from 'app/shared/types';
         MatTooltipModule,
         FuseAlertComponent,
         RouterModule,
-        MatDialogModule
+        MatDialogModule,
+        MatMenuModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        DatePipe 
     ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
@@ -70,6 +80,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         };
     
     showAlert = false;
+   searchInputControl: UntypedFormControl = new UntypedFormControl();
+   categoriesCount = 0;
     /**
      * Constructor
      */
@@ -120,7 +132,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
           this.categories$ = this._contentCategoryService.categories$;
                 this._contentCategoryService.categories$
                     .pipe(takeUntil(this._unsubscribeAll))
-                    .subscribe((contacts: Category[]) => {
+                    .subscribe((categories: Category[]) => {
+                        this.categoriesCount = categories.length;
                         // Mark for check
                         this._changeDetectorRef.markForCheck();
                     });
@@ -134,6 +147,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             }
         });
+
+          // Subscribe to search input field value changes
+                this.searchInputControl.valueChanges
+                    .pipe(
+                        takeUntil(this._unsubscribeAll),
+                        switchMap((query) =>
+                            // Search
+                            this._contentCategoryService.searchCategoriesContentCategorySearchGet(query)
+                        )
+                    )
+                    .subscribe();
     }
 
     updateList() {
