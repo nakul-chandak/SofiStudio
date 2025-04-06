@@ -303,6 +303,9 @@ export class ContentCategoryService {
     public searchCategoriesContentCategorySearchGet(term: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
     public searchCategoriesContentCategorySearchGet(term: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
+        if(term ==='') {
+            return of (this.listAllCategoriesContentCategoryListAllGet().subscribe())
+        }
         if (term === null || term === undefined) {
             throw new Error('Required parameter term was null or undefined when calling searchCategoriesContentCategorySearchGet.');
         }
@@ -343,7 +346,9 @@ export class ContentCategoryService {
                 observe: observe,
                 reportProgress: reportProgress
             }
-        );
+        ).pipe(tap((categories)=>{
+            this._categories.next(categories);
+        }));
     }
 
     /**
