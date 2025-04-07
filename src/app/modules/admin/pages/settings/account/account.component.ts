@@ -160,9 +160,9 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
         this.modelSAInfraIntegrationUpdate.data = this.modelSAInfraIntegration.data;
         
         var _modelSAInfraIntegrationData: ModelSAInfraIntegrationData ={
-            infra_api_url: this.accountForm.controls.apihostid.value,
+            infra_api_url: this.accountForm.controls.apiurl.value,
             infra_api_key: this.accountForm.controls.apikey.value,
-            infra_api_host_id: this.accountForm.controls.apiurl.value,
+            infra_api_host_id: this.accountForm.controls.apihostid.value,
             type: 'INFRA-INTEGRATION'
         }
 
