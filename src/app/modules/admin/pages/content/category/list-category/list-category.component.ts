@@ -60,7 +60,7 @@ import { MatInputModule } from '@angular/material/input';
         FormsModule,
         ReactiveFormsModule,
         MatInputModule,
-        DatePipe 
+        DatePipe
     ],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
@@ -68,20 +68,19 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     readonly dialog = inject(MatDialog);
     readonly sharedService = inject(SharedService);
     boards: Board[];
-    categories:Category[];
-    categories$:Observable<Category[]>;
+    categories: Category[];
+    categories$: Observable<Category[]>;
     drawerMode: 'side' | 'over';
     // Private
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-      alert: { type: FuseAlertType; message: string } = {
-            type: 'success',
-            message: '',
-        };
-    
+    alert: { type: FuseAlertType; message: string } = {
+        type: 'success',
+        message: '',
+    };
     showAlert = false;
-   searchInputControl: UntypedFormControl = new UntypedFormControl();
-   categoriesCount = 0;
+    searchInputControl: UntypedFormControl = new UntypedFormControl();
+    categoriesCount = 0;
     /**
      * Constructor
      */
@@ -91,8 +90,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         private _contentService: ContentService,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-        private _contentCategoryService:ContentCategoryService
-    ) {}
+        private _contentCategoryService: ContentCategoryService
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -112,35 +111,35 @@ export class CategoryListComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-            // Subscribe to media changes
+        // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(({ matchingAliases }) => {
-            // Set the drawerMode if the given breakpoint is active
-            if (matchingAliases.includes('lg')) {
-                this.drawerMode = 'side';
-            } else {
-                this.drawerMode = 'over';
-            }
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(({ matchingAliases }) => {
+                // Set the drawerMode if the given breakpoint is active
+                if (matchingAliases.includes('lg')) {
+                    this.drawerMode = 'side';
+                } else {
+                    this.drawerMode = 'over';
+                }
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Get List of categories
 
-          this.categories$ = this._contentCategoryService.categories$;
-                this._contentCategoryService.categories$
-                    .pipe(takeUntil(this._unsubscribeAll))
-                    .subscribe((categories: Category[]) => {
-                        this.categoriesCount = categories.length;
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
+        this.categories$ = this._contentCategoryService.categories$;
+        this._contentCategoryService.categories$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((categories: Category[]) => {
+                this.categoriesCount = categories.length;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
 
-         // Subscribe to MatDrawer opened change
-         this.matCategoryDrawer.openedChange.subscribe((opened) => {
+        // Subscribe to MatDrawer opened change
+        this.matCategoryDrawer.openedChange.subscribe((opened) => {
             if (!opened) {
                 this.updateList();
                 // Mark for check
@@ -148,16 +147,16 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             }
         });
 
-          // Subscribe to search input field value changes
-                this.searchInputControl.valueChanges
-                    .pipe(
-                        takeUntil(this._unsubscribeAll),
-                        switchMap((query) =>
-                            // Search
-                            this._contentCategoryService.searchCategoriesContentCategorySearchGet(query)
-                        )
-                    )
-                    .subscribe();
+        // Subscribe to search input field value changes
+        this.searchInputControl.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribeAll),
+                switchMap((query) =>
+                    // Search
+                    this._contentCategoryService.searchCategoriesContentCategorySearchGet(query)
+                )
+            )
+            .subscribe();
     }
 
     updateList() {
@@ -188,10 +187,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
     AddNewCategory() {
         this._contentCategoryService.setCategoryId = "";
-         const id="00000000-0000-0000-0000-000000000000";
-             this._router.navigate([`./new/${id}`], {
-                relativeTo: this._activatedRoute,
-            });
+        const id = "00000000-0000-0000-0000-000000000000";
+        this._router.navigate([`./new/${id}`], {
+            relativeTo: this._activatedRoute,
+        });
     }
 
     onBackdropClicked(): void {
@@ -206,19 +205,19 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      * Edit category
      * @param id 
      */
-    editCategory(id:string) {
+    editCategory(id: string) {
         const params = window.location.pathname.split('/');
-        const length =  params?.length;
+        const length = params?.length;
         var editId = params[length - 1];
-       if(editId !== id) {
-        this._contentCategoryService.setCategoryId = id;
-        this._router.navigate([`./edit/${id}`], {
-            relativeTo: this._activatedRoute,
-        });
+        if (editId !== id) {
+            this._contentCategoryService.setCategoryId = id;
+            this._router.navigate([`./edit/${id}`], {
+                relativeTo: this._activatedRoute,
+            });
 
-         // Mark for check
-         this._changeDetectorRef.markForCheck();
-     }  
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }
     }
 
     removeCategory(id: string) {
@@ -255,14 +254,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         })
     }
 
-    
+
     /**
      * append unique value against url to reflect image on UI after update.
      * @param url 
      * @returns 
      */
-    getImage(url:string) {
-        return url ? `${url}?v=${new Date().getTime()}`: "";
+    getImage(url: string) {
+        return url ? `${url}?v=${new Date().getTime()}` : "";
     }
 
     /**
@@ -281,8 +280,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             this._changeDetectorRef.markForCheck();
         }, 2000)
     }
-    
-    showError(_error:any){
+
+    showError(_error: any) {
         var message = 'Something went wrong, please try again.';
 
         if (_error.status === 409 || _error.status === 500 || _error.status === 400) {
