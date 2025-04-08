@@ -44,58 +44,43 @@
             <!-- Main -->
             <div class="flex-auto">
                 <!-- Header -->
-                <div style="padding-top:1rem !important;" class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8">
-                    <!-- Title -->
-                    <div>
-                        <div class="text-4xl font-extrabold leading-none tracking-tight">
-                            Users
+                    <div class="w-full grid grid-cols-12 mt-4">
+                        <!-- Title-->
+                        <div class="col-span-12 md:col-span-1 ml-10"
+                            style=" flex-grow: 0 !important;">
+                            <div class="header-title font-extrabold leading-none tracking-tight">
+                                Users
+                            </div>
+                            <div class="header-description text-secondary">
+                                @if (contactsCount > 0) {
+                                {{ contactsCount }}
+                                }
+                                {{
+                                contactsCount
+                                | i18nPlural
+                                : {
+                                '=0': 'No users',
+                                '=1': 'user',
+                                other: 'users',
+                                }
+                                }}
+                            </div>
                         </div>
-                        <div class="text-secondary ml-0.5 font-medium">
-                            @if (contactsCount > 0) {
-                            {{ contactsCount }}
-                            }
-                            {{
-                            contactsCount
-                            | i18nPlural
-                            : {
-                            '=0': 'No users',
-                            '=1': 'user',
-                            other: 'users',
-                            }
-                            }}
-                        </div>
-                    </div>
-
-                    <!-- Main actions -->
-                    <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
                         <!-- Search -->
-                        <div class="flex-auto">
-                            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
-                                subscriptSizing="dynamic">
+                        <div class="mb-5 flex flex-grow mr-5 col-span-12 mt-5 ml-10 md:mt-0 md:col-span-11">
+                            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="
-                                        'heroicons_solid:magnifying-glass'
-                                    "></mat-icon>
+                                                        'heroicons_solid:magnifying-glass'
+                                                    "></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                                     [placeholder]="'Search contacts'" />
                             </mat-form-field>
-                        </div>
-                        <!-- Add contact button -->
-                        <!-- <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createContact()">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Invite</span>
-                        </button> -->
-                        <!-- bulk Action -->
-                        <!-- <button class="ml-4" mat-flat-button [color]="'primary'" (click)="bulkActions()"
-                            [disabled]="(!this.indeterminate && !this.selectAllContacts)">
-                            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                            <span class="ml-2 mr-1">Bulk Actions</span>
-                        </button> -->
-
+                             <!-- Main actions -->
+                    <div class="flex items-center">
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-
                             @if(!selectAllContacts) {
                             <button mat-menu-item (click)="update(true)">
                                 <mat-icon>select_all</mat-icon>
@@ -121,12 +106,6 @@
                                 <span>Revoke</span>
                             </button>
 
-                            <!-- <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
-                                (click)="bulkUserRevoke(false)">
-                                <mat-icon>group_add</mat-icon>
-                                <span>Reinstead</span>
-                            </button> -->
-
                             <button mat-menu-item [disabled]="!selectAllContacts && !indeterminate"
                                 (mouseover)="isApproveTrigger=false" [matMenuTriggerFor]="multiRoles">
                                 <mat-icon>group_add</mat-icon>
@@ -145,9 +124,10 @@
                                 <span class="ml-2 mr-1">Save</span>
                             </button>
                         </mat-menu>
-
                     </div>
-                </div>
+                        </div>
+                    </div>
+                
                 <!-- <div class="mt-4 flex">
                     <mat-checkbox [checked]="selectAllContacts" (change)="update($event.checked)"
                         [indeterminate]="indeterminate"></mat-checkbox>
