@@ -10,6 +10,9 @@
 .header-description {
   font-size: 0.8rem !important;
 }
+.mat-mdc-menu-item-height {
+ min-height: 35px !important;
+}
 
 /* end global CSS */
 .m-l-16 {
@@ -29,6 +32,40 @@
     font-size: 12px; /* Adjust font size if necessary */
     min-width: 0; /* allows the button to be smaller than the default min-width */
   }
+  .fsize-9 {
+    font-size: 9px;
+  }
+  .fsize-10 {
+    font-size: 10px;
+  }
+
+  .fsize-12 {
+    font-size: 12px;
+  }
+  .fsize-13 {
+    font-size: 13px;
+  }
+  .fsize-14 {
+    font-size: 14px;
+  }
+  .fsize-15 {
+    font-size: 15px;
+  }
+
+  .ellipsis {
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;    /* Hide overflowing content */
+    text-overflow: ellipsis; /* Display the ellipsis */
+    max-width: 100px;    /* Set a maximum width for the container */
+  }
+
+  .two-line-ellipsis {
+    text-align: left;
+    overflow: hidden;
+    display: -webkit-box; /* Required for WebKit browsers */
+    -webkit-line-clamp: 2; /* Number of lines to show */
+    -webkit-box-orient: vertical; /* Orientation of the box */
+  }
 
   /* CSS for list category */
 #lst-Category {
@@ -38,19 +75,19 @@
     right: 10px;
   }
 
-  fuse-card .ffcard {
-    max-width: 16rem !important;
-  }
   fuse-card .firstCard {
-    margin: 15px 15px 15px 15px !important;
-    width: 320px;
-    height: 350px;
+    margin: 10px 10px 10px 10px;
+    height: 180px;
+    
   }
-
+  
   mat-drawer-content fuse-card {
     margin: 16px;
-    height: 350px;
-    width: 320px;
+    height: 180px;
+    min-width: 120px;
+    width: 120px;
+    border-radius: 5px;
+  
   }
   mat-icon {
     min-height: 18px;
@@ -81,8 +118,8 @@
   /* CSS for add category */
 #add-category {
   .upload-img-container {
-    width: 320px;
-    height: 200px;
+    width: 120px;
+    height: 180px;
     border: 1px solid black !important;
     border-radius: 1rem;
   }

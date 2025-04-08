@@ -1,6 +1,6 @@
-<div id="add-category" class="flex w-full flex-col">
-    <div class="relative w-full sm:px-12 ng-star-inserted">
-        <div class="mx-auto flex w-full max-w-3xl items-center justify-end pt-6">
+<div id="add-category" class="flex flex-col">
+    <div class="relative w-full ng-star-inserted">
+        <div class="mx-auto flex w-full max-w-3xl mr-0 items-center justify-end">
             <a mat-icon-button [matTooltip]="'Close'" [routerLink]="['../../']">
                 <mat-icon class="text-white" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
             </a>
@@ -19,7 +19,7 @@
     <div class="relative flex sm:px-12 h-full w-full rounded-lg">
         <form class="flex w-full flex-col items-start" [formGroup]="categoryForm" #formDirective="ngForm">
             <div class="h-full w-full">
-            <div class="mt-5 inset-0 z-20 upload-img-container ring-bg-card relative flex items-center justify-center overflow-hidden">
+            <div class="ml-2.5 mt-5 inset-0 z-20 upload-img-container ring-bg-card relative flex items-center justify-center overflow-hidden">
                 <!-- Image/Letter -->
                 @if(croppedImage != '') {
                 <img id="1" class="h-full w-full object-cover" [src]="croppedImage" />

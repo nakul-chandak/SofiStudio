@@ -2,7 +2,7 @@
 <mat-dialog-content>
     <div style="height: 100%;width: 100vh;">
     <image-cropper class="img-cropper" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" format="png,jpg,jpeg"
-        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+        [aspectRatio]="9 / 16" (imageCropped)="imageCropped($event)"
         (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
         (loadImageFailed)="loadImageFailed()"></image-cropper>
     </div>
