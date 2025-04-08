@@ -2,6 +2,16 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+/* start global CSS */
+
+.header-title {
+    font-size: 1.2rem !important;
+}
+.header-description {
+  font-size: 0.8rem !important;
+}
+
+/* end global CSS */
 .m-l-16 {
  margin-left: -16px;
 }
