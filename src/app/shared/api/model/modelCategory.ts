@@ -9,4 +9,5 @@ export interface Category {
     createDatetime:string;
     updatedBy:string;
     updateDatetime:string;
+    showCard:boolean;
 }

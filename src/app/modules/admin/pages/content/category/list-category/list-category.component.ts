@@ -35,7 +35,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @Component({
     selector: 'list-category',
@@ -60,6 +60,7 @@ import { MatInputModule } from '@angular/material/input';
         FormsModule,
         ReactiveFormsModule,
         MatInputModule,
+        MatGridListModule,
         DatePipe
     ],
 })
