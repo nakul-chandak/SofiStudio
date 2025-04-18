@@ -8,19 +8,13 @@ import {
 
 import { Observable, catchError, throwError } from 'rxjs';
 
-import { Board } from './content.models';
-import { ContentService } from './content.service';
-import { CategoryListComponent } from './category/list-category/list-category.component';
-import { CategoryAddCardComponent } from './category/add-category/add-category.component';
-import { ScrumboardBoardComponent } from './category/board/board.component';
-import { ScrumboardCardComponent } from './category/card/card.component';
+import { ContentCategoryListComponent } from './category/list-category/list-category.component';
+import { ContentCategoryAddCardComponent } from './category/add-category/add-category.component';
 import { ContentCategoryService } from 'app/shared/api/services/api';
 
 
 const canDeactivateContent = (
-    component: CategoryAddCardComponent,
-    currentRoute: ActivatedRouteSnapshot,
-    currentState: RouterStateSnapshot,
+    component: ContentCategoryAddCardComponent,
     nextState: RouterStateSnapshot
 ) => {
     // // Get the next route
@@ -50,10 +44,10 @@ const categoryResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ) => {
-    const scrumboardService = inject(ContentCategoryService);
+    const contentCategoryService = inject(ContentCategoryService);
     const router = inject(Router);
 
-    return scrumboardService.findCategoryContentCategoryFindIdGet(route.paramMap.get('id')).pipe(
+    return contentCategoryService.findCategoryContentCategoryFindIdGet(route.paramMap.get('id')).pipe(
         // Error here means the requested card is not available
         catchError((error) => {
             // Log the error
@@ -74,19 +68,19 @@ const categoryResolver = (
 export default [
     {
         path: '',
-        component: CategoryListComponent,
+        component: ContentCategoryListComponent,
         resolve: {
             category:() => inject(ContentCategoryService).listAllCategoriesContentCategoryListAllGet()
         },
         children:[
             {
                 path: 'new/:id',
-                component: CategoryAddCardComponent,
+                component: ContentCategoryAddCardComponent,
                 canDeactivate:[canDeactivateContent]
             },
             {
                 path: 'edit/:id',
-                component: CategoryAddCardComponent,
+                component: ContentCategoryAddCardComponent,
                 resolve:{
                     category:categoryResolver
                 },

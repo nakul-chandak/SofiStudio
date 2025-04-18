@@ -31,7 +31,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { MatInputModule } from '@angular/material/input';
-import { CategoryListComponent } from '../list-category/list-category.component';
+import { ContentCategoryListComponent } from '../list-category/list-category.component';
 import { Category } from 'app/shared/api/model/models';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -64,7 +64,7 @@ import { ImageContentDialogComponent } from '../dialog/image-dialog/image-dialog
     ],
     animations: fuseAnimations,
 })
-export class CategoryAddCardComponent implements OnInit, OnDestroy {
+export class ContentCategoryAddCardComponent implements OnInit, OnDestroy {
     @ViewChild('titleInput') titleInput: ElementRef;
     @ViewChild('titleAutosize') titleAutosize: CdkTextareaAutosize;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
@@ -104,7 +104,7 @@ export class CategoryAddCardComponent implements OnInit, OnDestroy {
      * Constructor
      */
     constructor(
-        private _categoryListComponent: CategoryListComponent,
+        private _categoryListComponent: ContentCategoryListComponent,
         private _changeDetectorRef: ChangeDetectorRef,
         private _formBuilder: UntypedFormBuilder,
         private _contentCategoryService: ContentCategoryService,

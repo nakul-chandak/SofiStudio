@@ -15,8 +15,8 @@ import { ActivatedRoute, Router, RouterOutlet, RouterModule } from '@angular/rou
 
 import { DateTime } from 'luxon';
 import { Observable, Subject, switchMap, takeUntil } from 'rxjs';
-import { ContentService } from '../../content.service';
-import { Board } from '../../content.models';
+//import { ContentService } from '../../content.service';
+//import { Board } from '../../content.models';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseCardComponent } from '@fuse/components/card';
@@ -63,11 +63,11 @@ import {MatGridListModule} from '@angular/material/grid-list';
         DatePipe
     ],
 })
-export class CategoryListComponent implements OnInit, OnDestroy {
+export class ContentCategoryListComponent implements OnInit, OnDestroy {
     @ViewChild('matCategoryDrawer', { static: true }) matCategoryDrawer: MatDrawer;
     readonly dialog = inject(MatDialog);
     readonly sharedService = inject(SharedService);
-    boards: Board[];
+    //boards: Board[];
     categories: Category[];
     categories$: Observable<Category[]>;
     drawerMode: 'side' | 'over';
@@ -87,7 +87,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _contentService: ContentService,
+        //private _contentService: ContentService,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _contentCategoryService: ContentCategoryService
@@ -102,14 +102,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get the boards
-        this._contentService.boards$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((boards: Board[]) => {
-                this.boards = boards;
+        // this._contentService.boards$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((boards: Board[]) => {
+        //         this.boards = boards;
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
