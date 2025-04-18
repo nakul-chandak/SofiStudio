@@ -108,21 +108,21 @@
                     track trackByFn($index, tag)
                     ) {
                     <div
-                        class="m-1.5 flex items-center justify-center rounded-full bg-gray-100 px-4 leading-9 text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                        class="m-1.5 flex items-center justify-center rounded-full bg-gray-100 pl-2 pr-2 line-hight-1-5 text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         <span class="whitespace-nowrap text-md font-medium">{{ tag }}</span>
                     </div>
                     }
                     }
                     <!-- Tags panel and its button -->
-                    <div class="m-1.5 flex cursor-pointer items-center justify-center rounded-full bg-gray-100 px-4 leading-9 text-gray-500 dark:bg-gray-700 dark:text-gray-300"
+                    <div class="m-1.5 flex cursor-pointer items-center justify-center rounded-full bg-gray-100 pl-2 pr-2 line-hight-1-5 text-gray-500 dark:bg-gray-700 dark:text-gray-300"
                         (click)="openTagsPanel()" #tagsPanelOrigin>
                         @if (category.tags.length) {
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-square'"></mat-icon>
+                        <mat-icon class="icon-size-4 pt-1px" [svgIcon]="'heroicons_solid:pencil-square'"></mat-icon>
                         <span class="ml-1.5 whitespace-nowrap text-md font-medium">Edit</span>
                         }
 
                         @if (!category.tags.length) {
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                        <mat-icon class="icon-size-4 pt-1px" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
                         <span class="ml-1.5 whitespace-nowrap text-md font-medium">Add</span>
                         }
 
@@ -132,7 +132,7 @@
                                 <!-- Tags panel header -->
                                 <div class="m-3 mr-2 flex items-center">
                                     <div class="flex items-center">
-                                        <mat-icon class="icon-size-5" [svgIcon]="
+                                        <mat-icon class="icon-size-4" [svgIcon]="
                                                                     'heroicons_solid:magnifying-glass'
                                                                 "></mat-icon>
                                         <div class="ml-2">
@@ -146,12 +146,12 @@
                                     </div>
                                     <button class="ml-1" mat-icon-button (click)="toggleTagsEditMode()">
                                         @if (!tagsEditMode) {
-                                        <mat-icon class="icon-size-5" [svgIcon]="
+                                        <mat-icon class="icon-size-4" [svgIcon]="
                                                                         'heroicons_solid:pencil-square'
                                                                     "></mat-icon>
                                         }
                                         @if (tagsEditMode) {
-                                        <mat-icon class="icon-size-5" [svgIcon]="
+                                        <mat-icon class="icon-size-4" [svgIcon]="
                                                                         'heroicons_solid:check'
                                                                     "></mat-icon>
                                         }
