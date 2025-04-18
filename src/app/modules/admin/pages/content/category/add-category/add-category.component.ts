@@ -594,7 +594,7 @@ export class ContentCategoryAddCardComponent implements OnInit, OnDestroy {
 
     openDialog(event:Event) {
         this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event};
-        const dialogRef = this.dialog.open(ImageContentDialogComponent,{height:"70%", panelClass:"img-cropper"});
+        const dialogRef = this.dialog.open(ImageContentDialogComponent,{height:"100%", panelClass:"img-cropper"});
         dialogRef.afterClosed().subscribe((result:DialogData) => {
           if(result) {
             this.croppedImage = result?.tempUrl;
