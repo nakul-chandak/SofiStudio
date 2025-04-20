@@ -41,8 +41,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { SafeUrl } from '@angular/platform-browser';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ContentCategoryService,SharedService } from 'app/shared/api/services/api';
-import { DialogData } from '../../content.types';
-import { ImageContentDialogComponent } from '../dialog/image-dialog/image-dialog.component';
+import { ImageContentDialogComponent } from '../../../../../../shared/component/image-dialog/image-dialog.component';
+import { DialogData,CroppedImageProperties } from 'app/shared/types/content.types';
 
 @Component({
     selector: 'add-category',
@@ -593,7 +593,8 @@ export class ContentCategoryAddCardComponent implements OnInit, OnDestroy {
     }
 
     openDialog(event:Event) {
-        this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event};
+        const croppedImageProperties =<CroppedImageProperties> {alignImage:"center",aspectRatio:2/3,roundCropper:false}
+        this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event,imageCropSettings:croppedImageProperties};
         const dialogRef = this.dialog.open(ImageContentDialogComponent,{height:'100%', panelClass:"img-cropper"});
         dialogRef.afterClosed().subscribe((result:DialogData) => {
           if(result) {
