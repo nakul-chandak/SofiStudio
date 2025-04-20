@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
-import { DialogData } from "app/modules/admin/pages/content/content.types";
+
 import { ConfirmDialog } from "app/shared/types";
+import { DialogData } from "app/shared/types/content.types";
 import { Observable, ReplaySubject } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
