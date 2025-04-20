@@ -48,9 +48,9 @@
 
         <mat-drawer-content class="flex flex-col">            
             <!-- Title -->
-            <div class="grid grid-cols-12 mt-4">
-                <div class="col-span-12 md:col-span-2 ml-10 lg:col-span-1"
-                    style=" flex-grow: 0 !important;padding-bottom: 1rem !important;">
+            <div class="mt-4 flex md:flex-row flex-col">
+                <div class="flex-col ml-10"
+                    style="flex-grow: 0 !important;padding-bottom: 1rem !important;">
                     <div class="header-title font-extrabold leading-none tracking-tight">
                         Categories
                     </div>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <!-- Search -->
-                <div class="ml-10 mr-5 col-span-12 md:col-span-10 lg:col-span-11">
+                <div class="ml-10 mr-5 flex-col md:w-full">
                     <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="
                                     'heroicons_solid:magnifying-glass'
