@@ -411,11 +411,15 @@ export class AuthService {
                 id: '',
                 name: user.name,
                 email: user.email,
-                avatar: !user.photo? "images/avatars/male.png": user.photo,
+                avatar: !user.photo? "images/avatars/male.png": this.getImage(user.photo),
                 status: !user.onlineStatus? 'online' : user.onlineStatus,
                 roles: !user.roles? [] : user.roles,
             };
             this._userService.user = userData;
         });
+    }
+
+    getImage(url: string) {
+        return url ? `${url}?v=${new Date().getTime()}` : "";
     }
 }

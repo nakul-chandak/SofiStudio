@@ -4,6 +4,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    inject,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
@@ -18,11 +19,14 @@ import { RouterLink } from '@angular/router';
 import { FuseCardComponent } from '@fuse/components/card';
 import { User } from 'app/core/user/user.types';
 
-import { UserService } from 'app/shared/api/services/api';
+import { AuthService, SharedService, UserService } from 'app/shared/api/services/api';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { FormControl, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ModelUserUpdateUser } from 'app/shared/api/model/models';
+import { CroppedImageProperties, DialogData } from 'app/shared/types/content.types';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ImageContentDialogComponent } from 'app/shared/component/image-dialog/image-dialog.component';
 
 @Component({
     selector: 'profile',
@@ -40,6 +44,7 @@ import { ModelUserUpdateUser } from 'app/shared/api/model/models';
         TextFieldModule,
         MatDividerModule,
         MatTooltipModule,
+        MatDialogModule,
         NgClass,
         FuseAlertComponent,
         ReactiveFormsModule
@@ -58,13 +63,18 @@ export class ProfileComponent implements OnInit {
         type: 'success',
         message: '',
     };
+
+     readonly dialog = inject(MatDialog);
+     
     showAlert: boolean = false;
     editMode: boolean = false;
+    fileName:"";
+    croppedImage="";
     /**
      * Constructor
      */
     constructor(private _formBuilder: UntypedFormBuilder, private _changeDetectorRef: ChangeDetectorRef,
-        private _userService: UserService) { }
+        private _userService: UserService, private sharedService:SharedService, private _authService : AuthService) { }
 
     ngOnInit(): void {
 
@@ -141,29 +151,51 @@ export class ProfileComponent implements OnInit {
         });
     }
 
+    fileChangeEvent(event: any): void {
+        this.fileName = event.target.files[0].name; // Get the file name
+        this.croppedImage ='';
+        this.openDialog(event);
+    }
+    
+    openDialog(event:Event) {
+        const croppedImageProperties =<CroppedImageProperties> {alignImage:"center",aspectRatio:1/1,roundCropper:true}
+        this.sharedService.fileDialog = <DialogData>{name : this.fileName, imageEvent:event,imageCropSettings:croppedImageProperties};
+        const dialogRef = this.dialog.open(ImageContentDialogComponent,{height:'100%', panelClass:"img-cropper"});
+        dialogRef.afterClosed().subscribe((result:DialogData) => {
+          if(result) {
+            this.user.avatar = result?.tempUrl;
+            // call to save profile Image
+            this.uploadAvatar(result?.file);
+            this._changeDetectorRef.markForCheck();
+          }
+        });
+      }
+
+
     /**
      * Upload avatar
      *
      * @param fileList
      */
-    uploadAvatar(fileList: FileList): void {
+    uploadAvatar(imageFile: File): void {
         // Return if canceled
-        if (!fileList.length) {
+        if (!imageFile) {
             return;
         }
 
         const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
 
         // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
+        if (!allowedTypes.includes(imageFile.type)) {
             return;
         }
 
         // Upload the avatar
-        this._userService.uploadProfilePicUserUploadProfilePicPostForm(file)
+        this._userService.uploadProfilePicUserUploadProfilePicPostForm(imageFile)
             .subscribe({
                 next: (response) => {
+                    this.user.avatar = this.getImage(response.url);
+                    this._authService.setUserData();
                     //this.contact.photo = response.url;
                     this.alert = {
                         type: 'success',
@@ -191,6 +223,11 @@ export class ProfileComponent implements OnInit {
                     this.showAlert = true;
                 }
             });
+    }
+
+
+    getImage(url: string) {
+        return url ? `${url}?v=${new Date().getTime()}` : "";
     }
 
     /**
