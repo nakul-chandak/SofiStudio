@@ -19,7 +19,6 @@ import { SettingsPlanBillingComponent } from './plan-billing/plan-billing.compon
 import { SettingsSecurityComponent } from './security/security.component';
 import { SettingsTeamComponent } from './team/team.component';
 import {
-    RouterLink,
     RouterModule
 } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -39,7 +38,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         SettingsPlanBillingComponent,
         SettingsNotificationsComponent,
         SettingsTeamComponent,
-        RouterLink,
         RouterModule,
         MatTooltipModule
     ],

@@ -27,7 +27,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { fuseAnimations } from '@fuse/animations';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { MatInputModule } from '@angular/material/input';
@@ -55,7 +55,6 @@ import { DialogData,CroppedImageProperties } from 'app/shared/types/content.type
         FormsModule,
         ReactiveFormsModule,
         TextFieldModule,
-        RouterLink,
         MatTooltip,
         MatInputModule,
         MatCheckboxModule,

@@ -23,7 +23,6 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import {
     ActivatedRoute,
     Router,
-    RouterLink,
     RouterOutlet,
     RouterModule
 } from '@angular/router';
@@ -70,7 +69,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         I18nPluralPipe,
         MatCheckboxModule,
         FuseAlertComponent,
-        RouterLink,
         RouterModule,
         MatTooltipModule
     ],
