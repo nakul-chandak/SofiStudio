@@ -78,3 +78,9 @@ body.fuse-splash-screen-hidden fuse-splash-screen {
     visibility: hidden;
     opacity: 0;
 }
+
+@media (min-width:961px)  or (min-width:1025px) or  (min-width:1281px) { body .cdk-overlay-container .mat-mdc-dialog-container .mat-mdc-dialog-content .img-cropper img {
+    width: 500px;
+    height: 450px;
+}}
+
