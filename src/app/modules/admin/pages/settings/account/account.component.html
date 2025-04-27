@@ -49,12 +49,12 @@
                 </mat-form-field>
             </div>
             @if(modelSAInfraIntegration.data.containers.length > 0){
-            <div class="sm:col-span-2">
+            <div class="setting-container-tags sm:col-span-2">
                 <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Container Detail</mat-label>
                     <input style="width: 0px !important;" matInput />
                     @for(containers of modelSAInfraIntegration.data.containers; track containers) {
-                    <div style="float: left;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
+                    <div style="margin-bottom: 4px; float: left;padding-top: 0.10rem !important;padding-bottom: 0.10rem !important;padding-left: 0.5rem !important;padding-right: 0.5rem !important;"
                         class="mr-3 flex items-center justify-center rounded-full bg-gray-100 leading-normal text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         <span class="whitespace-nowrap text-sm font-medium">{{ containers.name }}</span>
                     </div>
