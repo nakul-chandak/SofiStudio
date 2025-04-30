@@ -44,10 +44,10 @@
             <!-- Main -->
             <div class="flex-auto">
                 <!-- Header -->
-                    <div class="w-full grid grid-cols-12 mt-4">
+                    <div class="mt-4 flex md:flex-row flex-col">
                         <!-- Title-->
-                        <div class="col-span-12 md:col-span-1 ml-10"
-                            style=" flex-grow: 0 !important;">
+                        <div class="flex-col ml-10"
+                        style="flex-grow: 0 !important;padding-bottom: 1rem !important;">
                             <div class="header-title font-extrabold leading-none tracking-tight">
                                 Users
                             </div>
@@ -67,7 +67,8 @@
                             </div>
                         </div>
                         <!-- Search -->
-                        <div class="mb-5 flex flex-grow mr-5 col-span-12 mt-5 ml-10 md:mt-0 md:col-span-11">
+                        <div class="ml-5 mr-5 mb-5 flex flex-row md:w-full">
+                            <div class="flex-col w-full">
                             <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="
                                                         'heroicons_solid:magnifying-glass'
@@ -75,8 +76,9 @@
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                                     [placeholder]="'Search contacts'" />
                             </mat-form-field>
+                        </div>
                              <!-- Main actions -->
-                    <div class="flex items-center">
+                    <div class="flex-col items-center">
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
